@@ -48,6 +48,8 @@ class MillicastManager : ObservableObject {
     var defaultVideoCodec = "H264"
     var selectedVideoCodec : String?
     
+    var pubOptions : MCClientOptions
+    
     var pubRenderer : MCIosVideoRenderer?
     var subRenderer : MCIosVideoRenderer?
     var publisher : MCPublisher?
@@ -69,6 +71,10 @@ class MillicastManager : ObservableObject {
         
         selectedVideoCodec = defaultVideoCodec
         selectedAudioSourceIndex = 0
+        
+        pubOptions = MCClientOptions()
+        pubOptions.stereo = true
+        pubOptions.videoCodec = defaultVideoCodec
         
         // Set credentials
         savedCreds = SavedCreds()
@@ -434,6 +440,7 @@ class MillicastManager : ObservableObject {
                 subscriber!.unsubscribe()
                 setMediaState(to: false, forPublisher: false, forAudio: true)
                 setMediaState(to: false, forPublisher: false, forAudio: false)
+                setSubState(to: .connected)
             }
             disconnectSubscriber(sub: subscriber!)
         }
@@ -588,9 +595,9 @@ class MillicastManager : ObservableObject {
             print("[connectSubscriber] Not doing as we're already connected!")
             return
         }
+        setSubState(to: .connecting)
         print("[connectSubscriber] accountId:\(subCreds.accountId), streamName:\(subCreds.streamName), apiUrl:\(subCreds.apiUrl)")
         sub.setCredentials(subCreds)
-        setSubState(to: .connecting)
         sub.connect()
     }
     
@@ -1146,23 +1153,23 @@ class MillicastManager : ObservableObject {
          There seems to be a problem in libWebRTC when using H264 for higher iOS resolutions (e.g. 1920x1440, 2592x1936, 3264x2448).
          Currently working around this issue by not setting preferred video codec as H264 for higher resolutions.
          */
-        if(selectedVideoCodec == "H264"){
+        if(pubOptions.videoCodec == "H264"){
             if let cap = getCapability() {
                 var log = logTag + " Selectd video codec is H264."
                 if((cap.width < 1920) || (cap.height < 1440)) {
-                    publisher!.setPreferredVideoCodec(selectedVideoCodec)
                     log += " Setting it as preferred video codec as selected capability \(getCapabilityStr(cap)) is lower than "
                 } else {
                     log += " NOT setting it as preferred video codec as selected capability \(getCapabilityStr(cap)) is higher than "
+                    pubOptions.videoCodec = "VP8"
                 }
                 log += "1920x1440."
                 print(log)
             }
         } else {
-            publisher!.setPreferredVideoCodec(selectedVideoCodec)
             print(logTag + " Set \(selectedVideoCodec!) as preferred video codec.")
         }
         
+        publisher!.setOptions(pubOptions)
         publisher!.add(pubVideoTrack)
         publisher!.add(pubAudioTrack)
         
@@ -1197,6 +1204,15 @@ class MillicastManager : ObservableObject {
         print(logTag + " Stopped publish and going to disconnect...")
         disconnectPublisher(pub: publisher!)
         publisher = nil
+    }
+    
+    func setRemoteAudioTrackVolume(volume: Double) -> Void {
+        if(subscriber != nil && subscriber!.isSubscribed() && subAudioTrack != nil) {
+            print("Setting audio track volume : \(volume)")
+            subAudioTrack?.setVolume(volume)
+        } else {
+            print("Can't set audio volume")
+        }
     }
     
     /**

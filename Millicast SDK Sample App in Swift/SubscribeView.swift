@@ -10,6 +10,7 @@ import SwiftUI
 struct SubscribeView: View {
     
     @ObservedObject var mcMan : MillicastManager
+    @State private var volume = 0.5
     
     static let labelSubscribeNot = "Not Subscribing"
     static let labelSubscribeStart = "Start Subscribe"
@@ -33,6 +34,22 @@ struct SubscribeView: View {
             Spacer()
             mcSA.getSubVideoView()
             Spacer()
+            
+            #if os(iOS)
+            VStack {
+                    Slider(
+                        value: $volume,
+                        in: 0...1,
+                        onEditingChanged: { editing in
+                            print("Volume \(volume) \(editing)")
+                            if(!editing) {
+                                self.mcMan.setRemoteAudioTrackVolume(volume: volume)
+                            }
+                        }
+                    )
+                    Text("Volume")
+            }
+            #endif
             HStack{
                 Text("Account: \(mcMan.subCreds.accountId)")
                 Text("Stream: \(mcMan.subCreds.streamName)")

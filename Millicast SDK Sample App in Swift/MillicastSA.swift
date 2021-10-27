@@ -17,7 +17,6 @@ class MillicastSA : ObservableObject {
     private init() {
         mcManager = MillicastManager.getInstance()
         savedCreds = mcManager.savedCreds
-        
     }
     
     static func getInstance()->MillicastSA{

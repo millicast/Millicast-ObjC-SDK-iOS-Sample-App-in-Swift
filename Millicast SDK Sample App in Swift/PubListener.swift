@@ -35,8 +35,23 @@ class PubListener : MCPublisherListener {
         mcMan.showAlert("[PubLtn] Failed to connect as \(reason!)! Status: \(status)")
     }
     
-    func onStatsReport(_ report: MCStatsTree!) {
-        print("[PubLtn] Stats: \(report)")
+    func onStatsReport(_ report: MCStatsReport!) {
+        // print("[PubLtn] Stats: \(report)")
     }
     
+    func onActive(_ streamId: String!, tracks: [Any]!, sourceId: String!) {
+        
+    }
+    
+    func onInactive(_ streamId: String!, sourceId: String!) {
+        
+    }
+    
+    func onStopped() {
+        
+    }
+    
+    func onVad(_ mid: String!, sourceId: String!) {
+        
+    }
 }

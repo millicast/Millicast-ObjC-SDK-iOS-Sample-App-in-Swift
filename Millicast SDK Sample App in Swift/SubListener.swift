@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+import AVFAudio
 
 class SubListener : MCSubscriberListener {
     
@@ -15,12 +17,21 @@ class SubListener : MCSubscriberListener {
     init(sub: MCSubscriber){
         mcMan = MillicastManager.getInstance()
         subscriber = sub
+        subscriber.enableStats(true)
         print("[SubLtn] SubListener created.")
     }
     
     func onSubscribed() {
         mcMan.setSubState(to: .subscribing)
         print("[SubLtn] Subscribing to Millicast.")
+        #if os(iOS)
+        let inst = AVAudioSession.sharedInstance()
+        do {
+            try inst.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        } catch _ {
+            print("Could not set speakers")
+        }
+        #endif
     }
     
     func onVideoTrack(_ track: MCVideoTrack!) {
@@ -50,8 +61,24 @@ class SubListener : MCSubscriberListener {
         mcMan.showAlert("[SubLtn] Failed to connect as \(reason!)! Status: \(status)")
     }
     
-    func onStatsReport(_ report: MCStatsTree!) {
-        print("[SubLtn] Stats: \(report)")
+    func onActive(_ streamId: String!, tracks: [Any]!, sourceId: String!) {
+        
+    }
+    
+    func onInactive(_ streamId: String!, sourceId: String!) {
+        
+    }
+    
+    func onStopped() {
+        
+    }
+    
+    func onVad(_ mid: String!, sourceId: String!) {
+        
+    }
+    
+    func onStatsReport(_ report: MCStatsReport!) {
+        // print("[SubLtn] Stats: \(report)")
     }
     
 }

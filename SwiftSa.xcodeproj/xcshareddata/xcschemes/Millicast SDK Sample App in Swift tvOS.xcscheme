@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
-               BuildableName = "Millicast SDK Sample App in Swift iOS.app"
-               BlueprintName = "Millicast SDK Sample App in Swift iOS"
-               ReferencedContainer = "container:Millicast SDK Sample App in Swift.xcodeproj">
+               BlueprintIdentifier = "631DD25026F1E18E0023D24A"
+               BuildableName = "SwiftSa tvOS.app"
+               BlueprintName = "SwiftSa tvOS"
+               ReferencedContainer = "container:SwiftSa.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,26 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3FE90C2826B2AF4400B206A3"
-               BuildableName = "Millicast SDK Sample App in SwiftTests.xctest"
-               BlueprintName = "Millicast SDK Sample App in SwiftTests"
-               ReferencedContainer = "container:Millicast SDK Sample App in Swift.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3FE90C3326B2AF4400B206A3"
-               BuildableName = "Millicast SDK Sample App in SwiftUITests.xctest"
-               BlueprintName = "Millicast SDK Sample App in SwiftUITests"
-               ReferencedContainer = "container:Millicast SDK Sample App in Swift.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -64,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
-            BuildableName = "Millicast SDK Sample App in Swift iOS.app"
-            BlueprintName = "Millicast SDK Sample App in Swift iOS"
-            ReferencedContainer = "container:Millicast SDK Sample App in Swift.xcodeproj">
+            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
+            BuildableName = "SwiftSa tvOS.app"
+            BlueprintName = "SwiftSa tvOS"
+            ReferencedContainer = "container:SwiftSa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -81,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
-            BuildableName = "Millicast SDK Sample App in Swift iOS.app"
-            BlueprintName = "Millicast SDK Sample App in Swift iOS"
-            ReferencedContainer = "container:Millicast SDK Sample App in Swift.xcodeproj">
+            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
+            BuildableName = "SwiftSa tvOS.app"
+            BlueprintName = "SwiftSa tvOS"
+            ReferencedContainer = "container:SwiftSa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
