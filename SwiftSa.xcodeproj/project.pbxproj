@@ -3,14 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3F42E72B277218A4003EB7C0 /* MillicastSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F42E72A277218A4003EB7C0 /* MillicastSDK.framework */; };
-		3F42E72C277218A4003EB7C0 /* MillicastSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F42E72A277218A4003EB7C0 /* MillicastSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3F42E72E277218FE003EB7C0 /* MillicastSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F42E72D277218FE003EB7C0 /* MillicastSDK.framework */; };
-		3F42E72F277218FE003EB7C0 /* MillicastSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F42E72D277218FE003EB7C0 /* MillicastSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F8BB7A326BD8FD40041CC02 /* MillicastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */; };
 		3F8C0C1A26D73A1F0027A323 /* MCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8C0C1926D73A1F0027A323 /* MCStates.swift */; };
 		3F8DC0A226BA98E7009D51B1 /* PubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8DC0A126BA98E7009D51B1 /* PubListener.swift */; };
@@ -54,6 +50,8 @@
 		631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
 		631DD26426F1E18E0023D24A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */; };
 		637644BA2726F08300519FDD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 637644B92726F08300519FDD /* Media.xcassets */; };
+		7E0BDB4E8248E04A6A91EA74 /* Pods_SwiftSa_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B13AE01DC34211ACE66135FC /* Pods_SwiftSa_tvOS.framework */; };
+		FF8BFD2EC893C289417B922B /* Pods_SwiftSa_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A84290FDFE5A3F55E44E361 /* Pods_SwiftSa_iOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,34 +71,7 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		3F42E7292772182A003EB7C0 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				3F42E72C277218A4003EB7C0 /* MillicastSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3F42E730277218FE003EB7C0 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				3F42E72F277218FE003EB7C0 /* MillicastSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		3F42E72A277218A4003EB7C0 /* MillicastSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MillicastSDK.framework; path = "Millicast SDK Sample App in Swift/SDK/ObjC-iOS-1.1.1-Uni-Rel/MillicastSDK.framework"; sourceTree = "<group>"; };
-		3F42E72D277218FE003EB7C0 /* MillicastSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MillicastSDK.framework; path = "Millicast SDK Sample App in Swift/SDK/ObjC-tvOS-1.1.1-Uni-Rel/MillicastSDK.framework"; sourceTree = "<group>"; };
 		3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillicastManager.swift; sourceTree = "<group>"; };
 		3F8C0C1926D73A1F0027A323 /* MCStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCStates.swift; sourceTree = "<group>"; };
 		3F8DC0A126BA98E7009D51B1 /* PubListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PubListener.swift; sourceTree = "<group>"; };
@@ -129,9 +100,14 @@
 		3FE90C3426B2AF4400B206A3 /* SwiftSaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftSaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FE90C3826B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Millicast_SDK_Sample_App_in_SwiftUITests.swift; sourceTree = "<group>"; };
 		3FE90C3A26B2AF4400B206A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa iOS.release.xcconfig"; path = "Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS.release.xcconfig"; sourceTree = "<group>"; };
 		631DD26926F1E18E0023D24A /* SwiftSa tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftSa tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		632F354127294CB400858DF3 /* MillicastSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MillicastSDK.framework; sourceTree = "<group>"; };
 		637644B92726F08300519FDD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		6A84290FDFE5A3F55E44E361 /* Pods_SwiftSa_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftSa_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa tvOS.release.xcconfig"; path = "Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		B13AE01DC34211ACE66135FC /* Pods_SwiftSa_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftSa_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa tvOS.debug.xcconfig"; path = "Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa iOS.debug.xcconfig"; path = "Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F42E72B277218A4003EB7C0 /* MillicastSDK.framework in Frameworks */,
+				FF8BFD2EC893C289417B922B /* Pods_SwiftSa_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,7 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F42E72E277218FE003EB7C0 /* MillicastSDK.framework in Frameworks */,
+				7E0BDB4E8248E04A6A91EA74 /* Pods_SwiftSa_tvOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,8 +147,8 @@
 		3FB131DC26B41F2900800DC5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3F42E72D277218FE003EB7C0 /* MillicastSDK.framework */,
-				3F42E72A277218A4003EB7C0 /* MillicastSDK.framework */,
+				6A84290FDFE5A3F55E44E361 /* Pods_SwiftSa_iOS.framework */,
+				B13AE01DC34211ACE66135FC /* Pods_SwiftSa_tvOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -185,6 +161,7 @@
 				3FE90C3726B2AF4400B206A3 /* Millicast SDK Sample App in SwiftUITests */,
 				3FE90C1926B2AF4200B206A3 /* Products */,
 				3FB131DC26B41F2900800DC5 /* Frameworks */,
+				F027239A72E4CABAE99BC6F6 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -202,7 +179,6 @@
 		3FE90C1A26B2AF4200B206A3 /* Millicast SDK Sample App in Swift */ = {
 			isa = PBXGroup;
 			children = (
-				632F354127294CB400858DF3 /* MillicastSDK.framework */,
 				3FA8DBA82704AECD009713E8 /* README.md */,
 				3FAECDAD26BC39F5002F7C91 /* VideoView.swift */,
 				3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */,
@@ -255,6 +231,17 @@
 			path = "Millicast SDK Sample App in SwiftUITests";
 			sourceTree = "<group>";
 		};
+		F027239A72E4CABAE99BC6F6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */,
+				5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */,
+				B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */,
+				76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -262,10 +249,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSa iOS" */;
 			buildPhases = (
+				F4A89226E4A14ADE5BAF7550 /* [CP] Check Pods Manifest.lock */,
 				3FE90C1426B2AF4200B206A3 /* Sources */,
 				3FE90C1526B2AF4200B206A3 /* Frameworks */,
 				3FE90C1626B2AF4200B206A3 /* Resources */,
-				3F42E7292772182A003EB7C0 /* Embed Frameworks */,
+				42E1C39B84594E056CCA40B0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -316,10 +304,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "SwiftSa tvOS" */;
 			buildPhases = (
+				213F0D43FEBF89C71CBD05FB /* [CP] Check Pods Manifest.lock */,
 				631DD25126F1E18E0023D24A /* Sources */,
 				631DD26126F1E18E0023D24A /* Frameworks */,
 				631DD26226F1E18E0023D24A /* Resources */,
-				3F42E730277218FE003EB7C0 /* Embed Frameworks */,
+				756F8FE31C3C365D075A13FD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -415,6 +404,87 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		213F0D43FEBF89C71CBD05FB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SwiftSa tvOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		42E1C39B84594E056CCA40B0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		756F8FE31C3C365D075A13FD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F4A89226E4A14ADE5BAF7550 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SwiftSa iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3FE90C1426B2AF4200B206A3 /* Sources */ = {
@@ -613,6 +683,7 @@
 		};
 		3FE90C3E26B2AF4400B206A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -624,7 +695,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Millicast\\ SDK\\ Sample\\ App\\ in\\ Swift/SDK/ObjC-iOS-1.1.1-Uni-Rel";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -645,6 +716,7 @@
 		};
 		3FE90C3F26B2AF4400B206A3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -656,7 +728,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Millicast\\ SDK\\ Sample\\ App\\ in\\ Swift/SDK/ObjC-iOS-1.1.1-Uni-Rel";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -761,6 +833,7 @@
 		};
 		631DD26726F1E18E0023D24A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -768,9 +841,9 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
-				DEVELOPMENT_TEAM = P493P8H229;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Millicast\\ SDK\\ Sample\\ App\\ in\\ Swift/SDK/ObjC-tvOS-1.1.1-Uni-Rel";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-tvOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -786,12 +859,14 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
 		};
 		631DD26826F1E18E0023D24A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -799,9 +874,9 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
-				DEVELOPMENT_TEAM = P493P8H229;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Millicast\\ SDK\\ Sample\\ App\\ in\\ Swift/SDK/ObjC-tvOS-1.1.1-Uni-Rel";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-tvOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -817,6 +892,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Millicast SDK Sample App in Swift/Millicast SDK Sample App in Swift-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
