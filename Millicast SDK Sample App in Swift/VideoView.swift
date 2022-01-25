@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import AVKit
+import MillicastSDK
 
 struct VideoView : UIViewRepresentable {
     let renderer: MCIosVideoRenderer

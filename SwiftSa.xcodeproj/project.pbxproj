@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -84,7 +84,6 @@
 		3FB131C126B3E80400800DC5 /* PublishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishView.swift; sourceTree = "<group>"; };
 		3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeView.swift; sourceTree = "<group>"; };
 		3FB131C426B3EB2E00800DC5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		3FB131CB26B3F3FD00800DC5 /* Millicast SDK Sample App in Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Millicast SDK Sample App in Swift-Bridging-Header.h"; sourceTree = "<group>"; };
 		3FB2293026C3DE9000982391 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialSource.swift; sourceTree = "<group>"; };
 		3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCreds.swift; sourceTree = "<group>"; };
@@ -190,7 +189,6 @@
 				3FA8DB9527045DE7009713E8 /* Info-iOS.plist */,
 				3FA8DB9827046061009713E8 /* Info-tvOS.plist */,
 				3FE90C2126B2AF4300B206A3 /* Preview Content */,
-				3FB131CB26B3F3FD00800DC5 /* Millicast SDK Sample App in Swift-Bridging-Header.h */,
 				3FAC2F9826B93635007588CA /* MillicastSA.swift */,
 				3F8DC0A126BA98E7009D51B1 /* PubListener.swift */,
 				3FB0A29826CA60A200DA659A /* SubListener.swift */,
@@ -670,7 +668,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Millicast SDK Sample App in Swift/Millicast SDK Sample App in Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -704,7 +702,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Millicast SDK Sample App in Swift/Millicast SDK Sample App in Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = YES;
@@ -819,7 +817,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				SWIFT_OBJC_BRIDGING_HEADER = "Millicast SDK Sample App in Swift/Millicast SDK Sample App in Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -853,7 +851,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				SWIFT_OBJC_BRIDGING_HEADER = "Millicast SDK Sample App in Swift/Millicast SDK Sample App in Swift-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 14.5;

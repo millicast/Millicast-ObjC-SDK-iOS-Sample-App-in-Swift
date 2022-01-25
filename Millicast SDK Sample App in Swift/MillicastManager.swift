@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MillicastSDK
 
 class MillicastManager : ObservableObject {
     @Published var capState : CaptureState = .notCaptured
