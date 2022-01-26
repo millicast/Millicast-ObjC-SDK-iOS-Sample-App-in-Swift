@@ -50,8 +50,6 @@
 		631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
 		631DD26426F1E18E0023D24A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */; };
 		637644BA2726F08300519FDD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 637644B92726F08300519FDD /* Media.xcassets */; };
-		7E0BDB4E8248E04A6A91EA74 /* Pods_SwiftSa_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B13AE01DC34211ACE66135FC /* Pods_SwiftSa_tvOS.framework */; };
-		FF8BFD2EC893C289417B922B /* Pods_SwiftSa_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A84290FDFE5A3F55E44E361 /* Pods_SwiftSa_iOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,14 +97,10 @@
 		3FE90C3426B2AF4400B206A3 /* SwiftSaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftSaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FE90C3826B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Millicast_SDK_Sample_App_in_SwiftUITests.swift; sourceTree = "<group>"; };
 		3FE90C3A26B2AF4400B206A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa iOS.release.xcconfig"; path = "Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS.release.xcconfig"; sourceTree = "<group>"; };
 		631DD26926F1E18E0023D24A /* SwiftSa tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftSa tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		637644B92726F08300519FDD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		6A84290FDFE5A3F55E44E361 /* Pods_SwiftSa_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftSa_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa tvOS.release.xcconfig"; path = "Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		B13AE01DC34211ACE66135FC /* Pods_SwiftSa_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftSa_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa tvOS.debug.xcconfig"; path = "Target Support Files/Pods-SwiftSa tvOS/Pods-SwiftSa tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftSa iOS.debug.xcconfig"; path = "Target Support Files/Pods-SwiftSa iOS/Pods-SwiftSa iOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +108,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF8BFD2EC893C289417B922B /* Pods_SwiftSa_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,7 +129,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E0BDB4E8248E04A6A91EA74 /* Pods_SwiftSa_tvOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +152,6 @@
 				3FE90C3726B2AF4400B206A3 /* Millicast SDK Sample App in SwiftUITests */,
 				3FE90C1926B2AF4200B206A3 /* Products */,
 				3FB131DC26B41F2900800DC5 /* Frameworks */,
-				F027239A72E4CABAE99BC6F6 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -229,17 +220,6 @@
 			path = "Millicast SDK Sample App in SwiftUITests";
 			sourceTree = "<group>";
 		};
-		F027239A72E4CABAE99BC6F6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */,
-				5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */,
-				B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */,
-				76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -247,7 +227,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSa iOS" */;
 			buildPhases = (
-				F4A89226E4A14ADE5BAF7550 /* [CP] Check Pods Manifest.lock */,
 				3FE90C1426B2AF4200B206A3 /* Sources */,
 				3FE90C1526B2AF4200B206A3 /* Frameworks */,
 				3FE90C1626B2AF4200B206A3 /* Resources */,
@@ -301,7 +280,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "SwiftSa tvOS" */;
 			buildPhases = (
-				213F0D43FEBF89C71CBD05FB /* [CP] Check Pods Manifest.lock */,
 				631DD25126F1E18E0023D24A /* Sources */,
 				631DD26126F1E18E0023D24A /* Frameworks */,
 				631DD26226F1E18E0023D24A /* Resources */,
@@ -400,53 +378,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		213F0D43FEBF89C71CBD05FB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SwiftSa tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F4A89226E4A14ADE5BAF7550 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SwiftSa iOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3FE90C1426B2AF4200B206A3 /* Sources */ = {
@@ -645,7 +576,6 @@
 		};
 		3FE90C3E26B2AF4400B206A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E2384A3B705C239A04CB356D /* Pods-SwiftSa iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -678,7 +608,6 @@
 		};
 		3FE90C3F26B2AF4400B206A3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C5056F0D01302F39F261556 /* Pods-SwiftSa iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -795,7 +724,6 @@
 		};
 		631DD26726F1E18E0023D24A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B2FC98CDA6B4C34FA8585CD9 /* Pods-SwiftSa tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -828,7 +756,6 @@
 		};
 		631DD26826F1E18E0023D24A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 76076B895D4013F62A2CC82E /* Pods-SwiftSa tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
