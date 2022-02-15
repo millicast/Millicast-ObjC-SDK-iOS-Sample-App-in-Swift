@@ -52,6 +52,7 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
             pod update
             ```
     1. Open the SA in Xcode as detailed in the earlier section (**Opening the SA**).
+
 #### CocoaPods settings
 - The following have already been set up in the SA.
 - If you wish to add the SDK to your own app, you can follow the following steps.
@@ -59,7 +60,8 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
     - pod name: ```MillicastSDK```
 - To create an iOS target:
     - In ***Podfile***, add:
-        ``` ruby
+
+        ``` ruby  
             target 'SwiftSa iOS' do
               platform :ios, '14.5'
               # Comment the next line if you don't want to use dynamic frameworks
@@ -70,7 +72,8 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
         ```
 - To create a tvOS target:
     - In ***Podfile***, add:
-        ``` ruby
+
+        ``` ruby  
             target 'SwiftSa tvOS' do
               platform :tvos, '14.5'
               # Comment the next line if you don't want to use dynamic frameworks
