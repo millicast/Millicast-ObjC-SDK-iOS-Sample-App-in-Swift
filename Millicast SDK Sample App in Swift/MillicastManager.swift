@@ -658,7 +658,7 @@ class MillicastManager : ObservableObject {
             videoSources = MCMedia.getVideoSources();
             let size = (videoSources!.count)
             if(size < 1){
-                print("[getVideoSources] No videoSource is available!")
+                print("[getVideoSources] Failed as list size was \(size)!")
                 return nil
             } else {
                 var log = "[getVideoSources] "
@@ -688,11 +688,16 @@ class MillicastManager : ObservableObject {
             
             if let vss = getVideoSources() {
                 let size = vss.count
+                if(size < 1) {
+                    print("[getVideoSource] Failed as list size was \(size)!")
+                    return nil
+                }
+                
                 // If the selected index is larger than size, set it to maximum size.
                 // This might happen if the list of videoSources changed.
                 if(videoSourceIndexSelected >= size){
                     let task = { [self] in
-                        print("[getVideoSource] Resetting selectedVideoSourceIndex as it is greater than number of videoSources available\(size)!")
+                        print("[getVideoSource] Resetting selectedVideoSourceIndex as it is greater than number of videoSources available (\(size))!")
                         videoSourceIndex = size - 1
                     }
                     if (useMain) {
@@ -759,9 +764,13 @@ class MillicastManager : ObservableObject {
         print("[getCapabilities]")
         print("[getCapabilities] Checking for capabilities...")
         capabilities = getVideoSource()?.getCapabilities();
+        if(capabilities == nil){
+            print("[getCapabilities] No capability is available!")
+            return nil
+        }
         let size = (capabilities!.count)
         if(size < 1){
-            print("[getCapabilities] No videoSource is available!")
+            print("[getCapabilities] Failed as list size was \(size)!")
             return nil
         } else {
             var log = "[getCapabilities] "
@@ -788,11 +797,15 @@ class MillicastManager : ObservableObject {
             
             if let caps = getCapabilities(){
                 let size = (caps.count)
+                if (size < 1){
+                    print("[getCapability] Failed as list size was \(size)!");
+                    return nil
+                }
                 // If the selected index is larger than size, set it to maximum size.
                 // This can happen when the videoSource has changed.
                 if(capabilityIndexSelected >= size){
                     let task = { [self] in
-                        print("[getCapability] Resetting capabilityIndexSelected as it is greater than number of capabilities available\(size)!")
+                        print("[getCapability] Resetting capabilityIndexSelected as it is greater than number of capabilities available (\(size))!")
                         capabilityIndex = size - 1
                     }
                     if (useMain) {
@@ -890,7 +903,7 @@ class MillicastManager : ObservableObject {
             audioSources = MCMedia.getAudioSources();
             let size = (audioSources!.count)
             if(size < 1){
-                print("[getAudioSources] No audioSource is available!")
+                print("[getAudioSources] Failed as list size was \(size)!")
             } else {
                 for index in 0..<size {
                     let vs = audioSources![index]
@@ -909,9 +922,15 @@ class MillicastManager : ObservableObject {
             print("[getAudioSource] Selecting audioSource.")
             if let asrcs = getAudioSources() {
                 var size = asrcs.count
-                if(selectedAudioSourceIndex + 1 > size){
-                    print("[getAudioSource] Failed as selectedAudioSourceIndex is greater than number of audioSources available\(size)!")
+                if (size < 1){
+                    print("[getAudioSource] Failed as list size was \(size)!")
                     return nil
+                }
+                // If the selected index is larger than size, set it to maximum size.
+                // This might happen if the list of audioSources changed.
+                if(selectedAudioSourceIndex + 1 > size){
+                    print("[getAudioSource] Resetting selectedAudioSourceIndex as it is greater than number of audioSources available (\(size))!")
+                    selectedAudioSourceIndex = size - 1
                 }
                 audioSource = asrcs[selectedAudioSourceIndex];
             } else {
@@ -1068,8 +1087,8 @@ class MillicastManager : ObservableObject {
             return nil
         }
         let size = videoSources!.count
-        if(size == 0){
-            print(logTag + "Failed as the device does not have a camera!")
+        if (size < 1){
+            print(logTag + "Failed as list size was \(size)! This device does not have a camera.");
             return nil
         }
         let next : Int
@@ -1092,8 +1111,8 @@ class MillicastManager : ObservableObject {
         let logTag = "[capabilityIndexNext] "
         if let capabilities = getVideoSource()?.getCapabilities() {
             let size = capabilities.count
-            if(size == 0){
-                print(logTag + "Failed as the device does not have a camera!")
+            if (size < 1){
+                print(logTag + "Failed as list size was \(size)!");
                 return nil
             }
             var next : Int
