@@ -5,12 +5,11 @@
 //  Created by CoSMo Software on 30/7/21.
 //
 
-import SwiftUI
 import AVKit
+import SwiftUI
 
 struct PublishView: View {
-    
-    @ObservedObject var mcMan : MillicastManager
+    @ObservedObject var mcMan: MillicastManager
     
     static let labelCaptureStart = "Start Capture"
     static let labelCaptureTry = "Trying to Capture..."
@@ -26,64 +25,64 @@ struct PublishView: View {
     static let labelVideoMute = "Mute Video"
     static let labelVideoUnmute = "Unmute Video"
     
-    var mcSA : MillicastSA = MillicastSA.getInstance()
+    var mcSA: MillicastSA = .getInstance()
     
-    init(manager mcMan : MillicastManager){
+    init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
         print("[PubView][init]")
     }
     
     var body: some View {
-        VStack{
+        VStack {
             mcSA.getPubVideoView()
-            HStack{
+            HStack {
                 Text("Token: \(mcMan.pubCreds.token)")
                 Text("Stream: \(mcMan.pubCreds.streamName)")
             }
-            HStack{
+            HStack {
                 Spacer()
-                VStack{
-                    Button(getLabelCamera()){
+                VStack {
+                    Button(getLabelCamera()) {
                         mcSA.toggleCamera()
                         print("[PubView] Toggled Camera.")
                     }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
                     
-                    Button(getLabelResolution()){
+                    Button(getLabelResolution()) {
                         mcSA.toggleResolution()
                         print("[PubView] Toggled resolution.")
                     }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
                     
-                    Button("Switch Camera"){
+                    Button("Switch Camera") {
                         print("[PubView] Switch Camera")
                         mcSA.switchCamera()
                     }.padding().disabled(!getEnableSwitch())
                 }
                 Spacer()
-                VStack{
-                    Button(getLabelCapture()){
+                VStack {
+                    Button(getLabelCapture()) {
                         print("[PubView] Capture.")
                         getActionCapture()()
                     }.padding().disabled(!getEnableCapture())
                     
                     // Remove current renderer (if any) and add new renderer to publisher's videoTrack (if any).
-                    Button("Refresh"){
+                    Button("Refresh") {
                         print("[PubView] Refresh.")
                         mcSA.refreshView()
                     }.padding().disabled(!getEnablePublish())
                     
-                    Button(getLabelPublish()){
+                    Button(getLabelPublish()) {
                         print("[PubView] Publish.")
                         getActionPublish()()
                     }.padding().disabled(!getEnablePublish())
                 }
                 Spacer()
-                VStack{
-                    Button(getLabelAudio()){
+                VStack {
+                    Button(getLabelAudio()) {
                         print("[PubView] Toggled Audio.")
                         mcSA.toggleMedia(forPublisher: true, forAudio: true)
                     }.padding().disabled(!getEnableAudio())
                     
-                    Button(getLabelVideo()){
+                    Button(getLabelVideo()) {
                         print("[PubView] Toggled Video.")
                         mcSA.toggleMedia(forPublisher: true, forAudio: false)
                     }.padding().disabled(!getEnableVideo())
@@ -103,37 +102,37 @@ struct PublishView: View {
      * Publish state:
      * - Must first capture and connect before publish.
      */
-    func getStates() -> (labelCapture : String,
-                         actionCapture : () -> (),
-                         enableCapture : Bool,
-                         enableSwitch : Bool,
-                         labelPublish : String,
-                         actionPublish : () -> (),
-                         enablePublish : Bool,
-                         enableAudio : Bool,
-                         enableVideo : Bool
-    ) {
-        var labelCapture : String = ""
-        var actionCapture : (() -> ()) = {}
-        var enableCapture : Bool = false
-        var enableSwitch : Bool = false
-        var labelPublish : String = ""
-        var actionPublish : (() -> ()) = {}
-        var enablePublish : Bool = false
+    func getStates() -> (labelCapture: String,
+                         actionCapture: () -> (),
+                         enableCapture: Bool,
+                         enableSwitch: Bool,
+                         labelPublish: String,
+                         actionPublish: () -> (),
+                         enablePublish: Bool,
+                         enableAudio: Bool,
+                         enableVideo: Bool)
+    {
+        var labelCapture = ""
+        var actionCapture: (() -> ()) = {}
+        var enableCapture = false
+        var enableSwitch = false
+        var labelPublish = ""
+        var actionPublish: (() -> ()) = {}
+        var enablePublish = false
         // Whether to enable buttons for Audio/Video on the UI.
-        var enableAudio : Bool = false
-        var enableVideo : Bool = false
+        var enableAudio = false
+        var enableVideo = false
         
-        var readyToPublish = false;
-        var canChangeCapture = false;
-        if (mcMan.capState == .isCaptured) {
-            readyToPublish = true;
+        var readyToPublish = false
+        var canChangeCapture = false
+        if mcMan.capState == .isCaptured {
+            readyToPublish = true
         }
-        if (mcMan.pubState == .disconnected) {
-            canChangeCapture = true;
+        if mcMan.pubState == .disconnected {
+            canChangeCapture = true
         }
         
-        if(canChangeCapture) {
+        if canChangeCapture {
             switch mcMan.capState {
                 case .notCaptured:
                     labelCapture = PublishView.labelCaptureStart
@@ -156,8 +155,8 @@ struct PublishView: View {
             enableSwitch = true
         }
         
-        if(!readyToPublish) {
-            if(mcMan.pubState == .disconnected){
+        if !readyToPublish {
+            if mcMan.pubState == .disconnected {
                 labelPublish = PublishView.labelPublishNot
                 enablePublish = false
                 return (labelCapture, actionCapture, enableCapture, enableSwitch, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
@@ -185,18 +184,18 @@ struct PublishView: View {
     }
     
     func getLabelCamera() -> String {
-        return "\(mcSA.getCameraName()) Cam Index: \(mcMan.videoSourceIndex)"
+        return "\(mcSA.getCameraName())"
     }
     
     func getLabelResolution() -> String {
-        return "\(mcSA.getResolution()) Res Index: \(mcMan.capabilityIndex)"
+        return "\(mcSA.getResolution())"
     }
     
     func getLabelCapture() -> String {
         return getStates().labelCapture
     }
     
-    func getActionCapture() -> (()->()) {
+    func getActionCapture() -> (() -> ()) {
         return getStates().actionCapture
     }
     
@@ -212,7 +211,7 @@ struct PublishView: View {
         return getStates().labelPublish
     }
     
-    func getActionPublish() -> (()->()) {
+    func getActionPublish() -> (() -> ()) {
         return getStates().actionPublish
     }
     
@@ -221,8 +220,8 @@ struct PublishView: View {
     }
     
     func getLabelAudio() -> String {
-        if(getEnableAudio()){
-            if(mcMan.pubAudioEnabled){
+        if getEnableAudio() {
+            if mcMan.pubAudioEnabled {
                 return PublishView.labelAudioMute
             } else {
                 return PublishView.labelAudioUnmute
@@ -236,8 +235,8 @@ struct PublishView: View {
     }
     
     func getLabelVideo() -> String {
-        if(getEnableVideo()){
-            if(mcMan.pubVideoEnabled){
+        if getEnableVideo() {
+            if mcMan.pubVideoEnabled {
                 return PublishView.labelVideoMute
             } else {
                 return PublishView.labelVideoUnmute

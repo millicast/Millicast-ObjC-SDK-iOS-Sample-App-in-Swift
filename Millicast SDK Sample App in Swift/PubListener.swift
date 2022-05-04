@@ -8,15 +8,12 @@
 import Foundation
 import MillicastSDK
 
-class PubListener : MCPublisherListener {
+class PubListener: MCPublisherListener {
+    var mcMan: MillicastManager
     
-    var mcMan : MillicastManager
-    var publisher : MCPublisher
-    
-    init(pub: MCPublisher){
+    init() {
         let logTag = "[Pub][Ltn] "
         mcMan = MillicastManager.getInstance()
-        publisher = pub
         print(logTag + "PubListener created.")
     }
     
@@ -35,7 +32,7 @@ class PubListener : MCPublisherListener {
         mcMan.setPubState(to: .connected)
         let logTag = "[Pub][Ltn][Con] "
         print(logTag + "Connected to Millicast.")
-        mcMan.startPublish()
+        mcMan.pubStart()
         print(logTag + "Trying to publish to Millicast.")
     }
     
@@ -69,5 +66,4 @@ class PubListener : MCPublisherListener {
         let logTag = "[Pub][Ltn][Viewer][Active][In] "
         print(logTag + "No viewers are currently subscribed to our stream.")
     }
-    
 }

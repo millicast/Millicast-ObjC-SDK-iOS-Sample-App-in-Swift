@@ -72,7 +72,7 @@ class MillicastSA : ObservableObject {
     
     func switchCamera()->Void {
         print("[mcSA][switchCamera]")
-        mcManager.switchVideoSource()
+        mcManager.switchVideoSource(ascending: true)
     }
     
     /**
@@ -81,7 +81,7 @@ class MillicastSA : ObservableObject {
      */
     func toggleCamera()->Void {
         print("[mcSA][toggleCamera]")
-        mcManager.toggleVideoSource()
+        mcManager.toggleVideoSource(ascending: true)
     }
     
     /**
@@ -90,7 +90,7 @@ class MillicastSA : ObservableObject {
      */
     func toggleResolution()->Void {
         print("[mcSA][toggleResolution]")
-        mcManager.toggleCapability()
+        mcManager.toggleCapability(ascending: true)
     }
     
     /**
@@ -162,7 +162,7 @@ class MillicastSA : ObservableObject {
     
     func stopPublish()->Void {
         print("[mcSA][stopPublish]")
-        mcManager.stopPublish()
+        mcManager.pubStop()
     }
     
     func stopPublishCapture()->Void {
@@ -177,12 +177,12 @@ class MillicastSA : ObservableObject {
     
     func startSubscribe()->Void {
         print("[mcSA][startSubscribe]")
-        mcManager.subscribe()
+        mcManager.subConnect()
     }
     
     func stopSubscribe()->Void {
         print("[mcSA][stopSubscribe]")
-        mcManager.stopSubscribe()
+        mcManager.subStop()
     }
     
     /*

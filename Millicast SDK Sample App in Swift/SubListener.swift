@@ -12,13 +12,10 @@ import UIKit
 
 class SubListener: MCSubscriberListener {
     var mcMan: MillicastManager
-    var subscriber: MCSubscriber
     
-    init(sub: MCSubscriber) {
+    init() {
         let logTag = "[Sub][Ltn] "
         mcMan = MillicastManager.getInstance()
-        subscriber = sub
-        subscriber.enableStats(false)
         print(logTag + "SubListener created.")
     }
     
@@ -37,7 +34,7 @@ class SubListener: MCSubscriberListener {
         let logTag = "[Sub][Ltn][Con] "
         mcMan.setSubState(to: .connected)
         print(logTag + "Connected to Millicast.")
-        subscriber.subscribe()
+        mcMan.subStart()
         print(logTag + "Trying to subscribe to Millicast.")
     }
     
