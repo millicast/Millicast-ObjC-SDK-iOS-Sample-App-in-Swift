@@ -14,45 +14,60 @@ class PubListener : MCPublisherListener {
     var publisher : MCPublisher
     
     init(pub: MCPublisher){
+        let logTag = "[Pub][Ltn] "
         mcMan = MillicastManager.getInstance()
         publisher = pub
-        print("[PubLtn] PubListener created.")
+        print(logTag + "PubListener created.")
     }
     
     func onPublishing() {
+        let logTag = "[Pub][Ltn][On] "
         mcMan.setPubState(to: .publishing)
-        print("[PubLtn] Publishing to Millicast.")
+        print(logTag + "Publishing to Millicast.")
     }
     
+    func onPublishingError(_ error: String!) {
+        let logTag = "[Pub][Ltn][Error] "
+        print(logTag + "\(error).")
+    }
+
     func onConnected() {
         mcMan.setPubState(to: .connected)
-        print("[PubLtn] Connected to Millicast.")
+        let logTag = "[Pub][Ltn][Con] "
+        print(logTag + "Connected to Millicast.")
         mcMan.startPublish()
-        print("[PubLtn] Trying to publish to Millicast.")
+        print(logTag + "Trying to publish to Millicast.")
     }
     
     func onConnectionError(_ status: Int32, withReason reason: String!) {
+        let logTag = "[Pub][Ltn][Con][Error] "
         mcMan.setPubState(to: .disconnected)
-        mcMan.showAlert("[PubLtn] Failed to connect as \(reason!)! Status: \(status)")
+        mcMan.showAlert(logTag + "Failed to connect as \(reason!)! Status: \(status)")
+    }
+    
+    func onSignalingError(_ error: String!) {
+        let logTag = "[Pub][Ltn][Error][Sig] "
+        print(logTag + "\(error).")
     }
     
     func onStatsReport(_ report: MCStatsReport!) {
-        // print("[PubLtn] Stats: \(report)")
+        let logTag = "[Pub][Ltn][Stat] "
+        print(logTag + "\(report).")
     }
     
-    func onActive(_ streamId: String!, tracks: [Any]!, sourceId: String!) {
-        
+    func onViewerCount(_ count: Int32) {
+        let logTag = "[Pub][Ltn][Viewer] "
+        print(logTag + "Count: \(count).")
     }
     
-    func onInactive(_ streamId: String!, sourceId: String!) {
-        
+    func onActive() {
+        let logTag = "[Pub][Ltn][Viewer][Active] "
+        print(logTag + "A viewer has subscribed to our stream.")
     }
     
-    func onStopped() {
-        
+    func onInactive() {
+        let logTag = "[Pub][Ltn][Viewer][Active][In] "
+        print(logTag + "No viewers are currently subscribed to our stream.")
     }
     
-    func onVad(_ mid: String!, sourceId: String!) {
-        
-    }
 }

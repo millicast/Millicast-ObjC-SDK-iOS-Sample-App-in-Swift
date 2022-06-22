@@ -5,81 +5,104 @@
 //  Created by CoSMo Software on 16/8/21.
 //
 
-import Foundation
-import UIKit
 import AVFAudio
+import Foundation
 import MillicastSDK
+import UIKit
 
-class SubListener : MCSubscriberListener {
+class SubListener: MCSubscriberListener {
+    var mcMan: MillicastManager
+    var subscriber: MCSubscriber
     
-    var mcMan : MillicastManager
-    var subscriber : MCSubscriber
-    
-    init(sub: MCSubscriber){
+    init(sub: MCSubscriber) {
+        let logTag = "[Sub][Ltn] "
         mcMan = MillicastManager.getInstance()
         subscriber = sub
-        subscriber.enableStats(true)
-        print("[SubLtn] SubListener created.")
+        subscriber.enableStats(false)
+        print(logTag + "SubListener created.")
     }
     
     func onSubscribed() {
+        let logTag = "[Sub][Ltn][On] "
         mcMan.setSubState(to: .subscribing)
-        print("[SubLtn] Subscribing to Millicast.")
-        #if os(iOS)
-        let inst = AVAudioSession.sharedInstance()
-        do {
-            try inst.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
-        } catch _ {
-            print("Could not set speakers")
-        }
-        #endif
+        print(logTag + "Subscribing to Millicast.")
     }
     
-    func onVideoTrack(_ track: MCVideoTrack!) {
-        mcMan.setSubVideoTrack(track: track)
-        mcMan.setMediaState(to: true, forPublisher: false, forAudio: false)
-        
-        print("[SubLtn] Received VideoTrack from Millicast.")
-        mcMan.renderSubVideo()
-    }
-    
-    func onAudioTrack(_ track: MCAudioTrack!) {
-        mcMan.setSubAudioTrack(track: track)
-        mcMan.setMediaState(to: true, forPublisher: false, forAudio: true)
-        
-        print("[SubLtn] Received AudioTrack from Millicast.")
+    func onSubscribedError(_ error: String) {
+        let logTag = "[Sub][Ltn][Error] "
+        print(logTag + "\(error).")
     }
     
     func onConnected() {
+        let logTag = "[Sub][Ltn][Con] "
         mcMan.setSubState(to: .connected)
-        print("[SubLtn] Connected to Millicast.")
+        print(logTag + "Connected to Millicast.")
         subscriber.subscribe()
-        print("[SubLtn] Trying to subscribe to Millicast.")
+        print(logTag + "Trying to subscribe to Millicast.")
     }
     
     func onConnectionError(_ status: Int32, withReason reason: String!) {
+        let logTag = "[Sub][Ltn][Con][Error] "
         mcMan.setSubState(to: .disconnected)
-        mcMan.showAlert("[SubLtn] Failed to connect as \(reason!)! Status: \(status)")
-    }
-    
-    func onActive(_ streamId: String!, tracks: [Any]!, sourceId: String!) {
-        
-    }
-    
-    func onInactive(_ streamId: String!, sourceId: String!) {
-        
+        mcMan.showAlert(logTag + "Failed to connect as \(reason!)! Status: \(status)")
     }
     
     func onStopped() {
-        
+        let logTag = "[Sub][Ltn][Stop] "
+        print(logTag + "OK.")
     }
     
-    func onVad(_ mid: String!, sourceId: String!) {
-        
+    func onSignalingError(_ error: String) {
+        let logTag = "[Sub][Ltn][Error][Sig] "
+        print(logTag + "\(error).")
     }
     
     func onStatsReport(_ report: MCStatsReport!) {
-        // print("[SubLtn] Stats: \(report)")
+        let logTag = "[Sub][Ltn][Stat] "
+        print(logTag + "\(report).")
     }
     
+    func onVideoTrack(_ track: MCVideoTrack!, withMid: String) {
+        let logTag = "[Sub][Ltn][Track][Video] "
+        let trackId = track.getId()
+        mcMan.setSubVideoTrack(track: track)
+        mcMan.setMediaState(to: true, forPublisher: false, forAudio: false)
+        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+        mcMan.renderSubVideo()
+    }
+    
+    func onAudioTrack(_ track: MCAudioTrack!, withMid: String) {
+        let logTag = "[Sub][Ltn][Track][Audio] "
+        let trackId = track.getId()
+        
+        mcMan.setSubAudioTrack(track: track)
+        mcMan.setMediaState(to: true, forPublisher: false, forAudio: true)
+        
+        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+    }
+    
+    func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
+        let logTag = "[Sub][Ltn][Active][Source][Id] "
+        print(logTag + "OK.")
+    }
+    
+    func onInactive(_ streamId: String!, sourceId: String!) {
+        let logTag = "[Sub][Ltn][Active][In][Source][Id] "
+        print(logTag + "OK.")
+    }
+    
+    func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
+        let logTag = "[Sub][Ltn][Layer] "
+        print(logTag + "OK.")
+    }
+
+    func onVad(_ mid: String!, sourceId: String!) {
+        let logTag = "[Sub][Ltn][Vad][Source][Id] "
+        print(logTag + "OK.")
+    }
+    
+    func onViewerCount(_ count: Int32) {
+        let logTag = "[Sub][Ltn][Viewer] "
+        print(logTag + "Count: \(count).")
+    }
 }
