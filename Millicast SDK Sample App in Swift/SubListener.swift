@@ -22,6 +22,7 @@ class SubListener : MCSubscriberListener {
         print("[SubLtn] SubListener created.")
     }
     
+    
     func onSubscribed() {
         mcMan.setSubState(to: .subscribing)
         print("[SubLtn] Subscribing to Millicast.")
@@ -35,15 +36,20 @@ class SubListener : MCSubscriberListener {
         #endif
     }
     
-    func onVideoTrack(_ track: MCVideoTrack!) {
+    func onSubscribedError(_ reason: String!) { }
+    
+    func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
+        
         mcMan.setSubVideoTrack(track: track)
         mcMan.setMediaState(to: true, forPublisher: false, forAudio: false)
         
         print("[SubLtn] Received VideoTrack from Millicast.")
         mcMan.renderSubVideo()
+        
     }
     
-    func onAudioTrack(_ track: MCAudioTrack!) {
+    func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
+        
         mcMan.setSubAudioTrack(track: track)
         mcMan.setMediaState(to: true, forPublisher: false, forAudio: true)
         
@@ -81,5 +87,9 @@ class SubListener : MCSubscriberListener {
     func onStatsReport(_ report: MCStatsReport!) {
         // print("[SubLtn] Stats: \(report)")
     }
+    
+    func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) { }
+    func onSignalingError(_ message: String!) { }
+    func onViewerCount(_ count: Int32) { }
     
 }
