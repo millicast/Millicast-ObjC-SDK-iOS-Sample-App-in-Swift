@@ -40,13 +40,9 @@ class PubListener : MCPublisherListener {
         // print("[PubLtn] Stats: \(report)")
     }
     
-    func onActive(_ streamId: String!, tracks: [Any]!, sourceId: String!) {
-        
-    }
+    func onActive() { }
     
-    func onInactive(_ streamId: String!, sourceId: String!) {
-        
-    }
+    func onInactive() { }
     
     func onStopped() {
         
