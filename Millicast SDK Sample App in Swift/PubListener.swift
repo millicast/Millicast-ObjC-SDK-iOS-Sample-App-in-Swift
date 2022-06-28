@@ -24,6 +24,8 @@ class PubListener : MCPublisherListener {
         print("[PubLtn] Publishing to Millicast.")
     }
     
+    func onPublishingError(_ error: String!) { }
+    
     func onConnected() {
         mcMan.setPubState(to: .connected)
         print("[PubLtn] Connected to Millicast.")
