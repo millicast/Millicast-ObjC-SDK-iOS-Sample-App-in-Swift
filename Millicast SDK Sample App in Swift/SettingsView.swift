@@ -81,7 +81,9 @@ struct SettingsView: View, CredentialSource {
                 }
                 Spacer()
             }
-        }.alert(isPresented: $mcMan.alert) {
+            Spacer()
+        }.padding()
+        .alert(isPresented: $mcMan.alert) {
             Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
         }.onAppear(){
             accountId = mcMan.subCreds.accountId
