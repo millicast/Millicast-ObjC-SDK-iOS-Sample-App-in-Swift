@@ -1,13 +1,24 @@
 # Release Notes
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
+
+## 1.0.2 (2022-07-13)
+Upgraded to use SDK 1.2.0, improved listener logging, fixed occasional media lists related crashes.
+### Major changes
+- Upgraded to new SDK 1.2.0.
+- Standardized and improved logging of Publisher & Subscriber listeners.
+### Fixed
+- Fixed occasional crashes where media lists exist but are of size 0.
+### Known issues
+- As before.
+
 ## 1.0.1 (2022-02-16)
 Upgraded to use SDK 1.1.3, added CocoaPods and Swift Package Manager installation of SDK, SA documentation and removed Objective C bridging header.
 ### Major changes
 - Added support for CocoaPods and Swift Package Manager (SPM) installation of SDK.
-    - All 3 methods (CocoaPods, SPM, manual framework addition) of SDK installation are supported.
-    - Open project using SwiftSa.xcworkspace instead of SwiftSa.xcodeproj.
-    - Refer to ***README.md*** for usage details.
+  - All 3 methods (CocoaPods, SPM, manual framework addition) of SDK installation are supported.
+  - Open project using SwiftSa.xcworkspace instead of SwiftSa.xcodeproj.
+  - Refer to ***README.md*** for usage details.
 - Upgraded to new SDK 1.1.3.
   - Removed Objective C bridging header as SDK headers are now exported via umbrella header that Swift can see by using ```import MillicastSDK```.
 - Upgraded to new features of SDK 1.1:
