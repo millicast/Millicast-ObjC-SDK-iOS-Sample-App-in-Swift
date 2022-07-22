@@ -12,8 +12,8 @@ import Foundation
  Read from UserDefaults, if present.
  Otherwise, read from Constants file.
  */
-class SavedCreds : CredentialSource {
-    
+class SavedCreds: CredentialSource {
+    var credsType = SourceType.saved
     let accountId = "ACCOUNT_ID"
     let pubStreamName = "PUB_STREAM_NAME"
     let subStreamName = "SUB_STREAM_NAME"
@@ -22,75 +22,32 @@ class SavedCreds : CredentialSource {
     let subApiUrl = "SUBSCRIBE_URL"
     
     func getAccountId() -> String {
-        let tag = "[CredsManager][getAccountId]"
-        return Utils.getValue(tag: tag, key: accountId, defaultValue: Constants.ACCOUNT_ID)
-    }
-    
-    func getAccountId(useFile : Bool) -> String {
-        if(useFile) {
-            return Constants.ACCOUNT_ID
-        }
-        return getAccountId()
+        let logTag = "[Creds][Saved][Account][Id] "
+        return Utils.getValue(tag: logTag, key: accountId, defaultValue: Constants.ACCOUNT_ID)
     }
     
     func getPubStreamName() -> String {
-        let tag = "[CredsManager][getPubStreamName]"
-        return Utils.getValue(tag: tag, key: pubStreamName, defaultValue: Constants.PUB_STREAM_NAME)
-    }
-    
-    func getPubStreamName(useFile : Bool) -> String {
-        if(useFile){
-            return Constants.PUB_STREAM_NAME
-        }
-        return getPubStreamName()
+        let logTag = "[Creds][Saved][Pub][Stream][Name] "
+        return Utils.getValue(tag: logTag, key: pubStreamName, defaultValue: Constants.PUB_STREAM_NAME)
     }
     
     func getSubStreamName() -> String {
-        let tag = "[CredsManager][getSubStreamName]"
-        return Utils.getValue(tag: tag, key: subStreamName, defaultValue: Constants.SUB_STREAM_NAME)
-    }
-    
-    func getSubStreamName(useFile : Bool) -> String {
-        if(useFile){
-            return Constants.SUB_STREAM_NAME
-        }
-        return getSubStreamName()
+        let logTag = "[Creds][Saved][Sub][Stream][Name] "
+        return Utils.getValue(tag: logTag, key: subStreamName, defaultValue: Constants.SUB_STREAM_NAME)
     }
     
     func getPubToken() -> String {
-        let tag = "[CredsManager][getPubToken]"
-        return Utils.getValue(tag: tag, key: pubToken, defaultValue: Constants.PUBLISH_TOKEN)
-    }
-    
-    func getPubToken(useFile : Bool) -> String {
-        if(useFile){
-            return Constants.PUBLISH_TOKEN
-        }
-        return getPubToken()
+        let logTag = "[Creds][Saved][Pub][Token] "
+        return Utils.getValue(tag: logTag, key: pubToken, defaultValue: Constants.PUBLISH_TOKEN)
     }
     
     func getPubApiUrl() -> String {
-        let tag = "[CredsManager][getPubApiUrl]"
-        return Utils.getValue(tag: tag, key: pubApiUrl, defaultValue: Constants.PUBLISH_URL)
-    }
-    
-    func getPubApiUrl(useFile : Bool) -> String {
-        if(useFile){
-            return Constants.PUBLISH_URL
-        }
-        return getPubApiUrl()
+        let logTag = "[Creds][Saved][Pub][Api][Url] "
+        return Utils.getValue(tag: logTag, key: pubApiUrl, defaultValue: Constants.PUBLISH_URL)
     }
     
     func getSubApiUrl() -> String {
-        let tag = "[CredsManager][getSubApiUrl]"
-        return Utils.getValue(tag: tag, key: subApiUrl, defaultValue: Constants.SUBSCRIBE_URL)
+        let logTag = "[Creds][Saved][Sub][Api][Url] "
+        return Utils.getValue(tag: logTag, key: subApiUrl, defaultValue: Constants.SUBSCRIBE_URL)
     }
-    
-    func getSubApiUrl(useFile : Bool) -> String {
-        if(useFile){
-            return Constants.SUBSCRIBE_URL
-        }
-        return getSubApiUrl()
-    }
-    
 }

@@ -5,10 +5,10 @@
 //  Created by CoSMo Software on 30/7/21.
 //
 
+import AVFoundation
 import SwiftUI
 
 struct SettingsView: View, CredentialSource {
-    
     @State var accountId = ""
     @State var pubStreamName = ""
     @State var subStreamName = ""
@@ -16,88 +16,128 @@ struct SettingsView: View, CredentialSource {
     @State var pubApiUrl = ""
     @State var subApiUrl = ""
     
-    @ObservedObject var mcMan : MillicastManager
-    var mcSA : MillicastSA
-    var savedCreds : SavedCreds
+    /**
+     Creds TextField background color to use if UI value has been applied.
+     */
+    let colorApplied = Color.yellow.opacity(0.2)
+    /**
+     Creds TextField background color to use if UI value differs from that applied.
+     */
+    let colorChanged = Color.black.opacity(0.2)
     
-    init(manager mcMan : MillicastManager){
+    @ObservedObject var mcMan: MillicastManager
+    @ObservedObject var mcSA: MillicastSA
+    var credsType = SourceType.ui
+    
+    init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
         mcSA = MillicastSA.getInstance()
-        savedCreds = mcSA.getSavedCreds()
-        _accountId = State.init(initialValue: mcMan.subCreds.accountId)
-        _pubStreamName = State.init(initialValue: mcMan.pubCreds.streamName)
-        _subStreamName = State.init(initialValue: mcMan.subCreds.streamName)
-        _pubToken = State.init(initialValue: mcMan.pubCreds.token)
-        _pubApiUrl = State.init(initialValue: mcMan.pubCreds.apiUrl)
-        _subApiUrl = State.init(initialValue: mcMan.subCreds.apiUrl)
-        
+                
         print("[SetView][init] Account ID: \(accountId)\nPublishing stream name: \(pubStreamName)\nSubscribing stream name: \(subStreamName)\nPublishing token: \(pubToken)\nPublishing API url: \(pubApiUrl)\nSubscribing API url: \(subApiUrl)\n")
     }
     
     var body: some View {
         VStack {
-            HStack{
+            HStack {
                 Text("Account ID:")
-                TextField("Account ID", text: $accountId).background(Color.yellow)
-            }
-            HStack{
-                Text("Publishing stream name:")
-                TextField("Publishing stream name", text: $pubStreamName).background(Color.yellow)
-            }
-            HStack{
-                Text("Subscribing stream name:")
-                TextField("Subscribing stream name", text: $subStreamName).background(Color.yellow)
-            }
-            HStack{
-                Text("Publishing token:")
-                TextField("Publishing token", text: $pubToken).background(Color.yellow)
-            }
-            HStack{
-                Text("Publishing API url:")
-                TextField("Publishing API url", text: $pubApiUrl).background(Color.yellow)
-            }
-            HStack{
-                Text("Subscribing API url:")
-                TextField("Subscribing API url", text: $subApiUrl).background(Color.yellow)
+                TextField("Account ID", text: $accountId).background(useColor(ui: accountId, applied: mcSA.accountId))
             }
             HStack {
-                Spacer()
-                Button("Apply file values"){
-                    resetStates(useFile: true)
-                    mcSA.setCreds(from: self,save: false)
-                }
-                Spacer()
-                Button("Apply saved values"){
-                    resetStates(useFile: false)
-                    mcSA.setCreds(from: self,save: false)
-                }
-                Spacer()
-                Button("Apply UI values"){
-                    mcSA.setCreds(from: self,save: false)
-                }
-                Spacer()
-                Button("Apply & save UI values") {
-                    mcSA.setCreds(from: self, save: true)
-                }
-                Spacer()
+                Text("Publishing stream name:")
+                TextField("Publishing stream name", text: $pubStreamName).background(useColor(ui: pubStreamName, applied: mcSA.pubStreamName))
             }
-        }.alert(isPresented: $mcMan.alert) {
-            Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
-        }.onAppear(){
-            accountId = mcMan.subCreds.accountId
-            pubStreamName = mcMan.pubCreds.streamName
-            subStreamName = mcMan.subCreds.streamName
-            pubToken = mcMan.pubCreds.token
-            pubApiUrl = mcMan.pubCreds.apiUrl
-            subApiUrl = mcMan.subCreds.apiUrl
-            print("[SetView] Loading settings. Account ID: \(accountId)\nPublishing stream name: \(pubStreamName)\nSubscribing stream name: \(subStreamName)\nPublishing token: \(pubToken)\nPublishing API url: \(pubApiUrl)\nSubscribing API url: \(subApiUrl)\n")
+            HStack {
+                Text("Subscribing stream name:")
+                TextField("Subscribing stream name", text: $subStreamName).background(useColor(ui: subStreamName, applied: mcSA.subStreamName))
+            }
+            HStack {
+                Text("Publishing token:")
+                TextField("Publishing token", text: $pubToken).background(useColor(ui: pubToken, applied: mcSA.pubToken))
+            }
+            HStack {
+                Text("Publishing API url:")
+                TextField("Publishing API url", text: $pubApiUrl).background(useColor(ui: pubApiUrl, applied: mcSA.pubApiUrl))
+            }
+            HStack {
+                Text("Subscribing API url:")
+                TextField("Subscribing API url", text: $subApiUrl).background(useColor(ui: subApiUrl, applied: mcSA.subApiUrl))
+            }
+            HStack {
+                VStack {
+                    Spacer()
+                    Text("Load values using:").padding()
+                    
+                    Button("APPLIED") {
+                        setUiCreds(creds: mcSA.getCurrentCreds())
+                    }
+                    Spacer()
+                    Button("MEMORY") {
+                        setUiCreds(creds: mcSA.getSavedCreds())
+                    }
+                    Spacer()
+                    Button("FILE") {
+                        setUiCreds(creds: mcSA.getFileCreds())
+                    }
+                    Spacer()
+                }
+                VStack {
+                    Spacer()
+                    Text("Changes only apply after clicking:").padding()
+                    Button("Apply UI values") {
+                        mcSA.setCreds(from: self, save: false)
+                    }
+                    Spacer()
+                    Button("Apply & save UI values") {
+                        mcSA.setCreds(from: self, save: true)
+                    }
+                    Spacer()
+                }
+            }
+            Spacer()
+        }.padding()
+            .alert(isPresented: $mcMan.alert) {
+                Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
+            }.onAppear {
+                setUiCreds(creds: mcSA.getUiCreds())
+                print("[SetView] Loading settings. Account ID: \(accountId)\nPublishing stream name: \(pubStreamName)\nSubscribing stream name: \(subStreamName)\nPublishing token: \(pubToken)\nPublishing API url: \(pubApiUrl)\nSubscribing API url: \(subApiUrl)\n")
+            }.onDisappear {
+                mcSA.setUiCreds(self)
+            }
+    }
+    
+    /**
+     Return the background color for a creds entry.
+     If the current UI value of the creds has been applied, colorApplied will be returned.
+     If the current UI value of the creds differs from the creds applied, colorChanged will be returned.
+     */
+    private func useColor(ui: String, applied: String) -> Color {
+        if ui == applied {
+            return colorApplied
+        } else {
+            return colorChanged
         }
     }
     
+    /**
+     Load the UI credentials values using the specified CredentialSource.
+     */
+    private func setUiCreds(creds: CredentialSource) {
+        let logTag = "[Creds][Ui][Set] "
+        let log = "Setting Creds of type \(creds.credsType) to UI."
+        print(logTag + log)
+        
+        accountId = creds.getAccountId()
+        pubStreamName = creds.getPubStreamName()
+        subStreamName = creds.getSubStreamName()
+        pubToken = creds.getPubToken()
+        pubApiUrl = creds.getPubApiUrl()
+        subApiUrl = creds.getSubApiUrl()
+    }
+
     func getAccountId() -> String {
         return accountId
     }
-    
+
     func getPubStreamName() -> String {
         return pubStreamName
     }
@@ -117,20 +157,6 @@ struct SettingsView: View, CredentialSource {
     func getSubApiUrl() -> String {
         return subApiUrl
     }
-    
-    /**
-     Reset the UI values using either file values or saved values.
-     If saved values not present, file values would be used.
-     */
-    func resetStates(useFile: Bool) -> Void {
-        accountId = savedCreds.getAccountId(useFile: useFile)
-        pubStreamName = savedCreds.getPubStreamName(useFile: useFile)
-        subStreamName = savedCreds.getSubStreamName(useFile: useFile)
-        pubToken = savedCreds.getPubToken(useFile: useFile)
-        pubApiUrl = savedCreds.getPubApiUrl(useFile: useFile)
-        subApiUrl = savedCreds.getSubApiUrl(useFile: useFile)
-    }
-    
 }
 
 struct SettingsView_Previews: PreviewProvider {

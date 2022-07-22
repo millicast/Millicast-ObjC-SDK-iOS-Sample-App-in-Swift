@@ -31,7 +31,9 @@ class MillicastManager: ObservableObject {
     var ndiOutputVideo = false
     var ndiOutputAudio = false
 
+    var fileCreds: FileCreds!
     var savedCreds: SavedCreds!
+    var currentCreds: CurrentCreds!
     var pubCreds: MCPublisherCredentials!
     var subCreds: MCSubscriberCredentials!
 
@@ -117,12 +119,17 @@ class MillicastManager: ObservableObject {
         queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
         queueSub.setSpecific(key: queueLabelKey, value: queueSub.label)
 
-        // Set credentials
-        savedCreds = SavedCreds()
-        // Publishing
+        // Publishing credentials
         pubCreds = MCPublisherCredentials()
-        // Subscribing
+        // Subscribing credentials
         subCreds = MCSubscriberCredentials()
+
+        // Credential Sources
+        fileCreds = FileCreds()
+        savedCreds = SavedCreds()
+        currentCreds = CurrentCreds(mcMan: self)
+        // Set initial creds from UserDefaults, if present.
+        // Otherwise set from Constants file.
         setCreds(using: savedCreds, save: false)
 
         // Set indices
@@ -148,26 +155,38 @@ class MillicastManager: ObservableObject {
     /**
      Read Millicast credentials and set into MillicastManager using CredentialSource.
      */
-    public func setCreds(using credsSrc: CredentialSource, save: Bool) {
-        print("[McMan][setCreds] Account ID: \(credsSrc.getAccountId())\nPublishing stream name: \(credsSrc.getPubStreamName())\nSubscribing stream name: \(credsSrc.getSubStreamName())\nPublishing token: \(credsSrc.getPubToken())\nPublishing API url: \(credsSrc.getPubApiUrl())\nSubscribing API url: \(credsSrc.getSubApiUrl())\n")
+    public func setCreds(using creds: CredentialSource, save: Bool) {
+        let logTag = "[McMan][Creds][Set] "
+        print(logTag + "Account ID: \(creds.getAccountId())\nPublishing stream name: \(creds.getPubStreamName())\nSubscribing stream name: \(creds.getSubStreamName())\nPublishing token: \(creds.getPubToken())\nPublishing API url: \(creds.getPubApiUrl())\nSubscribing API url: \(creds.getSubApiUrl())\n")
 
-        // Publishing
-        pubCreds.streamName = credsSrc.getPubStreamName()
-        pubCreds.token = credsSrc.getPubToken()
-        pubCreds.apiUrl = credsSrc.getPubApiUrl()
-        // Subscribing
-        subCreds.accountId = credsSrc.getAccountId()
-        subCreds.streamName = credsSrc.getSubStreamName()
-        subCreds.apiUrl = credsSrc.getSubApiUrl()
+        // Publish creds - Only set if Publisher not currently connected
+        if pubState == .disconnected {
+            pubCreds.streamName = creds.getPubStreamName()
+            pubCreds.token = creds.getPubToken()
+            pubCreds.apiUrl = creds.getPubApiUrl()
+            if save {
+                // Set new values into UserDefaults
+                UserDefaults.standard.setValue(creds.getPubStreamName(), forKey: savedCreds.pubStreamName)
+                UserDefaults.standard.setValue(creds.getPubToken(), forKey: savedCreds.pubToken)
+                UserDefaults.standard.setValue(creds.getPubApiUrl(), forKey: savedCreds.pubApiUrl)
+            }
+        } else {
+            showAlert(logTag + "Publish creds NOT updated as currently publishing!")
+        }
 
-        if save {
-            // Set new values into UserDefaults
-            UserDefaults.standard.setValue(credsSrc.getAccountId(), forKey: savedCreds.accountId)
-            UserDefaults.standard.setValue(credsSrc.getPubStreamName(), forKey: savedCreds.pubStreamName)
-            UserDefaults.standard.setValue(credsSrc.getSubStreamName(), forKey: savedCreds.subStreamName)
-            UserDefaults.standard.setValue(credsSrc.getPubToken(), forKey: savedCreds.pubToken)
-            UserDefaults.standard.setValue(credsSrc.getPubApiUrl(), forKey: savedCreds.pubApiUrl)
-            UserDefaults.standard.setValue(credsSrc.getSubApiUrl(), forKey: savedCreds.subApiUrl)
+        // Subscribe creds - Only set if Subscriber not currently connected
+        if subState == .disconnected {
+            subCreds.accountId = creds.getAccountId()
+            subCreds.streamName = creds.getSubStreamName()
+            subCreds.apiUrl = creds.getSubApiUrl()
+            if save {
+                // Set new values into UserDefaults
+                UserDefaults.standard.setValue(creds.getAccountId(), forKey: savedCreds.accountId)
+                UserDefaults.standard.setValue(creds.getSubStreamName(), forKey: savedCreds.subStreamName)
+                UserDefaults.standard.setValue(creds.getSubApiUrl(), forKey: savedCreds.subApiUrl)
+            }
+        } else {
+            showAlert(logTag + "Subscribe creds NOT updated as currently subscribing!")
         }
     }
 
