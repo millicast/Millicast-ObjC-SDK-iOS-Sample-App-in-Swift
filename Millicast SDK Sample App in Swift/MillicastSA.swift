@@ -9,11 +9,12 @@ import Foundation
 
 class MillicastSA: ObservableObject {
     @Published var accountId: String
-    @Published var pubStreamName: String
-    @Published var subStreamName: String
-    @Published var pubToken: String
-    @Published var pubApiUrl: String
-    @Published var subApiUrl: String
+    @Published var streamNamePub: String
+    @Published var streamNameSub: String
+    @Published var tokenPub: String
+    @Published var tokenSub: String
+    @Published var apiUrlPub: String
+    @Published var apiUrlSub: String
 
     static var instance: MillicastSA!
     var mcManager: MillicastManager
@@ -31,11 +32,12 @@ class MillicastSA: ObservableObject {
         uiCreds.setCreds(using: savedCreds)
         
         accountId = savedCreds.getAccountId()
-        pubStreamName = savedCreds.getPubStreamName()
-        subStreamName = savedCreds.getPubStreamName()
-        pubToken = savedCreds.getPubToken()
-        pubApiUrl = savedCreds.getPubApiUrl()
-        subApiUrl = savedCreds.getSubApiUrl()
+        streamNamePub = savedCreds.getStreamNamePub()
+        streamNameSub = savedCreds.getStreamNamePub()
+        tokenPub = savedCreds.getTokenPub()
+        tokenSub = savedCreds.getTokenSub()
+        apiUrlPub = savedCreds.getApiUrlPub()
+        apiUrlSub = savedCreds.getApiUrlSub()
     }
     
     static func getInstance() -> MillicastSA {
@@ -49,43 +51,46 @@ class MillicastSA: ObservableObject {
      Millicast connections
      */
     /**
-     Read Millicast credentials from SettingsView and set them into App.
+     Read Millicast credentials from a CredentialSource like SettingsView and set them into App.
      If save is true, values will be saved into UserDefaults.
      */
-    func setCreds(from sv: SettingsView, save: Bool) {
-        print("[mcSA][setCreds] Saving: \(save) Account ID: \(sv.accountId)\nPublishing stream name: \(sv.pubStreamName)\nSubscribing stream name: \(sv.subStreamName)\nPublishing token: \(sv.pubToken)\nPublishing API url: \(sv.pubApiUrl)\nSubscribing API url: \(sv.subApiUrl)\n")
+    func setCreds(from creds: CredentialSource, save: Bool) {
+        let logTag = "[McSA][Creds][Set] "
+        print(logTag + Utils.getCredStr(creds: creds))
         
-        // Read new values into MillicastManager
-        mcManager.setCreds(using: sv, save: save)
+        // Set new values into MillicastManager
+        mcManager.setCreds(using: creds, save: save)
 
+        // Update Published values based on currently applied creds in McMan.
         accountId = currentCreds.getAccountId()
-        pubStreamName = currentCreds.getPubStreamName()
-        subStreamName = currentCreds.getSubStreamName()
-        pubToken = currentCreds.getPubToken()
-        pubApiUrl = currentCreds.getPubApiUrl()
-        subApiUrl = currentCreds.getSubApiUrl()
+        streamNamePub = currentCreds.getStreamNamePub()
+        streamNameSub = currentCreds.getStreamNameSub()
+        tokenPub = currentCreds.getTokenPub()
+        tokenSub = currentCreds.getTokenSub()
+        apiUrlPub = currentCreds.getApiUrlPub()
+        apiUrlSub = currentCreds.getApiUrlSub()
     }
     
     func getFileCreds() -> FileCreds {
-        let logTag = "[SA][Creds] "
+        let logTag = "[McSA][Creds] "
         print(logTag + "Type: \(fileCreds.credsType).")
         return fileCreds
     }
     
     func getSavedCreds() -> SavedCreds {
-        let logTag = "[SA][Creds] "
+        let logTag = "[McSA][Creds] "
         print(logTag + "Type: \(savedCreds.credsType).")
         return savedCreds
     }
     
     func getCurrentCreds() -> CurrentCreds {
-        let logTag = "[SA][Creds] "
+        let logTag = "[McSA][Creds] "
         print(logTag + "Type: \(currentCreds.credsType).")
         return currentCreds
     }
     
     func getUiCreds() -> UiCreds {
-        let logTag = "[SA][Creds] "
+        let logTag = "[McSA][Creds] "
         print(logTag + "Type: \(uiCreds.credsType).")
         return uiCreds
     }
@@ -99,17 +104,17 @@ class MillicastSA: ObservableObject {
      */
     
     func startCapture() {
-        print("[mcSA][startCapture]")
+        print("[McSA][startCapture]")
         mcManager.startAudioVideoCapture()
     }
     
     func stopCapture() {
-        print("[mcSA][stopCapture]")
+        print("[McSA][stopCapture]")
         mcManager.stopAudioVideoCapture()
     }
     
     func switchCamera() {
-        print("[mcSA][switchCamera]")
+        print("[McSA][switchCamera]")
         mcManager.switchVideoSource(ascending: true)
     }
     
@@ -118,7 +123,7 @@ class MillicastSA: ObservableObject {
      If at end of camera range, cycle back to start of range.
      */
     func toggleCamera() {
-        print("[mcSA][toggleCamera]")
+        print("[McSA][toggleCamera]")
         mcManager.toggleVideoSource(ascending: true)
     }
     
@@ -127,7 +132,7 @@ class MillicastSA: ObservableObject {
      If at end of resolution range, cycle back to start of range.
      */
     func toggleResolution() {
-        print("[mcSA][toggleResolution]")
+        print("[McSA][toggleResolution]")
         mcManager.toggleCapability(ascending: true)
     }
     
@@ -136,7 +141,7 @@ class MillicastSA: ObservableObject {
      */
     func getCameraName() -> String {
         let name = mcManager.getVideoSourceName()
-        print("[mcSA][getCameraName] \(name)")
+        print("[McSA][getCameraName] \(name)")
         return name
     }
     
@@ -145,7 +150,7 @@ class MillicastSA: ObservableObject {
      */
     func getResolution() -> String {
         let name = mcManager.getCapabilityName()
-        print("[mcSA][getResolution] \(name)")
+        print("[McSA][getResolution] \(name)")
         return name
     }
     
@@ -156,7 +161,7 @@ class MillicastSA: ObservableObject {
      Get the VideoView that renders the published video.
      */
     func getPubVideoView() -> VideoView {
-        print("[mcSA][getPubVideoView]")
+        print("[McSA][getPubVideoView]")
         return mcManager.getPubVideoView()
     }
     
@@ -164,7 +169,7 @@ class MillicastSA: ObservableObject {
      Render again the video of the currently captured video (if any).
      */
     func refreshView() {
-        print("[mcSA][refreshView]")
+        print("[McSA][refreshView]")
         mcManager.refreshPubVideo()
     }
     
@@ -172,7 +177,7 @@ class MillicastSA: ObservableObject {
      Get the VideoView that renders the subscribed video.
      */
     func getSubVideoView() -> VideoView {
-        print("[mcSA][getSubVideoView]")
+        print("[McSA][getSubVideoView]")
         return mcManager.getSubVideoView()
     }
     
@@ -186,7 +191,7 @@ class MillicastSA: ObservableObject {
      To do so for audio, set isAudio to true, else it would be for video.
      */
     func toggleMedia(forPublisher isPublisher: Bool, forAudio isAudio: Bool) {
-        print("[mcSA][toggleMedia] forPublisher:\(isPublisher) forAudio:\(isAudio)")
+        print("[McSA][toggleMedia] forPublisher:\(isPublisher) forAudio:\(isAudio)")
         mcManager.toggleMediaState(forPublisher: isPublisher, forAudio: isAudio)
     }
     
@@ -194,17 +199,17 @@ class MillicastSA: ObservableObject {
      Publish
      */
     func startPublish() {
-        print("[mcSA][startPublish]")
+        print("[McSA][startPublish]")
         mcManager.pubConnect()
     }
     
     func stopPublish() {
-        print("[mcSA][stopPublish]")
+        print("[McSA][stopPublish]")
         mcManager.pubStop()
     }
     
     func stopPublishCapture() {
-        print("[mcSA][stopPublishCapture]")
+        print("[McSA][stopPublishCapture]")
         stopPublish()
         stopCapture()
     }
@@ -214,12 +219,12 @@ class MillicastSA: ObservableObject {
      */
     
     func startSubscribe() {
-        print("[mcSA][startSubscribe]")
+        print("[McSA][startSubscribe]")
         mcManager.subConnect()
     }
     
     func stopSubscribe() {
-        print("[mcSA][stopSubscribe]")
+        print("[McSA][stopSubscribe]")
         mcManager.subStop()
     }
     
@@ -228,17 +233,17 @@ class MillicastSA: ObservableObject {
      */
     
     func getPublishView() -> PublishView {
-        print("[mcSA][getPublishView]")
+        print("[McSA][getPublishView]")
         return PublishView(manager: mcManager)
     }
     
     func getSubscribeView() -> SubscribeView {
-        print("[mcSA][getSubscribeView]")
+        print("[McSA][getSubscribeView]")
         return SubscribeView(manager: mcManager)
     }
     
     func getSettingsView() -> SettingsView {
-        print("[mcSA][getSettingsView]")
+        print("[McSA][getSettingsView]")
         return SettingsView(manager: mcManager)
     }
 }

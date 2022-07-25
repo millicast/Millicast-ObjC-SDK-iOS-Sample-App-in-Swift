@@ -15,39 +15,45 @@ import Foundation
 class SavedCreds: CredentialSource {
     var credsType = SourceType.saved
     let accountId = "ACCOUNT_ID"
-    let pubStreamName = "PUB_STREAM_NAME"
-    let subStreamName = "SUB_STREAM_NAME"
-    let pubToken = "PUBLISH_TOKEN"
-    let pubApiUrl = "PUBLISH_URL"
-    let subApiUrl = "SUBSCRIBE_URL"
+    let streamNamePub = "STREAM_NAME_PUB"
+    let streamNameSub = "STREAM_NAME_SUB"
+    let tokenPub = "TOKEN_PUB"
+    let tokenSub = "TOKEN_SUB"
+    let apiUrlPub = "URL_PUB"
+    let apiUrlSub = "URL_SUB"
     
     func getAccountId() -> String {
         let logTag = "[Creds][Saved][Account][Id] "
         return Utils.getValue(tag: logTag, key: accountId, defaultValue: Constants.ACCOUNT_ID)
     }
     
-    func getPubStreamName() -> String {
+    func getStreamNamePub() -> String {
         let logTag = "[Creds][Saved][Pub][Stream][Name] "
-        return Utils.getValue(tag: logTag, key: pubStreamName, defaultValue: Constants.PUB_STREAM_NAME)
+        return Utils.getValue(tag: logTag, key: streamNamePub, defaultValue: Constants.STREAM_NAME_PUB)
     }
     
-    func getSubStreamName() -> String {
+    func getStreamNameSub() -> String {
         let logTag = "[Creds][Saved][Sub][Stream][Name] "
-        return Utils.getValue(tag: logTag, key: subStreamName, defaultValue: Constants.SUB_STREAM_NAME)
+        return Utils.getValue(tag: logTag, key: streamNameSub, defaultValue: Constants.STREAM_NAME_SUB)
     }
     
-    func getPubToken() -> String {
+    func getTokenPub() -> String {
         let logTag = "[Creds][Saved][Pub][Token] "
-        return Utils.getValue(tag: logTag, key: pubToken, defaultValue: Constants.PUBLISH_TOKEN)
+        return Utils.getValue(tag: logTag, key: tokenPub, defaultValue: Constants.TOKEN_PUB)
     }
     
-    func getPubApiUrl() -> String {
+    func getTokenSub() -> String {
+        let logTag = "[Creds][Saved][Sub][Token] "
+        return Utils.getValue(tag: logTag, key: tokenSub, defaultValue: Constants.TOKEN_SUB)
+    }
+    
+    func getApiUrlPub() -> String {
         let logTag = "[Creds][Saved][Pub][Api][Url] "
-        return Utils.getValue(tag: logTag, key: pubApiUrl, defaultValue: Constants.PUBLISH_URL)
+        return Utils.getValue(tag: logTag, key: apiUrlPub, defaultValue: Constants.URL_PUB)
     }
     
-    func getSubApiUrl() -> String {
+    func getApiUrlSub() -> String {
         let logTag = "[Creds][Saved][Sub][Api][Url] "
-        return Utils.getValue(tag: logTag, key: subApiUrl, defaultValue: Constants.SUBSCRIBE_URL)
+        return Utils.getValue(tag: logTag, key: apiUrlSub, defaultValue: Constants.URL_SUB)
     }
 }

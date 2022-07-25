@@ -20,37 +20,44 @@ class FileCreds: CredentialSource {
         return value
     }
     
-    func getPubStreamName() -> String {
+    func getStreamNamePub() -> String {
         let logTag = "[Creds][File][Pub][Stream][Name] "
-        let value = Constants.PUB_STREAM_NAME
+        let value = Constants.STREAM_NAME_PUB
         print(logTag + value)
         return value
     }
     
-    func getSubStreamName() -> String {
+    func getStreamNameSub() -> String {
         let logTag = "[Creds][File][Sub][Stream][Name] "
-        let value = Constants.SUB_STREAM_NAME
+        let value = Constants.STREAM_NAME_SUB
         print(logTag + value)
         return value
     }
     
-    func getPubToken() -> String {
+    func getTokenPub() -> String {
         let logTag = "[Creds][File][Pub][Token] "
-        let value = Constants.PUBLISH_TOKEN
+        let value = Constants.TOKEN_PUB
         print(logTag + value)
         return value
     }
     
-    func getPubApiUrl() -> String {
+    func getTokenSub() -> String {
+        let logTag = "[Creds][File][Sub][Token] "
+        let value = Constants.TOKEN_SUB
+        print(logTag + value)
+        return value
+    }
+    
+    func getApiUrlPub() -> String {
         let logTag = "[Creds][File][Pub][Api][Url] "
-        let value = Constants.PUBLISH_URL
+        let value = Constants.URL_PUB
         print(logTag + value)
         return value
     }
     
-    func getSubApiUrl() -> String {
+    func getApiUrlSub() -> String {
         let logTag = "[Creds][File][Sub][Api][Url] "
-        let value = Constants.SUBSCRIBE_URL
+        let value = Constants.URL_SUB
         print(logTag + value)
         return value
     }

@@ -14,11 +14,12 @@ protocol CredentialSource {
     var credsType: SourceType { get }
 
     func getAccountId() -> String
-    func getPubStreamName() -> String
-    func getPubToken() -> String
-    func getSubStreamName() -> String
-    func getPubApiUrl() -> String
-    func getSubApiUrl() -> String
+    func getStreamNamePub() -> String
+    func getTokenPub() -> String
+    func getTokenSub() -> String
+    func getStreamNameSub() -> String
+    func getApiUrlPub() -> String
+    func getApiUrlSub() -> String
 }
 
 enum SourceType {

@@ -10,11 +10,12 @@ import SwiftUI
 
 struct SettingsView: View, CredentialSource {
     @State var accountId = ""
-    @State var pubStreamName = ""
-    @State var subStreamName = ""
-    @State var pubToken = ""
-    @State var pubApiUrl = ""
-    @State var subApiUrl = ""
+    @State var streamNamePub = ""
+    @State var streamNameSub = ""
+    @State var tokenPub = ""
+    @State var tokenSub = ""
+    @State var apiUrlPub = ""
+    @State var apiUrlSub = ""
     
     /**
      Creds TextField background color to use if UI value has been applied.
@@ -32,8 +33,6 @@ struct SettingsView: View, CredentialSource {
     init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
         mcSA = MillicastSA.getInstance()
-                
-        print("[SetView][init] Account ID: \(accountId)\nPublishing stream name: \(pubStreamName)\nSubscribing stream name: \(subStreamName)\nPublishing token: \(pubToken)\nPublishing API url: \(pubApiUrl)\nSubscribing API url: \(subApiUrl)\n")
     }
     
     var body: some View {
@@ -44,23 +43,27 @@ struct SettingsView: View, CredentialSource {
             }
             HStack {
                 Text("Publishing stream name:")
-                TextField("Publishing stream name", text: $pubStreamName).background(useColor(ui: pubStreamName, applied: mcSA.pubStreamName))
+                TextField("Publishing stream name", text: $streamNamePub).background(useColor(ui: streamNamePub, applied: mcSA.streamNamePub))
             }
             HStack {
                 Text("Subscribing stream name:")
-                TextField("Subscribing stream name", text: $subStreamName).background(useColor(ui: subStreamName, applied: mcSA.subStreamName))
+                TextField("Subscribing stream name", text: $streamNameSub).background(useColor(ui: streamNameSub, applied: mcSA.streamNameSub))
             }
             HStack {
                 Text("Publishing token:")
-                TextField("Publishing token", text: $pubToken).background(useColor(ui: pubToken, applied: mcSA.pubToken))
+                TextField("Publishing token", text: $tokenPub).background(useColor(ui: tokenPub, applied: mcSA.tokenPub))
+            }
+            HStack {
+                Text("Subscribing token:")
+                TextField("Subscribing token", text: $tokenSub).background(useColor(ui: tokenSub, applied: mcSA.tokenSub))
             }
             HStack {
                 Text("Publishing API url:")
-                TextField("Publishing API url", text: $pubApiUrl).background(useColor(ui: pubApiUrl, applied: mcSA.pubApiUrl))
+                TextField("Publishing API url", text: $apiUrlPub).background(useColor(ui: apiUrlPub, applied: mcSA.apiUrlPub))
             }
             HStack {
                 Text("Subscribing API url:")
-                TextField("Subscribing API url", text: $subApiUrl).background(useColor(ui: subApiUrl, applied: mcSA.subApiUrl))
+                TextField("Subscribing API url", text: $apiUrlSub).background(useColor(ui: apiUrlSub, applied: mcSA.apiUrlSub))
             }
             HStack {
                 VStack {
@@ -99,7 +102,8 @@ struct SettingsView: View, CredentialSource {
                 Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
             }.onAppear {
                 setUiCreds(creds: mcSA.getUiCreds())
-                print("[SetView] Loading settings. Account ID: \(accountId)\nPublishing stream name: \(pubStreamName)\nSubscribing stream name: \(subStreamName)\nPublishing token: \(pubToken)\nPublishing API url: \(pubApiUrl)\nSubscribing API url: \(subApiUrl)\n")
+                let logTag = "[SetView][Appear] "
+                print(logTag + Utils.getCredStr(creds: self))
             }.onDisappear {
                 mcSA.setUiCreds(self)
             }
@@ -127,35 +131,40 @@ struct SettingsView: View, CredentialSource {
         print(logTag + log)
         
         accountId = creds.getAccountId()
-        pubStreamName = creds.getPubStreamName()
-        subStreamName = creds.getSubStreamName()
-        pubToken = creds.getPubToken()
-        pubApiUrl = creds.getPubApiUrl()
-        subApiUrl = creds.getSubApiUrl()
+        streamNamePub = creds.getStreamNamePub()
+        streamNameSub = creds.getStreamNameSub()
+        tokenPub = creds.getTokenPub()
+        tokenSub = creds.getTokenSub()
+        apiUrlPub = creds.getApiUrlPub()
+        apiUrlSub = creds.getApiUrlSub()
     }
 
     func getAccountId() -> String {
         return accountId
     }
 
-    func getPubStreamName() -> String {
-        return pubStreamName
+    func getStreamNamePub() -> String {
+        return streamNamePub
     }
     
-    func getPubToken() -> String {
-        return pubToken
+    func getTokenPub() -> String {
+        return tokenPub
     }
     
-    func getSubStreamName() -> String {
-        return subStreamName
+    func getTokenSub() -> String {
+        return tokenSub
     }
     
-    func getPubApiUrl() -> String {
-        return pubApiUrl
+    func getStreamNameSub() -> String {
+        return streamNameSub
     }
     
-    func getSubApiUrl() -> String {
-        return subApiUrl
+    func getApiUrlPub() -> String {
+        return apiUrlPub
+    }
+    
+    func getApiUrlSub() -> String {
+        return apiUrlSub
     }
 }
 

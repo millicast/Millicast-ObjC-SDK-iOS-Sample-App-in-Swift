@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct SubscribeView: View {
-    
-    @ObservedObject var mcMan : MillicastManager
+    @ObservedObject var mcMan: MillicastManager
     @State private var volume = 0.5
     
     static let labelSubscribeNot = "Not Subscribing"
@@ -23,38 +22,42 @@ struct SubscribeView: View {
     static let labelVideoMute = "Mute Video"
     static let labelVideoUnmute = "Unmute Video"
     
-    var mcSA : MillicastSA = MillicastSA.getInstance()
+    var mcSA: MillicastSA = .getInstance()
     
-    init(manager mcMan : MillicastManager){
+    init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
     }
     
     var body: some View {
-        VStack{
+        VStack {
             Spacer()
             mcSA.getSubVideoView()
             Spacer()
             
             #if os(iOS)
             VStack {
-                    Slider(
-                        value: $volume,
-                        in: 0...1,
-                        onEditingChanged: { editing in
-                            print("Volume \(volume) \(editing)")
-                            if(!editing) {
-                                self.mcMan.setRemoteAudioTrackVolume(volume: volume)
-                            }
+                Slider(
+                    value: $volume,
+                    in: 0 ... 1,
+                    onEditingChanged: { editing in
+                        print("Volume \(volume) \(editing)")
+                        if !editing {
+                            self.mcMan.setRemoteAudioTrackVolume(volume: volume)
                         }
-                    )
-                    Text("Volume")
+                    }
+                )
+                Text("Volume")
             }
             #endif
-            HStack{
-                Text("Account: \(mcMan.subCreds.accountId)")
-                Text("Stream: \(mcMan.subCreds.streamName)")
+            VStack {
+                HStack {
+                    Text("Account: \(mcMan.subCreds.accountId)")
+                    Text("Stream: \(mcMan.subCreds.streamName)")
+                }
+                Text("Token:\(mcMan.subCreds.token)")
+                    .multilineTextAlignment(.center)
             }
-            HStack{
+            HStack {
                 Spacer()
                 Button(getLabelSubscribe()) {
                     print("[SubView] Subscribe.")
@@ -63,14 +66,14 @@ struct SubscribeView: View {
                 
                 Spacer()
                 
-                Button(getLabelAudio()){
+                Button(getLabelAudio()) {
                     print("[SubView] Toggled Audio.")
                     mcSA.toggleMedia(forPublisher: false, forAudio: true)
                 }.padding().disabled(!getEnableAudio())
                 
                 Spacer()
                 
-                Button(getLabelVideo()){
+                Button(getLabelVideo()) {
                     print("[SubView] Toggled Video.")
                     mcSA.toggleMedia(forPublisher: false, forAudio: false)
                 }.padding().disabled(!getEnableVideo())
@@ -87,18 +90,18 @@ struct SubscribeView: View {
      * Set the state of subscribe, audio and video buttons,
      * based on current subscribe and media states.
      */
-    func getStates() -> (labelSubscribe : String,
-                         actionSubscribe : () -> (),
-                         enableSubscribe : Bool,
-                         enableAudio : Bool,
-                         enableVideo : Bool
-    ) {
-        var labelSubscribe : String = ""
-        var actionSubscribe : (() -> ()) = {}
-        var enableSubscribe : Bool = false
+    func getStates() -> (labelSubscribe: String,
+                         actionSubscribe: () -> (),
+                         enableSubscribe: Bool,
+                         enableAudio: Bool,
+                         enableVideo: Bool)
+    {
+        var labelSubscribe = ""
+        var actionSubscribe: (() -> ()) = {}
+        var enableSubscribe = false
         // Whether to enable buttons for Audio/Video on the UI.
-        var enableAudio : Bool = false
-        var enableVideo : Bool = false
+        var enableAudio = false
+        var enableVideo = false
         
         switch mcMan.subState {
             case .disconnected:
@@ -124,7 +127,7 @@ struct SubscribeView: View {
         return getStates().labelSubscribe
     }
     
-    func getActionSubscribe() -> (()->()) {
+    func getActionSubscribe() -> (() -> ()) {
         return getStates().actionSubscribe
     }
     
@@ -133,8 +136,8 @@ struct SubscribeView: View {
     }
     
     func getLabelAudio() -> String {
-        if(getEnableAudio()){
-            if(mcMan.subAudioEnabled){
+        if getEnableAudio() {
+            if mcMan.subAudioEnabled {
                 return SubscribeView.labelAudioMute
             } else {
                 return SubscribeView.labelAudioUnmute
@@ -148,8 +151,8 @@ struct SubscribeView: View {
     }
     
     func getLabelVideo() -> String {
-        if(getEnableVideo()){
-            if(mcMan.subVideoEnabled){
+        if getEnableVideo() {
+            if mcMan.subVideoEnabled {
                 return SubscribeView.labelVideoMute
             } else {
                 return SubscribeView.labelVideoUnmute

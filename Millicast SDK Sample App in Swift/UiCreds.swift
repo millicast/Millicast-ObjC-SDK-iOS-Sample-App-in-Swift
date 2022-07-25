@@ -21,21 +21,24 @@ class UiCreds: CredentialSource {
     var accountId = ""
     var streamNameSub = ""
     var apiUrlSub = ""
-   
+    var tokenSub = ""
+
     /**
      Read Millicast credentials and set into MillicastManager using CredentialSource.
      */
     public func setCreds(using creds: CredentialSource) {
-        print("[Creds][Ui][Set] Account ID: \(creds.getAccountId())\nPublishing stream name: \(creds.getPubStreamName())\nSubscribing stream name: \(creds.getSubStreamName())\nPublishing token: \(creds.getPubToken())\nPublishing API url: \(creds.getPubApiUrl())\nSubscribing API url: \(creds.getSubApiUrl())\n")
+        let logTag = "[Creds][Ui][Set] "
+        print(logTag + Utils.getCredStr(creds: creds))
 
         // Publishing
-        streamNamePub = creds.getPubStreamName()
-        tokenPub = creds.getPubToken()
-        apiUrlPub = creds.getPubApiUrl()
+        streamNamePub = creds.getStreamNamePub()
+        tokenPub = creds.getTokenPub()
+        apiUrlPub = creds.getApiUrlPub()
         // Subscribing
         accountId = creds.getAccountId()
-        streamNameSub = creds.getSubStreamName()
-        apiUrlSub = creds.getSubApiUrl()
+        streamNameSub = creds.getStreamNameSub()
+        apiUrlSub = creds.getApiUrlSub()
+        tokenSub = creds.getTokenSub()
     }
 
     func getAccountId() -> String {
@@ -51,66 +54,79 @@ class UiCreds: CredentialSource {
         print(logTag + value)
     }
     
-    func getPubStreamName() -> String {
+    func getStreamNamePub() -> String {
         let logTag = "[Creds][Cur][Pub][Stream][Name] "
         let value = streamNamePub
         print(logTag + value)
         return value
     }
     
-    func setPubStreamName(value: String) {
+    func setStreamNamePub(value: String) {
         let logTag = "[Creds][Cur][Pub][Stream][Name][Set] "
         streamNamePub = value
         print(logTag + value)
     }
     
-    func getSubStreamName() -> String {
+    func getStreamNameSub() -> String {
         let logTag = "[Creds][Cur][Sub][Stream][Name] "
         let value = streamNameSub
         print(logTag + value)
         return value
     }
     
-    func setSubStreamName(value: String) {
+    func setStreamNameSub(value: String) {
         let logTag = "[Creds][Cur][Sub][Stream][Name][Set] "
         streamNameSub = value
         print(logTag + value)
     }
     
-    func getPubToken() -> String {
+    func getTokenPub() -> String {
         let logTag = "[Creds][Cur][Pub][Token] "
         let value = tokenPub
         print(logTag + value)
         return value
     }
     
-    func setPubToken(value: String) {
+    func setTokenPub(value: String) {
         let logTag = "[Creds][Cur][Pub][Token][Set] "
         tokenPub = value
         print(logTag + value)
     }
     
-    func getPubApiUrl() -> String {
+    func getTokenSub() -> String {
+        let logTag = "[Creds][Cur][Sub][Token] "
+        let value = tokenSub
+        print(logTag + value)
+        return value
+    }
+    
+    func setTokenSub(value: String) {
+        let logTag = "[Creds][Cur][Sub][Token][Set] "
+        tokenSub = value
+        print(logTag + value)
+    }
+    
+    func getApiUrlPub() -> String {
         let logTag = "[Creds][Cur][Pub][Api][Url] "
         let value = apiUrlPub
         print(logTag + value)
         return value
     }
     
-    func setPubApiUrl(value: String) {
+    func setApiUrlPub(value: String) {
         let logTag = "[Creds][Cur][Pub][Api][Url][Set] "
         apiUrlPub = value
         print(logTag + value)
     }
     
-    func getSubApiUrl() -> String {
+    func getApiUrlSub() -> String {
         let logTag = "[Creds][Cur][Sub][Api][Url] "
         let value = apiUrlSub
         print(logTag + value)
         return value
     }
     
-    func setSubApiUrl(value: String) {
+    func setApiUrlSub(value: String) {
         let logTag = "[Creds][Cur][Sub][Api][Url][Set] "
         apiUrlSub = value
         print(logTag + value)

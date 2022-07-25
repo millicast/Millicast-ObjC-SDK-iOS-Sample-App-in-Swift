@@ -31,35 +31,42 @@ class CurrentCreds: CredentialSource {
         return value
     }
     
-    func getPubStreamName() -> String {
+    func getStreamNamePub() -> String {
         let logTag = "[Creds][Cur][Pub][Stream][Name] "
         let value = pubCreds.streamName ?? ""
         print(logTag + value)
         return value
     }
     
-    func getSubStreamName() -> String {
+    func getStreamNameSub() -> String {
         let logTag = "[Creds][Cur][Sub][Stream][Name] "
         let value = subCreds.streamName ?? ""
         print(logTag + value)
         return value
     }
     
-    func getPubToken() -> String {
+    func getTokenPub() -> String {
         let logTag = "[Creds][Cur][Pub][Token] "
         let value = pubCreds.token ?? ""
         print(logTag + value)
         return value
     }
     
-    func getPubApiUrl() -> String {
+    func getTokenSub() -> String {
+        let logTag = "[Creds][Cur][Sub][Token] "
+        let value = subCreds.token ?? ""
+        print(logTag + value)
+        return value
+    }
+    
+    func getApiUrlPub() -> String {
         let logTag = "[Creds][Cur][Pub][Api][Url] "
         let value = pubCreds.apiUrl ?? ""
         print(logTag + value)
         return value
     }
     
-    func getSubApiUrl() -> String {
+    func getApiUrlSub() -> String {
         let logTag = "[Creds][Cur][Sub][Api][Url] "
         let value = subCreds.apiUrl ?? ""
         print(logTag + value)

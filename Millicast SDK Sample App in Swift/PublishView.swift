@@ -35,9 +35,10 @@ struct PublishView: View {
     var body: some View {
         VStack {
             mcSA.getPubVideoView()
-            HStack {
-                Text("Token: \(mcMan.pubCreds.token)")
+            VStack {
                 Text("Stream: \(mcMan.pubCreds.streamName)")
+                Text("Token:\(mcMan.pubCreds.token)")
+                    .multilineTextAlignment(.center)
             }
             HStack {
                 Spacer()
