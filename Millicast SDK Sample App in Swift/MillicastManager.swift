@@ -906,7 +906,7 @@ class MillicastManager: ObservableObject {
             }
 
             // Connect to Millicast
-            print(logTag + "Connecting to Millicast...")
+            print(logTag + "Trying to connect to Millicast...")
             connectSubscriber(sub: sub)
         }
 
@@ -2033,13 +2033,14 @@ class MillicastManager: ObservableObject {
             print(logTag + "Not doing as we're already connected!")
             return
         }
-        pub.setCredentials(pubCreds)
         setPubState(to: .connecting)
-        if !pub.connect() {
-            setPubState(to: .disconnected)
-            showAlert(logTag + "Failed! Could not connect to Millicast!")
-        } else {
+        pub.setCredentials(pubCreds)
+
+        if pub.connect() {
             print(logTag + "Connecting to Millicast...")
+        } else {
+            setPubState(to: .disconnected)
+            showAlert(logTag + "Failed! Could not connect to Millicast! Please check your credentials.")
         }
     }
 
@@ -2063,7 +2064,7 @@ class MillicastManager: ObservableObject {
      Connect to Millicast for subscribing. Subscribing credentials required.
      */
     private func connectSubscriber(sub: MCSubscriber) {
-        let logTag = "[Sub][Con] "
+        let logTag = "[Sub][Con][Mc] "
         if sub.isConnected() {
             print(logTag + "Not doing as we're already connected!")
             return
@@ -2071,7 +2072,13 @@ class MillicastManager: ObservableObject {
         setSubState(to: .connecting)
         print(logTag + "accountId:\(subCreds.accountId), streamName:\(subCreds.streamName), apiUrl:\(subCreds.apiUrl)")
         sub.setCredentials(subCreds)
-        sub.connect()
+
+        if sub.connect() {
+            print(logTag + "Connecting to Millicast...")
+        } else {
+            setSubState(to: .disconnected)
+            showAlert(logTag + "Failed! Could not connect to Millicast! Please check your credentials.")
+        }
     }
 
     /**
