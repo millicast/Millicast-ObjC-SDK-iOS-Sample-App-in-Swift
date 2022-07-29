@@ -41,26 +41,32 @@ struct SettingsView: View, CredentialSource {
                 Text("Account ID:")
                 TextField("Account ID", text: $accountId).background(useColor(ui: accountId, applied: mcSA.accountId))
             }
+#if os(iOS)
             HStack {
                 Text("Publishing stream name:")
                 TextField("Publishing stream name", text: $streamNamePub).background(useColor(ui: streamNamePub, applied: mcSA.streamNamePub))
             }
+#endif
             HStack {
                 Text("Subscribing stream name:")
                 TextField("Subscribing stream name", text: $streamNameSub).background(useColor(ui: streamNameSub, applied: mcSA.streamNameSub))
             }
+#if os(iOS)
             HStack {
                 Text("Publishing token:")
                 TextField("Publishing token", text: $tokenPub).background(useColor(ui: tokenPub, applied: mcSA.tokenPub))
             }
+#endif
             HStack {
                 Text("Subscribing token:")
                 TextField("Subscribing token", text: $tokenSub).background(useColor(ui: tokenSub, applied: mcSA.tokenSub))
             }
+#if os(iOS)
             HStack {
                 Text("Publishing API url:")
                 TextField("Publishing API url", text: $apiUrlPub).background(useColor(ui: apiUrlPub, applied: mcSA.apiUrlPub))
             }
+#endif
             HStack {
                 Text("Subscribing API url:")
                 TextField("Subscribing API url", text: $apiUrlSub).background(useColor(ui: apiUrlSub, applied: mcSA.apiUrlSub))

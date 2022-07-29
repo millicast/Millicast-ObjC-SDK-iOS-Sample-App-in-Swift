@@ -14,12 +14,12 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                #if os(iOS)
+#if os(iOS)
                 Spacer()
                 NavigationLink(destination: mcSA.getPublishView()) {
                     Text("Publish")
                 }
-                #endif
+#endif
                 Spacer()
                 NavigationLink(destination: mcSA.getSubscribeView()) {
                     Text("Subscribe")
