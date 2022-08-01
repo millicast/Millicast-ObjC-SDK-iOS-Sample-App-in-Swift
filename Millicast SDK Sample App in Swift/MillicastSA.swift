@@ -166,14 +166,6 @@ class MillicastSA: ObservableObject {
     }
     
     /**
-     Render again the video of the currently captured video (if any).
-     */
-    func refreshView() {
-        print("[McSA][refreshView]")
-        mcManager.refreshPubVideo()
-    }
-    
-    /**
      Get the VideoView that renders the subscribed video.
      */
     func getSubVideoView() -> VideoView {

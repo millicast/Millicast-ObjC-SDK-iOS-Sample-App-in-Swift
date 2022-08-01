@@ -449,7 +449,7 @@ class MillicastManager: ObservableObject {
 
     /**
      * Stop capturing on current videoSource and switch to the next available videoSource on device and starts capturing.
-     * If currently publishing, this would first stop publishing and disconnect from Millicast. After the next available videoSource is capturing, reconnect to Millicast and start publishing.
+     * If currently publishing, this would first stop publishing and disconnect from Millicast. After the next available videoSource is capturing, reconnect to Millicast and start publishing. Audio capture will not be affected and will be published as it was before the switch.
      * This can only be done when currently capturing.
      * @param ascending If true, cycle in the direction of increasing index,
      * otherwise cycle in opposite direction.
@@ -489,6 +489,7 @@ class MillicastManager: ObservableObject {
 
             // Stop current capture, if any.
             stopCaptureVideo()
+
             // Set new camera index.
             guard let next = videoSourceIndexNext(ascending: ascending)
             else {
@@ -590,13 +591,6 @@ class MillicastManager: ObservableObject {
         subVideoTrack = track
     }
 
-    /**
-     Set the received audioTrack into MillicastManager.
-     */
-    public func setSubAudioTrack(track: MCAudioTrack) {
-        subAudioTrack = track
-    }
-
     // *********************************************************************************************
     // Mute / unmute audio / video.
     // *********************************************************************************************
@@ -695,21 +689,6 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Render again the video of the currently captured video (if any).
-     */
-    public func refreshPubVideo() {
-        queuePub.async { [self] in
-            if pubVideoTrack == nil {
-                print("[refreshPubVideo] Unable to refresh as videoTrack does not exist.")
-                return
-            }
-            pubVideoTrack!.remove(getPubRenderer())
-            renderPubVideo()
-            print("[refreshPubVideo] OK")
-        }
-    }
-
-    /**
      Get the VideoView that renders the subscribed video.
      */
     public func getSubVideoView()->VideoView {
@@ -719,18 +698,38 @@ class MillicastManager: ObservableObject {
     }
 
     /**
+     Process the subscribed audio.
+     */
+    public func subRenderAudio(track: MCAudioTrack?) {
+        let logTag = "[Sub][Render][Audio] "
+        let task = { [self] in
+            guard let track = track else {
+                showAlert(logTag + "Failed! audioTrack does not exist.")
+                return
+            }
+            subAudioTrack = track
+            setMediaState(to: true, forPublisher: false, forAudio: true)
+            print(logTag + "OK")
+        }
+        runOnQueue(logTag: logTag, log: "Render subscribe audio", task, queueSub)
+    }
+
+    /**
      Render the subscribed video.
      */
-    public func renderSubVideo() {
-        queueSub.async { [self] in
-            let logTag = "[Video][Render][Sub] "
-            if subVideoTrack == nil {
+    public func subRenderVideo(track: MCVideoTrack?) {
+        let logTag = "[Sub][Render][Video] "
+        let task = { [self] in
+            guard let track = track else {
                 showAlert(logTag + "Failed! videoTrack does not exist.")
                 return
             }
-            subVideoTrack?.add(getSubRenderer())
+            subVideoTrack = track
+            setMediaState(to: true, forPublisher: false, forAudio: false)
+            track.add(getSubRenderer())
             print(logTag + "OK")
         }
+        runOnQueue(logTag: logTag, log: "Render subscribe video", task, queueSub)
     }
 
     // *********************************************************************************************
@@ -1019,12 +1018,11 @@ class MillicastManager: ObservableObject {
                 return
             }
 
-            subscriber?.unsubscribe()
-            setMediaState(to: false, forPublisher: false, forAudio: true)
-            setMediaState(to: false, forPublisher: false, forAudio: false)
-            setSubState(to: .connected)
+            // Stop subscribe, rendering and processing of incoming media.
+            stopAudioVideoSubscribe()
             print(logTag + " Stopped subscribe and going to disconnect...")
 
+            // Disconnect Subscriber from Millicast.
             disconnectSubscriber(sub: subscriber!)
         }
     }
@@ -1580,27 +1578,6 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     * Set  audioSource to nil.
-     * If audioSource is currently capturing, stop capture first.
-     * New audioSource and capability will be created again
-     * based on audioSourceIndex.
-     */
-    private func removeAudioSource() {
-        let logTag = "[Audio][Source][Remove] "
-
-        // Remove all videoSource
-        if isAudioCaptured() {
-            audioSource?.stopCapture()
-            print(logTag + "Capture stopped.")
-        }
-        audioSource = nil
-        print(logTag + "Removed.")
-        print(logTag + "Setting new...")
-        setAudioSourceIndex(audioSourceIndex)
-        print(logTag + "OK.")
-    }
-
-    /**
      Using the selected audioSource, capture audio into a pubAudioTrack.
      */
     private func startCaptureAudio() {
@@ -1617,8 +1594,8 @@ class MillicastManager: ObservableObject {
             }
 
             // Capture AudioTrack for publishing.
-            pubAudioTrack = source.startCapture() as! MCAudioTrack
-            setMediaState(to: true, forPublisher: true, forAudio: true)
+            let track = source.startCapture() as! MCAudioTrack
+            pubRenderAudio(track: track)
             print(logTag + "OK")
         }
     }
@@ -1646,6 +1623,27 @@ class MillicastManager: ObservableObject {
     }
 
     /**
+     * Set  audioSource to nil.
+     * If audioSource is currently capturing, stop capture first.
+     * New audioSource and capability will be created again
+     * based on audioSourceIndex.
+     */
+    private func removeAudioSource() {
+        let logTag = "[Source][Audio][Remove] "
+
+        // Remove all videoSource
+        if isAudioCaptured() {
+            audioSource?.stopCapture()
+            print(logTag + "Capture stopped.")
+        }
+        audioSource = nil
+        print(logTag + "Removed.")
+        print(logTag + "Setting new...")
+        setAudioSourceIndex(audioSourceIndex)
+        print(logTag + "OK.")
+    }
+
+    /**
      Check if audio is captured.
      */
     private func isAudioCaptured()->Bool {
@@ -1656,27 +1654,6 @@ class MillicastManager: ObservableObject {
         }
         print(logTag + "Yes.")
         return true
-    }
-
-    /**
-     * Set  videoSource to nil.
-     * If videoSource is currently capturing, stop capture first.
-     * New videoSource and capability will be created again
-     * based on videoSourceIndex and capabilityIndex.
-     */
-    private func removeVideoSource() {
-        let logTag = "[Video][Source][Remove] "
-
-        // Remove all videoSource
-        if isVideoCaptured() {
-            videoSource!.stopCapture()
-            print(logTag + "Capture stopped.")
-        }
-        videoSource = nil
-        print(logTag + "Removed.")
-        print(logTag + "Setting new...")
-        setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
-        print(logTag + "OK.")
     }
 
     /**
@@ -1710,7 +1687,7 @@ class MillicastManager: ObservableObject {
 
         // Capture VideoTrack for publishing.
         print(logTag + "Capturing with: \(getVideoSourceStr(videoSource!))...")
-        pubVideoTrack = (videoSource!.startCapture() as! MCVideoTrack)
+        let track = (videoSource!.startCapture() as! MCVideoTrack)
 
         // Check that capture has started.
         if isVideoCaptured() {
@@ -1719,10 +1696,8 @@ class MillicastManager: ObservableObject {
             // setCapState(to: .notCaptured)
             showAlert(logTag + "VS.isCapturing FALSE!!! Despite having valid videoSource!")
         }
-        setCapState(to: .isCaptured, tag: logTag)
-        setMediaState(to: true, forPublisher: true, forAudio: false)
 
-        renderPubVideo()
+        pubRenderVideo(track: track)
     }
 
     /**
@@ -1749,6 +1724,27 @@ class MillicastManager: ObservableObject {
         }
         setCapState(to: .notCaptured)
         setMediaState(to: false, forPublisher: true, forAudio: false)
+    }
+
+    /**
+     * Set  videoSource to nil.
+     * If videoSource is currently capturing, stop capture first.
+     * New videoSource and capability will be created again
+     * based on videoSourceIndex and capabilityIndex.
+     */
+    private func removeVideoSource() {
+        let logTag = "[Source][Video][Remove] "
+
+        // Remove all videoSource
+        if isVideoCaptured() {
+            videoSource!.stopCapture()
+            print(logTag + "Capture stopped.")
+        }
+        videoSource = nil
+        print(logTag + "Removed.")
+        print(logTag + "Setting new...")
+        setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
+        print(logTag + "OK.")
     }
 
     /**
@@ -1866,16 +1862,39 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Render the local video
+     Process the local audio.
      */
-    private func renderPubVideo() {
-        let logTag = "[Video][Render][Pub] "
-        if pubVideoTrack == nil {
-            showAlert(logTag + "Failed! videoTrack does not exist.")
-            return
+    private func pubRenderAudio(track: MCAudioTrack?) {
+        let logTag = "[Pub][Render][Audio] "
+        let task = { [self] in
+            guard let track = track else {
+                showAlert(logTag + "Failed! audioTrack does not exist.")
+                return
+            }
+            pubAudioTrack = track
+            setMediaState(to: true, forPublisher: true, forAudio: true)
+            print(logTag + "OK")
         }
-        pubVideoTrack?.add(getPubRenderer())
-        print(logTag + "OK")
+        runOnQueue(logTag: logTag, log: "Render local audio", task, queuePub)
+    }
+
+    /**
+     Render the local video.
+     */
+    private func pubRenderVideo(track: MCVideoTrack?) {
+        let logTag = "[Pub][Render][Video] "
+        let task = { [self] in
+            guard let track = track else {
+                showAlert(logTag + "Failed! videoTrack does not exist.")
+                return
+            }
+            pubVideoTrack = track
+            setCapState(to: .isCaptured, tag: logTag)
+            setMediaState(to: true, forPublisher: true, forAudio: false)
+            track.add(getPubRenderer())
+            print(logTag + "OK")
+        }
+        runOnQueue(logTag: logTag, log: "Render captured video", task, queuePub)
     }
 
     /**
@@ -1892,6 +1911,57 @@ class MillicastManager: ObservableObject {
         }
         print(logTag + "OK")
         return subRenderer!
+    }
+
+    /**
+     Stop subscribing and rendering audio and video.
+     */
+    private func stopAudioVideoSubscribe() {
+        let logTag = "[Sub][Audio][Video][Remove] "
+        subscriber?.unsubscribe()
+        setSubState(to: .connected)
+        print(logTag + "Disconnected. Going to remove media...")
+        // Remove Renderer from Track and remove Track.
+        removeAudioSubscribed()
+        removeVideoSubscribed()
+    }
+
+    /**
+     * Set the subscribed audioTrack to nil.
+     */
+    private func removeAudioSubscribed() {
+        let logTag = "[Sub][Audio][Remove] "
+        setMediaState(to: false, forPublisher: false, forAudio: true)
+        guard let track = subAudioTrack else {
+            print(logTag + "OK. Track did not exist.")
+            return
+        }
+        subAudioTrack = nil
+        print(logTag + "OK. Track removed.")
+    }
+
+    /**
+     * Stop rendering the subscribed video.
+     * Set the subscribed videoTrack to nil.
+     */
+    private func removeVideoSubscribed() {
+        let logTag = "[Sub][Video][Remove] "
+        setMediaState(to: false, forPublisher: false, forAudio: false)
+        guard let track = subVideoTrack else {
+            print(logTag + "OK. Track did not exist.")
+            return
+        }
+        guard let renderer = subRenderer else {
+            print(logTag + "OK. Not removing renderer as it did not exist.")
+            subVideoTrack = nil
+            return
+        }
+
+        track.remove(renderer)
+        print(logTag + "Renderer removed from track.")
+
+        subVideoTrack = nil
+        print(logTag + "OK. Track removed.")
     }
 
     // *********************************************************************************************

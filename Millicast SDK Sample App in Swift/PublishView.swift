@@ -65,12 +65,6 @@ struct PublishView: View {
                         getActionCapture()()
                     }.padding().disabled(!getEnableCapture())
                     
-                    // Remove current renderer (if any) and add new renderer to publisher's videoTrack (if any).
-                    Button("Refresh") {
-                        print("[PubView] Refresh.")
-                        mcSA.refreshView()
-                    }.padding().disabled(!getEnablePublish())
-                    
                     Button(getLabelPublish()) {
                         print("[PubView] Publish.")
                         getActionPublish()()

@@ -59,23 +59,18 @@ class SubListener: MCSubscriberListener {
         print(logTag + "\(report).")
     }
     
-    func onVideoTrack(_ track: MCVideoTrack!, withMid: String) {
-        let logTag = "[Sub][Ltn][Track][Video] "
-        let trackId = track.getId()
-        mcMan.setSubVideoTrack(track: track)
-        mcMan.setMediaState(to: true, forPublisher: false, forAudio: false)
-        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
-        mcMan.renderSubVideo()
-    }
-    
     func onAudioTrack(_ track: MCAudioTrack!, withMid: String) {
         let logTag = "[Sub][Ltn][Track][Audio] "
         let trackId = track.getId()
-        
-        mcMan.setSubAudioTrack(track: track)
-        mcMan.setMediaState(to: true, forPublisher: false, forAudio: true)
-        
         print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+        mcMan.subRenderAudio(track: track)
+    }
+    
+    func onVideoTrack(_ track: MCVideoTrack!, withMid: String) {
+        let logTag = "[Sub][Ltn][Track][Video] "
+        let trackId = track.getId()
+        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+        mcMan.subRenderVideo(track: track)
     }
     
     func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
