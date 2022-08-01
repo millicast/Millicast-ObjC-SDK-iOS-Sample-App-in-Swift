@@ -1,18 +1,18 @@
 {
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  },
   "images" : [
     {
-      "filename" : "logo_cosmo_1920x720.png",
-      "idiom" : "tv",
-      "scale" : "1x"
+      "filename" : "TopShelfImage.png",
+      "scale" : "1x",
+      "idiom" : "tv"
     },
     {
-      "filename" : "logo_cosmo_3840x1440.png",
+      "filename" : "TopShelfImage@2x.png",
       "idiom" : "tv",
       "scale" : "2x"
     }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
+  ]
 }

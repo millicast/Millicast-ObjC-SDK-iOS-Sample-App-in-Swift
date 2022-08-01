@@ -1,7 +1,7 @@
 {
   "info" : {
-    "author" : "xcode",
-    "version" : 1
+    "version" : 1,
+    "author" : "xcode"
   },
   "layers" : [
     {
@@ -13,5 +13,11 @@
     {
       "filename" : "Back.imagestacklayer"
     }
-  ]
+  ],
+  "properties" : {
+    "canvasSize" : {
+      "width" : 1280,
+      "height" : 768
+    }
+  }
 }
