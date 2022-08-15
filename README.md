@@ -121,3 +121,15 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
 1. To mute/unmute audio or video, toggle the respective buttons.
     - This affects only the subscribed media on this Subscriber, and not on other Subscriber(s) or the Publisher.
 1. To stop subscribing, click "Stop Subscribe".
+
+# Settings page
+- Account setting changes on the UI are not applied until the apply button is tapped.
+  - Setting fields change color to alert user when UI values differ from applied values.
+- Subscribe Token
+  - If the publisher settings requires a secure viewer, a valid Subscribe Token has to be set.
+  - If a secure viewer is **not** required:
+    - The following values for the Subscriber Token field are acceptable:
+      - Completely blank (no white spaces).
+      - A valid Subscriber Token.
+    - Any other values may result in failure to connect.
+  - More details on Subscribe Token [here](https://docs.millicast.com/docs/secure-the-millicast-viewer-api#create-a-subscribe-token).

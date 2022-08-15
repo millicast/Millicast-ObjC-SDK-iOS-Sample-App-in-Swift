@@ -56,6 +56,12 @@
             <a class="nav-group-name-link" href="Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/CurrentCreds.html">CurrentCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/FileCreds.html">FileCreds</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/MillicastManager.html">MillicastManager</a>
               </li>
               <li class="nav-group-task">
@@ -71,6 +77,9 @@
                 <a class="nav-group-task-link" href="Classes/SubListener.html">SubListener</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/UiCreds.html">UiCreds</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/Utils.html">Utils</a>
               </li>
             </ul>
@@ -83,6 +92,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/PublisherState.html">PublisherState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/SourceType.html">SourceType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/SubscriberState.html">SubscriberState</a>
@@ -148,6 +160,65 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS12CurrentCredsC"></a>
+                    <a name="//apple_ref/swift/Class/CurrentCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS12CurrentCredsC">CurrentCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Serve as a source of Millicast Credentials.
+Read from currently applied values in MillicastManager.
+Values will be empty Strings (&ldquo;&rdquo;) if no values were applied in MillicastManager.</p>
+
+                        <a href="Classes/CurrentCreds.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">CurrentCreds</span> <span class="p">:</span> <span class="kt"><a href="Protocols/CredentialSource.html">CredentialSource</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS9FileCredsC"></a>
+                    <a name="//apple_ref/swift/Class/FileCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS9FileCredsC">FileCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Serve as a source of Millicast Credentials.
+Read from Constants.swift.</p>
+
+                        <a href="Classes/FileCreds.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FileCreds</span> <span class="p">:</span> <span class="kt"><a href="Protocols/CredentialSource.html">CredentialSource</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -289,6 +360,36 @@ Otherwise, read from Constants file.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:11SwiftSa_iOS7UiCredsC"></a>
+                    <a name="//apple_ref/swift/Class/UiCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS7UiCredsC">UiCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Serve as a source of Millicast Credentials.
+Read from UI values in SettingsView.
+Values will be empty Strings (&ldquo;&rdquo;) if no values were applied in SettingsView.</p>
+
+                        <a href="Classes/UiCreds.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">UiCreds</span> <span class="p">:</span> <span class="kt"><a href="Protocols/CredentialSource.html">CredentialSource</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:11SwiftSa_iOS5UtilsC"></a>
                     <a name="//apple_ref/swift/Class/Utils" class="dashAnchor"></a>
                     <a class="token" href="#/s:11SwiftSa_iOS5UtilsC">Utils</a>
@@ -321,7 +422,7 @@ Otherwise, read from Constants file.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-07-13)</p>
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-08-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

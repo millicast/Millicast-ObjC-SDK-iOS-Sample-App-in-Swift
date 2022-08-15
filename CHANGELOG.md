@@ -2,6 +2,24 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.3.0 (2022-08-16)
+Upgraded to use SDK 1.3.0 (bitcode only for tvOS), major code restructuring, added Subscribe Token usage, and fixed occasional subscribing freeze.
+### Major changes
+- Upgraded to new SDK 1.3.0.
+  - Updated bitcode settings:
+    - Bitcode **not** enabled for iOS target.
+    - Bitcode enabled for tvOS target.
+- Added UI and implementation for Subscribe Token usage.
+- Improved functionality and ease of use of the Millicast Settings view.
+  - Settings fields change color to alert user when UI value differs from applied value.
+  - Refactored CredentialSource and related credentials setting code for greater clarity.
+- Major restructuring of MillicastManager for media option handling, code organization, matching of Android SA style, queuing/threading and logging.
+- Updated SA logo.
+### Fixed
+- Fixed Subscribe view freeze with empty credentials.
+### Known issues
+- As before.
+
 ## 1.0.2 (2022-07-13)
 Upgraded to use SDK 1.2.0, improved listener logging, fixed occasional media lists related crashes.
 ### Major changes
