@@ -3,7 +3,7 @@ This file documents the release notes for each version of the Millicast Objectiv
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
 ## 1.3.0 (2022-08-16)
-Upgraded to use SDK 1.3.0 (bitcode only for tvOS), major code restructuring, added Subscribe Token usage, and fixed occasional subscribing freeze.
+Upgraded to use SDK 1.3.0 (bitcode only for tvOS), improved Settings view, major code restructuring, added Subscribe Token usage, and fixed occasional subscribing freeze.
 ### Major changes
 - Upgraded to new SDK 1.3.0.
   - Updated bitcode settings:
@@ -12,6 +12,8 @@ Upgraded to use SDK 1.3.0 (bitcode only for tvOS), major code restructuring, add
 - Added UI and implementation for Subscribe Token usage.
 - Improved functionality and ease of use of the Millicast Settings view.
   - Settings fields change color to alert user when UI value differs from applied value.
+  - Able to reload applied values to UI.
+  - Able to keep unsaved UI values across view changes.
   - Refactored CredentialSource and related credentials setting code for greater clarity.
 - Major restructuring of MillicastManager for media option handling, code organization, matching of Android SA style, queuing/threading and logging.
 - Updated SA logo.
