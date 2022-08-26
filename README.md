@@ -15,25 +15,27 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
 
 ### Add SDK framework file manually.
 1. Download the selected version of SDK file from the list of release indicated above.
+   - After uncompressing the archive, the SDK framework can usually be found as a package named ***MillicastSDK.xcframework***.
 1. Open the SA in Xcode as detailed in the earlier section (**Opening the SA**).
-1. Drag and drop the Millicast SDK framework file into the project via the Project navigator
-    - The Millicast SDK framework file resides in the "lib" folder of the SDK package.
-    - It should look like "MillicastSDK.framework".
-    - It can be at the same level as the SA source code files (e.g. MillicastSA.swift), i.e., in the "Millicast SDK Sample App in Swift" folder.
-    - Copy items if needed.
-        - This should end up copying the framework file into the project.
-1. Embed and sign the framework
-    1. Open the Project editor settings.
+1. Add the Millicast SDK framework file into the project via the project editor
+    1. Open the project editor settings.
         - In the Project navigator, click on the project name (at the top most level)
-    1. In the Project editor:
-        1. Under the list of TARGETS, select your desired target, for e.g. "SwiftSa iOS" or "SwiftSa tvOS".
-        1. Go to the General tab
-        1. Under "Frameworks, Libraries and Embedded content", you should see the Millicast SDK framework.
-        1. Make sure the Embed value is "**Embed & Sign**".
-1. Validate Workspace
-    1. Open the Project editor and select the desired target as before.
-    1. Go to the Build Settings tab
-    1. Under "Validate Workspace", make sure the value is "**Yes**".
+    1. Under the list of TARGETS, select your desired target, for e.g. "***SwiftSa iOS***" or "***SwiftSa tvOS***".
+    1. Go to General -> Frameworks, Libraries, and Embedded Content.
+    1. Add the new MillicastSDK framework:
+       1. Click the "+" icon, which will pop up a window to select the new framework.
+       1. Click "Add Other..." at the bottom, and then "Add Files...".
+       1. Navigate to where the new ***MillicastSDK.xcframework*** is and select to "Open" this file.
+       1. ***MillicastSDK.xcframework*** should now appear in the list of "Frameworks, Libraries, and Embedded Content".
+    1. Repeat the steps above for any other target(s), that needs to add the new MillicastSDK.
+1. Embed and sign the framework (for each target)
+    1. Open the project editor and select the desired target.
+    1. Go to General -> Frameworks, Libraries, and Embedded Content.
+    1. Ensure the Millicast SDK framework's Embed value is "**Embed & Sign**".
+1. Validate Workspace (for each target)
+    1. Open the project editor and select the desired target.
+    1. Go to the Build Settings -> Validate Workspace
+    2. Ensure the value is "**Yes**".
 
 ### Add SDK via CocoaPods.
 #### SA usage
@@ -133,3 +135,7 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
       - A valid Subscriber Token.
     - Any other values may result in failure to connect.
   - More details on Subscribe Token [here](https://docs.millicast.com/docs/secure-the-millicast-viewer-api#create-a-subscribe-token).
+
+# Miscellaneous
+- The SA enables Background Mode for "[Audio, AirPlay, and Picture in Picture](https://developer.apple.com/documentation/avfoundation/media_playback/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio)".
+  - This allows the SA to continue subscribing and not lose its connection to the Millicast backend when it is moved to the background for any reason.

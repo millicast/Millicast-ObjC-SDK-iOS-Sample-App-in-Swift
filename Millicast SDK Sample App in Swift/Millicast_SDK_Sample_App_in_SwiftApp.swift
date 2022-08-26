@@ -12,14 +12,12 @@ struct Millicast_SDK_Sample_App_in_SwiftApp: App {
     
     @Environment(\.scenePhase) private var scenePhase
     
-    var mcMan = MillicastManager.getInstance()
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
         .onChange(of: scenePhase) { phase in
-            print("[MAIN][onChange] Scene:\(scenePhase)")
+            print("[MAIN][onChange] Scene:\(phase)")
         }
     }
 }
