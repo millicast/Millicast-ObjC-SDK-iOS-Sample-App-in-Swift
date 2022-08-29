@@ -16,12 +16,16 @@ import MillicastSDK
 class CurrentCreds: CredentialSource {
     var credsType = SourceType.current
     
-    var pubCreds: MCPublisherCredentials
-    var subCreds: MCSubscriberCredentials
+    var mcMan: MillicastManager
+    var pubCreds: MCPublisherCredentials {
+        return mcMan.pubCreds
+    }
+    var subCreds: MCSubscriberCredentials {
+        return mcMan.subCreds
+    }
     
     init(mcMan: MillicastManager) {
-        pubCreds = mcMan.pubCreds
-        subCreds = mcMan.subCreds
+        self.mcMan = mcMan
     }
     
     func getAccountId() -> String {

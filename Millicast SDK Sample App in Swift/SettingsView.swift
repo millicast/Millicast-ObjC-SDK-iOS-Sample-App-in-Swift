@@ -20,11 +20,11 @@ struct SettingsView: View, CredentialSource {
     /**
      Creds TextField background color to use if UI value has been applied.
      */
-    let colorApplied = Color.yellow.opacity(0.2)
+    private let colorApplied = Color.yellow.opacity(0.2)
     /**
      Creds TextField background color to use if UI value differs from that applied.
      */
-    let colorChanged = Color.black.opacity(0.2)
+    private let colorChanged = Color.black.opacity(0.2)
     
     @ObservedObject var mcMan: MillicastManager
     @ObservedObject var mcSA: MillicastSA
@@ -116,19 +116,6 @@ struct SettingsView: View, CredentialSource {
     }
     
     /**
-     Return the background color for a creds entry.
-     If the current UI value of the creds has been applied, colorApplied will be returned.
-     If the current UI value of the creds differs from the creds applied, colorChanged will be returned.
-     */
-    private func useColor(ui: String, applied: String) -> Color {
-        if ui == applied {
-            return colorApplied
-        } else {
-            return colorChanged
-        }
-    }
-    
-    /**
      Load the UI credentials values using the specified CredentialSource.
      */
     private func setUiCreds(creds: CredentialSource) {
@@ -145,31 +132,44 @@ struct SettingsView: View, CredentialSource {
         apiUrlSub = creds.getApiUrlSub()
     }
 
-    func getAccountId() -> String {
+    /**
+     Return the background color for a creds entry.
+     If the current UI value of the creds has been applied, colorApplied will be returned.
+     If the current UI value of the creds differs from the creds applied, colorChanged will be returned.
+     */
+    private func useColor(ui: String, applied: String) -> Color {
+        if ui == applied {
+            return colorApplied
+        } else {
+            return colorChanged
+        }
+    }
+    
+    public func getAccountId() -> String {
         return accountId
     }
 
-    func getStreamNamePub() -> String {
+    public func getStreamNamePub() -> String {
         return streamNamePub
     }
     
-    func getTokenPub() -> String {
+    public func getTokenPub() -> String {
         return tokenPub
     }
     
-    func getTokenSub() -> String {
+    public func getTokenSub() -> String {
         return tokenSub
     }
     
-    func getStreamNameSub() -> String {
+    public func getStreamNameSub() -> String {
         return streamNameSub
     }
     
-    func getApiUrlPub() -> String {
+    public func getApiUrlPub() -> String {
         return apiUrlPub
     }
     
-    func getApiUrlSub() -> String {
+    public func getApiUrlSub() -> String {
         return apiUrlSub
     }
 }

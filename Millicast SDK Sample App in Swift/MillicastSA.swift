@@ -8,36 +8,58 @@
 import Foundation
 
 class MillicastSA: ObservableObject {
-    @Published var accountId: String
-    @Published var streamNamePub: String
-    @Published var streamNameSub: String
-    @Published var tokenPub: String
-    @Published var tokenSub: String
-    @Published var apiUrlPub: String
-    @Published var apiUrlSub: String
+    /**
+     These values publishes to UI the currently applied creds.
+     */
+    @Published var accountId: String = ""
+    @Published var streamNamePub: String = ""
+    @Published var streamNameSub: String = ""
+    @Published var tokenPub: String = ""
+    @Published var tokenSub: String = ""
+    @Published var apiUrlPub: String = ""
+    @Published var apiUrlSub: String = ""
 
     static var instance: MillicastSA!
     var mcManager: MillicastManager
-    var fileCreds: FileCreds
-    var savedCreds: SavedCreds
-    var currentCreds: CurrentCreds
+    /**
+     Creds from Constants file.
+     */
+    var fileCreds: FileCreds {
+        return mcManager.fileCreds
+    }
+
+    /**
+     Creds saved in device memory
+     */
+    var savedCreds: SavedCreds {
+        return mcManager.savedCreds
+    }
+
+    /**
+     Creds currently applied in MillicastManager
+     */
+    var currentCreds: CurrentCreds {
+        return mcManager.currentCreds
+    }
+
+    /**
+     Creds currently in the UI.
+     SettingsView will read from and update to this.
+     */
     var uiCreds: UiCreds
     
     private init() {
         mcManager = MillicastManager.getInstance()
-        fileCreds = mcManager.fileCreds
-        savedCreds = mcManager.savedCreds
-        currentCreds = mcManager.currentCreds
         uiCreds = UiCreds()
-        uiCreds.setCreds(using: savedCreds)
-        
-        accountId = savedCreds.getAccountId()
-        streamNamePub = savedCreds.getStreamNamePub()
-        streamNameSub = savedCreds.getStreamNamePub()
-        tokenPub = savedCreds.getTokenPub()
-        tokenSub = savedCreds.getTokenSub()
-        apiUrlPub = savedCreds.getApiUrlPub()
-        apiUrlSub = savedCreds.getApiUrlSub()
+        accountId = currentCreds.getAccountId()
+        streamNamePub = currentCreds.getStreamNamePub()
+        streamNameSub = currentCreds.getStreamNameSub()
+        tokenPub = currentCreds.getTokenPub()
+        tokenSub = currentCreds.getTokenSub()
+        apiUrlPub = currentCreds.getApiUrlPub()
+        apiUrlSub = currentCreds.getApiUrlSub()
+        // When App initializes, load UI creds using currently applied values.
+        uiCreds.setCreds(using: currentCreds)
     }
     
     static func getInstance() -> MillicastSA {
