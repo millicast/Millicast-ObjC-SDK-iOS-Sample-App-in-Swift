@@ -134,7 +134,7 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
       - Completely blank (no white spaces).
       - A valid Subscriber Token.
     - Any other values may result in failure to connect.
-  - More details on Subscribe Token [here](https://docs.millicast.com/docs/secure-the-millicast-viewer-api#create-a-subscribe-token).
+  - More details on Subscribe Token [here](https://docs.dolby.io/streaming-apis/docs/secure-viewer-api#create-a-subscribe-token).
 
 # Miscellaneous
 - The SA enables Background Mode for "[Audio, AirPlay, and Picture in Picture](https://developer.apple.com/documentation/avfoundation/media_playback/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio)".

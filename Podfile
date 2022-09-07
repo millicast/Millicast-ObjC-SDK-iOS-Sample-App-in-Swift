@@ -6,7 +6,7 @@ target 'SwiftSa iOS' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   # Pods for SwiftSa iOS
-  pod 'MillicastSDK', '~> 1.3.0'
+  pod 'MillicastSDK', '~> 1.3.1'
 
 end
 
@@ -15,5 +15,5 @@ target 'SwiftSa tvOS' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   # Pods for SwiftSa tvOS
-  pod 'MillicastSDK', '~> 1.3.0'
+  pod 'MillicastSDK', '~> 1.3.1'
 end

@@ -173,43 +173,45 @@
 <h3 id='add-sdk-framework-file-manually' class='heading'>Add SDK framework file manually.</h3>
 
 <ol>
-<li>Download the selected version of SDK file from the list of release indicated above.</li>
+<li>Download the selected version of SDK file from the list of release indicated above.
+
+<ul>
+<li>After uncompressing the archive, the SDK framework can usually be found as a package named <strong><em>MillicastSDK.xcframework</em></strong>.</li>
+</ul></li>
 <li>Open the SA in Xcode as detailed in the earlier section (<strong>Opening the SA</strong>).</li>
-<li>Drag and drop the Millicast SDK framework file into the project via the Project navigator
-
-<ul>
-<li>The Millicast SDK framework file resides in the &ldquo;lib&rdquo; folder of the SDK package.</li>
-<li>It should look like &ldquo;MillicastSDK.framework&rdquo;.</li>
-<li>It can be at the same level as the SA source code files (e.g. MillicastSA.swift), i.e., in the &ldquo;Millicast SDK Sample App in Swift&rdquo; folder.</li>
-<li>Copy items if needed.
-
-<ul>
-<li>This should end up copying the framework file into the project.</li>
-</ul></li>
-</ul></li>
-<li>Embed and sign the framework
+<li>Add the Millicast SDK framework file into the project via the project editor
 
 <ol>
-<li>Open the Project editor settings.
+<li>Open the project editor settings.
 
 <ul>
 <li>In the Project navigator, click on the project name (at the top most level)</li>
 </ul></li>
-<li>In the Project editor:
+<li>Under the list of TARGETS, select your desired target, for e.g. &ldquo;<strong><em>SwiftSa iOS</em></strong>&rdquo; or &ldquo;<strong><em>SwiftSa tvOS</em></strong>&rdquo;.</li>
+<li>Go to General -&gt; Frameworks, Libraries, and Embedded Content.</li>
+<li>Add the new MillicastSDK framework:
 
 <ol>
-<li>Under the list of TARGETS, select your desired target, for e.g. &ldquo;SwiftSa iOS&rdquo; or &ldquo;SwiftSa tvOS&rdquo;.</li>
-<li>Go to the General tab</li>
-<li>Under &ldquo;Frameworks, Libraries and Embedded content&rdquo;, you should see the Millicast SDK framework.</li>
-<li>Make sure the Embed value is &ldquo;<strong>Embed &amp; Sign</strong>&rdquo;.</li>
+<li>Click the &ldquo;+&rdquo; icon, which will pop up a window to select the new framework.</li>
+<li>Click &ldquo;Add Other&hellip;&rdquo; at the bottom, and then &ldquo;Add Files&hellip;&rdquo;.</li>
+<li>Navigate to where the new <strong><em>MillicastSDK.xcframework</em></strong> is and select to &ldquo;Open&rdquo; this file.</li>
+<li><strong><em>MillicastSDK.xcframework</em></strong> should now appear in the list of &ldquo;Frameworks, Libraries, and Embedded Content&rdquo;.</li>
 </ol></li>
+<li>Repeat the steps above for any other target(s), that needs to add the new MillicastSDK.</li>
 </ol></li>
-<li>Validate Workspace
+<li>Embed and sign the framework (for each target)
 
 <ol>
-<li>Open the Project editor and select the desired target as before.</li>
-<li>Go to the Build Settings tab</li>
-<li>Under &ldquo;Validate Workspace&rdquo;, make sure the value is &ldquo;<strong>Yes</strong>&rdquo;.</li>
+<li>Open the project editor and select the desired target.</li>
+<li>Go to General -&gt; Frameworks, Libraries, and Embedded Content.</li>
+<li>Ensure the Millicast SDK framework&rsquo;s Embed value is &ldquo;<strong>Embed &amp; Sign</strong>&rdquo;.</li>
+</ol></li>
+<li>Validate Workspace (for each target)
+
+<ol>
+<li>Open the project editor and select the desired target.</li>
+<li>Go to the Build Settings -&gt; Validate Workspace</li>
+<li>Ensure the value is &ldquo;<strong>Yes</strong>&rdquo;.</li>
 </ol></li>
 </ol>
 <h3 id='add-sdk-via-cocoapods' class='heading'>Add SDK via CocoaPods.</h3>
@@ -340,6 +342,38 @@ pod update
 </ul></li>
 <li>To stop subscribing, click &ldquo;Stop Subscribe&rdquo;.</li>
 </ol>
+<h1 id='settings-page' class='heading'>Settings page</h1>
+
+<ul>
+<li>Account setting changes on the UI are not applied until the apply button is tapped.
+
+<ul>
+<li>Setting fields change color to alert user when UI values differ from applied values.</li>
+</ul></li>
+<li>Subscribe Token
+
+<ul>
+<li>If the publisher settings requires a secure viewer, a valid Subscribe Token has to be set.</li>
+<li>If a secure viewer is <strong>not</strong> required:</li>
+<li>The following values for the Subscriber Token field are acceptable:
+
+<ul>
+<li>Completely blank (no white spaces).</li>
+<li>A valid Subscriber Token.</li>
+</ul></li>
+<li>Any other values may result in failure to connect.</li>
+<li>More details on Subscribe Token <a href="https://docs.millicast.com/docs/secure-the-millicast-viewer-api#create-a-subscribe-token">here</a>.</li>
+</ul></li>
+</ul>
+<h1 id='miscellaneous' class='heading'>Miscellaneous</h1>
+
+<ul>
+<li>The SA enables Background Mode for &ldquo;<a href="https://developer.apple.com/documentation/avfoundation/media_playback/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio">Audio, AirPlay, and Picture in Picture</a>&rdquo;.
+
+<ul>
+<li>This allows the SA to continue subscribing and not lose its connection to the Millicast backend when it is moved to the background for any reason.</li>
+</ul></li>
+</ul>
 
           </div>
         </section>
@@ -348,7 +382,7 @@ pod update
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-08-15)</p>
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-09-07)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

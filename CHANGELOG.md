@@ -2,6 +2,20 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.3.1 (2022-09-07)
+Upgraded to use SDK 1.3.1, improved CredentialSource related code, fixed returning from background issue, and fixed applied Subscribe streamname error on reload.
+### Major changes
+- Upgraded to new SDK 1.3.1.
+- Improved CredentialSource related code.
+  - Logic for determining credentials on SA start isolated to MillicastManager.
+  - CredentialSource types explained in code.
+- Updated readme on background mode and manual framework installation steps.
+### Fixed
+- Fixed the issue where tvOS devices may stop subscribing and lose connection to Millicast after returning from the background.
+- Fixed an error in which the Subscribe streamname applied on SA reload differed from the previously saved value.
+### Known issues
+- As before.
+
 ## 1.3.0 (2022-08-16)
 Upgraded to use SDK 1.3.0 (bitcode only for tvOS), improved Settings view, major code restructuring, added Subscribe Token usage, and fixed occasional subscribing freeze.
 ### Major changes
