@@ -5,6 +5,7 @@
 //  Created by CoSMo Software on 3/8/21.
 //
 
+import AVFoundation
 import Foundation
 
 class MillicastSA: ObservableObject {
@@ -21,6 +22,9 @@ class MillicastSA: ObservableObject {
 
     static var instance: MillicastSA!
     var mcManager: MillicastManager
+    var cat: AVAudioSession.Category?
+    var catOpt: AVAudioSession.CategoryOptions?
+
     /**
      Creds from Constants file.
      */
@@ -60,6 +64,8 @@ class MillicastSA: ObservableObject {
         apiUrlSub = currentCreds.getApiUrlSub()
         // When App initializes, load UI creds using currently applied values.
         uiCreds.setCreds(using: currentCreds)
+        // Listen to iOS Notifications
+        setupNotifications()
     }
     
     static func getInstance() -> MillicastSA {
@@ -259,5 +265,144 @@ class MillicastSA: ObservableObject {
     func getSettingsView() -> SettingsView {
         print("[McSA][getSettingsView]")
         return SettingsView(manager: mcManager)
+    }
+    
+    /*
+     Utils
+     */
+
+    /**
+     Configure the AVAudioSession to use videoChat mode, which will allow Bluetooth and default to the device's speakers when no other audio route is connected.
+     */
+    private func configureAudioSession() {
+        #if os(iOS)
+        let logTag = "[Route][Configure][Audio] "
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat)
+        } catch {
+            print(logTag + "Failed!")
+            return
+        }
+        print(logTag + "OK. VideoChat mode set: Will allow Bluetooth and default to device's speakers when no other audio route is connected.")
+        #endif
+    }
+
+    /**
+     Allow SA to receive and handle iOS notifications.
+     */
+    private func setupNotifications() {
+        let logTag = "[Notif][Route] "
+
+        // Get the default notification center instance.
+        let nc = NotificationCenter.default
+        nc.addObserver(self,
+                       selector: #selector(routeChangeHandler),
+                       name: AVAudioSession.routeChangeNotification,
+                       object: nil)
+        print(logTag + "Added Observer for Route Change.")
+        configureAudioSession()
+    }
+    
+    /**
+     Handle notification for Audio route change and log them.
+     Configures AVAudioSession for videoChat each time the Audio route changes.
+     */
+    @objc private func routeChangeHandler(notification: Notification) {
+        let logTag = "[Route][Notif][Audio] "
+        var log = ""
+        guard let userInfo = notification.userInfo,
+              let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue)
+        else {
+            return
+        }
+        
+        print(logTag + String(describing: userInfo))
+        
+        // Log the audio route change reason.
+        var session = AVAudioSession.sharedInstance()
+        switch reason {
+        case .newDeviceAvailable:
+            print(logTag + "New device added.")
+
+        case .oldDeviceUnavailable:
+            print(logTag + "Old device removed.")
+
+        case .unknown:
+            print(logTag + "Unknown reason!")
+            
+        case .categoryChange:
+            var catOld = String(describing: cat?.rawValue ?? "None")
+            var catOptOld = String(describing: catOpt?.rawValue ?? 0)
+            log = ", Old:\(catOld)[\(catOptOld)]"
+
+            cat = session.category
+            catOpt = session.categoryOptions
+            
+            var catNow = String(describing: cat?.rawValue ?? "None")
+            var catOptNow = String(describing: catOpt?.rawValue ?? 0)
+            log = "Category Changed! Now:\(catNow)[\(catOptNow)]" + log
+            print(logTag + log)
+            
+        case .override:
+            print(logTag + "Route Overriden!")
+        case .wakeFromSleep:
+            print(logTag + "Device woke from sleep.")
+        case .noSuitableRouteForCategory:
+            var catNow = String(describing: cat?.rawValue ?? "None")
+            print(logTag + "There is no Suitable Route For Category \(catNow)!")
+            
+        case .routeConfigurationChange:
+            print(logTag + "Route configuration changed! Input and output ports has not changed, but some of their configuration has changed, for e.g. selected data source.")
+            
+        @unknown default:
+            print(logTag + "Default case for Reason! Unknown switch error!")
+        }
+        
+        outputAudioLog(userInfo: userInfo)
+        configureAudioSession()
+    }
+    
+    /**
+     Logs the current and previous audio output device.
+     */
+    private func outputAudioLog(userInfo: [AnyHashable: Any]) {
+        let logTag = "[Route][Output][Audio] "
+        var log = ""
+        // Get current
+        let session = AVAudioSession.sharedInstance()
+        let routeCur = session.currentRoute
+        let routeCurStr = outputAudioStr(route: routeCur)
+        log += "Cur: \(routeCurStr), Old: "
+        
+        // Get previous
+        guard let routePrev =
+            userInfo[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription
+        else {
+            log += "None!"
+            return
+        }
+        
+        let routePrevStr = outputAudioStr(route: routePrev)
+        log += "\(routePrevStr)"
+
+        print(logTag + log)
+    }
+    
+    /**
+     Get a String representation of the audio output port(s) in the given AVAudioSessionRouteDescription.
+     */
+    private func outputAudioStr(route routeDescription: AVAudioSessionRouteDescription) -> String {
+        var outputs = routeDescription.outputs
+        
+        var ports = ""
+        for port in outputs {
+            ports += "\(port.portType.rawValue),"
+        }
+        if ports != "" {
+            ports.removeLast()
+        }
+        return ports
     }
 }

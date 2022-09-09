@@ -74,7 +74,18 @@ class SubListener: MCSubscriberListener {
     }
     
     func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
-        let logTag = "[Sub][Ltn][Active][Source][Id] "
+        var logTag = "[Sub][Ltn][Active][Source][Id]"
+        for track in tracks {
+            let split = track.split(separator: "/")
+            let type = String(split[0])
+            let trackId = String(split[1])
+            
+            if type == "audio" {
+                print(logTag + "[Audio] TrackId: \(trackId)")
+            } else {
+                print(logTag + "[Video] TrackId: \(trackId)")
+            }
+        }
         print(logTag + "OK.")
     }
     
