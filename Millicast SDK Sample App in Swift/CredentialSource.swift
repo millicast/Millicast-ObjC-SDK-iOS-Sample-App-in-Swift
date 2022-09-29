@@ -2,13 +2,11 @@
 //  CredentialSource.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 17/8/21.
-//
 
 import Foundation
 
 /**
- Provides Millicast credentials.
+ Serve as a source of Millicast credentials.
  */
 protocol CredentialSource {
     var credsType: SourceType { get }

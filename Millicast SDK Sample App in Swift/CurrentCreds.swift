@@ -1,16 +1,14 @@
 //
 //  CurrentCreds.swift
-//  SwiftSa iOS
-//
-//  Created by Liang, Xiangrong on 23/7/22.
+//  Millicast SDK Sample App in Swift
 //
 
 import Foundation
 import MillicastSDK
 
 /**
- Serve as a source of Millicast Credentials.
- Read from currently applied values in MillicastManager.
+ Serves as the currently applied source of Millicast Credentials.
+ Reads from currently applied values in MillicastManager.
  Values will be empty Strings ("") if no values were applied in MillicastManager.
  */
 class CurrentCreds: CredentialSource {
@@ -18,10 +16,11 @@ class CurrentCreds: CredentialSource {
     
     var mcMan: MillicastManager
     var pubCreds: MCPublisherCredentials {
-        return mcMan.pubCreds
+        return mcMan.credsPub
     }
+
     var subCreds: MCSubscriberCredentials {
-        return mcMan.subCreds
+        return mcMan.credsSub
     }
     
     init(mcMan: MillicastManager) {

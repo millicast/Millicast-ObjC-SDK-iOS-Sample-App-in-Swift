@@ -2,12 +2,14 @@
 //  MillicastSA.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 3/8/21.
-//
 
 import AVFoundation
 import Foundation
 
+/**
+ * View Model of the Sample Application (SA) for the Millicast iOS SDK.
+ * It publishes data from the MillicastManager to the various views.
+ */
 class MillicastSA: ObservableObject {
     /**
      These values publishes to UI the currently applied creds.
@@ -190,7 +192,7 @@ class MillicastSA: ObservableObject {
      */
     func getPubVideoView() -> VideoView {
         print("[McSA][getPubVideoView]")
-        return mcManager.getPubVideoView()
+        return mcManager.getVideoViewPub()
     }
     
     /**
@@ -198,7 +200,7 @@ class MillicastSA: ObservableObject {
      */
     func getSubVideoView() -> VideoView {
         print("[McSA][getSubVideoView]")
-        return mcManager.getSubVideoView()
+        return mcManager.getVideoViewSub()
     }
     
     /*
@@ -220,12 +222,12 @@ class MillicastSA: ObservableObject {
      */
     func startPublish() {
         print("[McSA][startPublish]")
-        mcManager.pubConnect()
+        mcManager.connectPub()
     }
     
     func stopPublish() {
         print("[McSA][stopPublish]")
-        mcManager.pubStop()
+        mcManager.stopPub()
     }
     
     func stopPublishCapture() {
@@ -240,12 +242,12 @@ class MillicastSA: ObservableObject {
     
     func startSubscribe() {
         print("[McSA][startSubscribe]")
-        mcManager.subConnect()
+        mcManager.connectSub()
     }
     
     func stopSubscribe() {
         print("[McSA][stopSubscribe]")
-        mcManager.subStop()
+        mcManager.stopSub()
     }
     
     /*
@@ -262,9 +264,9 @@ class MillicastSA: ObservableObject {
         return SubscribeView(manager: mcManager)
     }
     
-    func getSettingsView() -> SettingsView {
+    func getSettingsView() -> SettingsMcView {
         print("[McSA][getSettingsView]")
-        return SettingsView(manager: mcManager)
+        return SettingsMcView(manager: mcManager)
     }
     
     /*

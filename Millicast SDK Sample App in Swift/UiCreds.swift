@@ -1,16 +1,14 @@
 //
 //  UiCreds.swift
-//  SwiftSa
-//
-//  Created by Liang, Xiangrong on 24/7/22.
+//  Millicast SDK Sample App in Swift
 //
 
 import Foundation
 import MillicastSDK
 
 /**
- Serve as a source of Millicast Credentials.
- Read from UI values in SettingsView.
+ Serves as the UI based source of Millicast Credentials.
+ Reads from UI values in SettingsView.
  Values will be empty Strings ("") if no values were applied in SettingsView.
  */
 class UiCreds: CredentialSource {

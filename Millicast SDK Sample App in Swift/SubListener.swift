@@ -2,14 +2,16 @@
 //  SubListener.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 16/8/21.
-//
 
 import AVFAudio
 import Foundation
 import MillicastSDK
 import UIKit
 
+/**
+ * Implementation of Subscriber's Listener.
+ * This handles events sent to the Subscriber being listened to.
+ */
 class SubListener: MCSubscriberListener {
     var mcMan: MillicastManager
     
@@ -34,7 +36,7 @@ class SubListener: MCSubscriberListener {
         let logTag = "[Sub][Ltn][Con] "
         mcMan.setSubState(to: .connected)
         print(logTag + "Connected to Millicast.")
-        mcMan.subStart()
+        mcMan.startSub()
         print(logTag + "Trying to subscribe to Millicast.")
     }
     
@@ -70,7 +72,7 @@ class SubListener: MCSubscriberListener {
         let logTag = "[Sub][Ltn][Track][Video] "
         let trackId = track.getId()
         print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
-        mcMan.subRenderVideo(track: track)
+        mcMan.renderVideoSub(track: track)
     }
     
     func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {

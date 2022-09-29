@@ -1,15 +1,13 @@
 //
 //  FileCreds.swift
-//  SwiftSa iOS
-//
-//  Created by Liang, Xiangrong on 22/7/22.
+//  Millicast SDK Sample App in Swift
 //
 
 import Foundation
 
 /**
- Serve as a source of Millicast Credentials.
- Read from Constants.swift.
+ Serves as a file based source of Millicast Credentials.
+ Reads from Constants.swift.
  */
 class FileCreds: CredentialSource {
     var credsType = SourceType.file

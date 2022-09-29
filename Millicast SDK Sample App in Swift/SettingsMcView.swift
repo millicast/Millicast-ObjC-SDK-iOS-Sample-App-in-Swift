@@ -2,13 +2,14 @@
 //  PublishView.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 30/7/21.
-//
 
 import AVFoundation
 import SwiftUI
 
-struct SettingsView: View, CredentialSource {
+/**
+ * UI for Millicast platform settings.
+ */
+struct SettingsMcView: View, CredentialSource {
     @State var accountId = ""
     @State var streamNamePub = ""
     @State var streamNameSub = ""
@@ -176,6 +177,6 @@ struct SettingsView: View, CredentialSource {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(manager: MillicastManager.getInstance())
+        SettingsMcView(manager: MillicastManager.getInstance())
     }
 }

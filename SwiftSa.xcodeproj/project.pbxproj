@@ -21,7 +21,7 @@
 		3FB0A29926CA60A200DA659A /* SubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0A29826CA60A200DA659A /* SubListener.swift */; };
 		3FB131C226B3E80400800DC5 /* PublishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C126B3E80400800DC5 /* PublishView.swift */; };
 		3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */; };
-		3FB131C626B3EB2E00800DC5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsView.swift */; };
+		3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */; };
 		3FB2293126C3DE9000982391 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB2293026C3DE9000982391 /* Constants.swift */; };
 		3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */; };
 		3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */; };
@@ -36,7 +36,7 @@
 		631DD25326F1E18E0023D24A /* MillicastSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAC2F9826B93635007588CA /* MillicastSA.swift */; };
 		631DD25426F1E18E0023D24A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB2293026C3DE9000982391 /* Constants.swift */; };
 		631DD25526F1E18E0023D24A /* PubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8DC0A126BA98E7009D51B1 /* PubListener.swift */; };
-		631DD25626F1E18E0023D24A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsView.swift */; };
+		631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */; };
 		631DD25726F1E18E0023D24A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD59AA226EF523D005AAB16 /* Utils.swift */; };
 		631DD25826F1E18E0023D24A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
 		631DD25926F1E18E0023D24A /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */; };
@@ -87,7 +87,7 @@
 		3FB0A29826CA60A200DA659A /* SubListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubListener.swift; sourceTree = "<group>"; };
 		3FB131C126B3E80400800DC5 /* PublishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishView.swift; sourceTree = "<group>"; };
 		3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeView.swift; sourceTree = "<group>"; };
-		3FB131C426B3EB2E00800DC5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsMcView.swift; sourceTree = "<group>"; };
 		3FB2293026C3DE9000982391 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialSource.swift; sourceTree = "<group>"; };
 		3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCreds.swift; sourceTree = "<group>"; };
@@ -182,7 +182,7 @@
 				3FAECDAD26BC39F5002F7C91 /* VideoView.swift */,
 				3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
-				3FB131C426B3EB2E00800DC5 /* SettingsView.swift */,
+				3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */,
 				3FB131C126B3E80400800DC5 /* PublishView.swift */,
 				3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */,
 				3FAC2F9826B93635007588CA /* MillicastSA.swift */,
@@ -401,7 +401,7 @@
 				3FAC2F9926B93635007588CA /* MillicastSA.swift in Sources */,
 				3FB2293126C3DE9000982391 /* Constants.swift in Sources */,
 				3F8DC0A226BA98E7009D51B1 /* PubListener.swift in Sources */,
-				3FB131C626B3EB2E00800DC5 /* SettingsView.swift in Sources */,
+				3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */,
 				3FD59AA326EF523D005AAB16 /* Utils.swift in Sources */,
 				3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */,
 				3FE90C1C26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */,
@@ -442,7 +442,7 @@
 				631DD25326F1E18E0023D24A /* MillicastSA.swift in Sources */,
 				631DD25426F1E18E0023D24A /* Constants.swift in Sources */,
 				631DD25526F1E18E0023D24A /* PubListener.swift in Sources */,
-				631DD25626F1E18E0023D24A /* SettingsView.swift in Sources */,
+				631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */,
 				631DD25726F1E18E0023D24A /* Utils.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				631DD25926F1E18E0023D24A /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */,

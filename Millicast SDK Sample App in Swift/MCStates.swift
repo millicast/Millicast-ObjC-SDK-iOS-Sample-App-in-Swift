@@ -2,17 +2,25 @@
 //  MCStates.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 26/8/21.
-//
 
 import Foundation
 
+/**
+ * Enums for Millicast related states that help ensure Millicast SDK APIs are called in valid ways.
+ */
+
+/**
+ * States for video capturing.
+ */
 enum CaptureState {
     case notCaptured
     case tryCapture
     case isCaptured
 }
 
+/**
+ * States for publishing.
+ */
 enum PublisherState {
     case disconnected
     case connecting
@@ -20,6 +28,9 @@ enum PublisherState {
     case publishing
 }
 
+/**
+ * States for subscribing.
+ */
 enum SubscriberState {
     case disconnected
     case connecting

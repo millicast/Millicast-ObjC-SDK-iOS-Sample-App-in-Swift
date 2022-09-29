@@ -2,12 +2,13 @@
 //  PublishView.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 30/7/21.
-//
 
 import AVKit
 import SwiftUI
 
+/**
+ * UI for publishing.
+ */
 struct PublishView: View {
     @ObservedObject var mcMan: MillicastManager
     
@@ -36,8 +37,8 @@ struct PublishView: View {
         VStack {
             mcSA.getPubVideoView()
             VStack {
-                Text("Stream: \(mcMan.pubCreds.streamName)")
-                Text("Token:\(mcMan.pubCreds.token)")
+                Text("Stream: \(mcMan.credsPub.streamName)")
+                Text("Token:\(mcMan.credsPub.token)")
                     .multilineTextAlignment(.center)
             }
             HStack {
@@ -216,7 +217,7 @@ struct PublishView: View {
     
     func getLabelAudio() -> String {
         if getEnableAudio() {
-            if mcMan.pubAudioEnabled {
+            if mcMan.audioEnabledPub {
                 return PublishView.labelAudioMute
             } else {
                 return PublishView.labelAudioUnmute
@@ -231,7 +232,7 @@ struct PublishView: View {
     
     func getLabelVideo() -> String {
         if getEnableVideo() {
-            if mcMan.pubVideoEnabled {
+            if mcMan.videoEnabledPub {
                 return PublishView.labelVideoMute
             } else {
                 return PublishView.labelVideoUnmute

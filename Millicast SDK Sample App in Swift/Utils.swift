@@ -2,11 +2,12 @@
 //  Utils.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 13/9/21.
-//
 
 import Foundation
 
+/**
+ * Utility methods used in the SA.
+ */
 class Utils {
     /**
      Get a String representing the specified CredentialSource.

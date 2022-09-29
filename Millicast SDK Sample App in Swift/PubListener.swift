@@ -2,12 +2,14 @@
 //  PubListener.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 4/8/21.
-//
 
 import Foundation
 import MillicastSDK
 
+/**
+ * Implementation of Publisher's Listener.
+ * This handles events sent to the Publisher being listened to.
+ */
 class PubListener: MCPublisherListener {
     var mcMan: MillicastManager
     
@@ -32,7 +34,7 @@ class PubListener: MCPublisherListener {
         mcMan.setPubState(to: .connected)
         let logTag = "[Pub][Ltn][Con] "
         print(logTag + "Connected to Millicast.")
-        mcMan.pubStart()
+        mcMan.startPub()
         print(logTag + "Trying to publish to Millicast.")
     }
     

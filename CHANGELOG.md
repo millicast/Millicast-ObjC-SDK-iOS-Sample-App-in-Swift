@@ -2,6 +2,20 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.4.0 (2022-10-??)
+Upgraded to use SDK 1.4.0, synced Android & iOS SA, and improved documentation.
+### Major changes
+- Upgraded to new SDK 1.4.0.
+- Greatly synchronised MillicastManager code between Android and iOS SAs, including:
+  - Variable, state and method names.
+  - Init, Publisher & Subscriber connect/disconnect, start/stop methods.
+  - Methods categorised into similar sections.
+- Every class now has a brief documentation on its purpose.
+### Fixed
+- N.A.
+### Known issues
+- As before.
+
 ## 1.3.1 (2022-09-07)
 Upgraded to use SDK 1.3.1, improved CredentialSource related code, fixed returning from background issue, and fixed applied Subscribe streamname error on reload.
 ### Major changes

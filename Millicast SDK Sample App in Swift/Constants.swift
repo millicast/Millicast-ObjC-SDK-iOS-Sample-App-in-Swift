@@ -7,6 +7,12 @@
 
 import Foundation
 
+/**
+ * Values for Millicast related constants.
+ * Fill in the desired values for these constants as required.
+ * These values can be edited in the Millicast Settings UI.
+ * The UI also provides a way to reload the file values here.
+ */
 struct Constants {
     
     // Set the following as default values if desired.

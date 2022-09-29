@@ -2,11 +2,12 @@
 //  PublishView.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 30/7/21.
-//
 
 import SwiftUI
 
+/**
+ * UI for subscribing.
+ */
 struct SubscribeView: View {
     @ObservedObject var mcMan: MillicastManager
     @State private var volume = 0.5
@@ -51,10 +52,10 @@ struct SubscribeView: View {
             #endif
             VStack {
                 HStack {
-                    Text("Account: \(mcMan.subCreds.accountId)")
-                    Text("Stream: \(mcMan.subCreds.streamName)")
+                    Text("Account: \(mcMan.credsSub.accountId)")
+                    Text("Stream: \(mcMan.credsSub.streamName)")
                 }
-                Text("Token:\(mcMan.subCreds.token)")
+                Text("Token:\(mcMan.credsSub.token)")
                     .multilineTextAlignment(.center)
             }
             HStack {
@@ -137,7 +138,7 @@ struct SubscribeView: View {
     
     func getLabelAudio() -> String {
         if getEnableAudio() {
-            if mcMan.subAudioEnabled {
+            if mcMan.audioEnabledSub {
                 return SubscribeView.labelAudioMute
             } else {
                 return SubscribeView.labelAudioUnmute
@@ -152,7 +153,7 @@ struct SubscribeView: View {
     
     func getLabelVideo() -> String {
         if getEnableVideo() {
-            if mcMan.subVideoEnabled {
+            if mcMan.videoEnabledSub {
                 return SubscribeView.labelVideoMute
             } else {
                 return SubscribeView.labelVideoUnmute

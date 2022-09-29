@@ -2,13 +2,20 @@
 //  MillicastManager.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 6/8/21.
-//
 
 import AVFoundation
 import Foundation
 import MillicastSDK
 
+/**
+ * The MillicastManager helps to manage the Millicast SDK and provides
+ * a simple set of public APIs for common operations so that UI layer can achieve goals
+ * such as publishing / subscribing without knowledge of SDK operations.
+ * It takes care of:
+ * - Important operations using the SDK, such as managing audio/video sources and renderers,
+ * Publisher/Subscriber credentials, options and preferred codecs.
+ * - Managing Millicast related states to ensure operations are valid before executing them.
+ */
 class MillicastManager: ObservableObject {
     @Published var alert = false
     var alertMsg = ""
@@ -19,23 +26,28 @@ class MillicastManager: ObservableObject {
 
     static var instance: MillicastManager!
 
+    // States: Millicast
     @Published var capState: CaptureState = .notCaptured
     @Published var pubState: PublisherState = .disconnected
     @Published var subState: SubscriberState = .disconnected
 
-    // Mute states of audio/video.
-    @Published var pubAudioEnabled = false
-    @Published var pubVideoEnabled = false
-    @Published var subAudioEnabled = false
-    @Published var subVideoEnabled = false
+    // States: Audio/Video mute.
+    @Published var audioEnabledPub = false
+    @Published var videoEnabledPub = false
+    @Published var audioEnabledSub = false
+    @Published var videoEnabledSub = false
     var ndiOutputVideo = false
     var ndiOutputAudio = false
 
+    // Millicast platform & credential values.
+    // Default values are assign from Constants,
+    // and updated with values in device memory, if these exist.
+    // These can also be modified from the UI at the Millicast Settings page.
     var fileCreds: FileCreds!
     var savedCreds: SavedCreds!
     var currentCreds: CurrentCreds!
-    var pubCreds: MCPublisherCredentials!
-    var subCreds: MCSubscriberCredentials!
+    var credsPub: MCPublisherCredentials!
+    var credsSub: MCSubscriberCredentials!
 
     var audioSourceList: [MCAudioSource]?
     let audioSourceIndexKey = "AUDIO_SOURCE_INDEX"
@@ -59,14 +71,12 @@ class MillicastManager: ObservableObject {
     let audioCodecIndexKey = "AUDIO_CODEC_INDEX"
     var audioCodecIndexDefault = 0
     @Published var audioCodecIndex: Int
-    var defaultAudioCodec = "OPUS"
     var audioCodec: String?
 
     var videoCodecList: [String]?
     let videoCodecIndexKey = "VIDEO_CODEC_INDEX"
     var videoCodecIndexDefault = 0
     @Published var videoCodecIndex: Int
-    var defaultVideoCodec = "H264"
     var videoCodec: String?
 
     /**
@@ -80,26 +90,32 @@ class MillicastManager: ObservableObject {
     @Published var audioPlaybackIndex: Int
     var audioPlayback: MCAudioPlayback?
 
-    var pubAudioTrack: MCAudioTrack?
-    var subAudioTrack: MCAudioTrack?
-    var pubVideoTrack: MCVideoTrack?
-    var subVideoTrack: MCVideoTrack?
-    var pubRenderer: MCIosVideoRenderer?
-    var subRenderer: MCIosVideoRenderer?
+    // SDK Media objects
+    var audioTrackPub: MCAudioTrack?
+    var audioTrackSub: MCAudioTrack?
+    var videoTrackPub: MCVideoTrack?
+    var videoTrackSub: MCVideoTrack?
 
+    // Display
+    var rendererPub: MCIosVideoRenderer?
+    var rendererSub: MCIosVideoRenderer?
+
+    // Publish/Subscribe
     var publisher: MCPublisher?
     var subscriber: MCSubscriber?
-
-    // Options objects
+    // Options objects for Publish/Subscribe
     var optionsPub: MCClientOptions
     var optionsSub: MCClientOptions
 
     // View objects
-    var pubListener: PubListener?
-    var subListener: SubListener?
+    var listenerPub: PubListener?
+    var listenerSub: SubListener?
 
     private init() {
-        // Set some preferences
+        queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
+        queueSub.setSpecific(key: queueLabelKey, value: queueSub.label)
+
+        // Get media indices from stored values if present, else from default values.
         audioSourceIndex = Utils.getValue(tag: "[McMan][init][Audio][Source][Index]", key: audioSourceIndexKey, defaultValue: audioSourceIndexDefault)
         audioPlaybackIndex = audioPlaybackIndexDefault
         videoSourceIndex = Utils.getValue(tag: "[McMan][init][Video][Source][Index]", key: videoSourceIndexKey, defaultValue: videoSourceIndexDefault)
@@ -107,22 +123,16 @@ class MillicastManager: ObservableObject {
         audioCodecIndex = Utils.getValue(tag: "[McMan][init][Audio][Codec][Index]", key: audioCodecIndexKey, defaultValue: audioCodecIndexDefault)
         videoCodecIndex = Utils.getValue(tag: "[McMan][init][Video][Codec][Index]", key: videoCodecIndexKey, defaultValue: videoCodecIndexDefault)
 
-        audioCodec = defaultAudioCodec
-        videoCodec = defaultVideoCodec
-
+        // Create Publisher and Subscriber Options
         optionsPub = MCClientOptions()
         optionsPub.stereo = true
-        optionsPub.videoCodec = defaultVideoCodec
-
         optionsSub = MCClientOptions()
 
-        queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
-        queueSub.setSpecific(key: queueLabelKey, value: queueSub.label)
-
+        // Set credentials from stored values if present, else from Constants file values.
         // Publishing credentials
-        pubCreds = MCPublisherCredentials()
+        credsPub = MCPublisherCredentials()
         // Subscribing credentials
-        subCreds = MCSubscriberCredentials()
+        credsSub = MCSubscriberCredentials()
 
         // Credential Sources
         fileCreds = FileCreds()
@@ -132,9 +142,11 @@ class MillicastManager: ObservableObject {
         // Otherwise set from Constants file.
         setCreds(using: savedCreds, save: false)
 
-        // Set indices
+        // Set media values using indices.
         setAudioSourceIndex(audioSourceIndex)
         setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
+
+        print("[McMan][Init] OK.")
     }
 
     // *********************************************************************************************
@@ -145,6 +157,9 @@ class MillicastManager: ObservableObject {
     // Millicast platform
     // *********************************************************************************************
 
+    /**
+     * Method to get the MillicastManager Singleton instance.
+     */
     static func getInstance()->MillicastManager {
         if instance == nil {
             instance = MillicastManager()
@@ -161,9 +176,9 @@ class MillicastManager: ObservableObject {
 
         // Publish creds - Only set if Publisher not currently connected
         if pubState == .disconnected {
-            pubCreds.streamName = creds.getStreamNamePub()
-            pubCreds.token = creds.getTokenPub()
-            pubCreds.apiUrl = creds.getApiUrlPub()
+            credsPub.streamName = creds.getStreamNamePub()
+            credsPub.token = creds.getTokenPub()
+            credsPub.apiUrl = creds.getApiUrlPub()
             if save {
                 // Set new values into UserDefaults
                 UserDefaults.standard.setValue(creds.getStreamNamePub(), forKey: savedCreds.streamNamePub)
@@ -176,10 +191,10 @@ class MillicastManager: ObservableObject {
 
         // Subscribe creds - Only set if Subscriber not currently connected
         if subState == .disconnected {
-            subCreds.accountId = creds.getAccountId()
-            subCreds.streamName = creds.getStreamNameSub()
-            subCreds.token = creds.getTokenSub()
-            subCreds.apiUrl = creds.getApiUrlSub()
+            credsSub.accountId = creds.getAccountId()
+            credsSub.streamName = creds.getStreamNameSub()
+            credsSub.token = creds.getTokenSub()
+            credsSub.apiUrl = creds.getApiUrlSub()
             if save {
                 // Set new values into UserDefaults
                 UserDefaults.standard.setValue(creds.getAccountId(), forKey: savedCreds.accountId)
@@ -193,7 +208,7 @@ class MillicastManager: ObservableObject {
     }
 
     // *********************************************************************************************
-    // Select/Switch videoSource, capability.
+    // Query/Select videoSource, capability.
     // *********************************************************************************************
 
     /**
@@ -319,7 +334,7 @@ class MillicastManager: ObservableObject {
      *
      * @param newValue    The new value to be set.
      * @param setCapIndex If true, will setCapabilityIndex with current value to update capability.
-     * @return nil if {@link #videoSourceIndex} could be set, else an error message might be returned.
+     * @return nil if videoSourceIndex could be set, else an error message might be returned.
      */
     public func setVideoSourceIndex(_ newValue: Int, setCapIndex: Bool)->String? {
         let logTag = "[Video][Source][Index][Set] "
@@ -417,7 +432,7 @@ class MillicastManager: ObservableObject {
      *
      * @param ascending If true, cycle in the direction of increasing index,
      * otherwise cycle in opposite direction.
-     * @return nil if {@link #audioSource} could be set, else an error message might be returned.
+     * @return nil if audioSource could be set, else an error message might be returned.
      */
     public func switchAudioSource(ascending: Bool)->String? {
         var logTag = "[Audio][Source][Switch] "
@@ -483,7 +498,7 @@ class MillicastManager: ObservableObject {
                 if publisher!.isPublishing() {
                     wasPublishing = true
                     print(logTag + "Is publishing now so will stop publishing first...")
-                    pubStop()
+                    stopPub()
                 }
             }
 
@@ -511,7 +526,7 @@ class MillicastManager: ObservableObject {
             // Publish again if was previously publishing.
             if wasPublishing {
                 print(logTag + "Was publishing so will try to connect and publish again...")
-                pubConnect()
+                connectPub()
             }
         }
     }
@@ -585,10 +600,10 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Set the received videoTrack into MillicastManager.
+     * Set the received videoTrack into MillicastManager.
      */
-    public func setSubVideoTrack(track: MCVideoTrack) {
-        subVideoTrack = track
+    public func setVideoTrackSub(track: MCVideoTrack) {
+        videoTrackSub = track
     }
 
     // *********************************************************************************************
@@ -610,15 +625,15 @@ class MillicastManager: ObservableObject {
         queue.async { [self] in
             if isPub {
                 if isAudio {
-                    set = enableTrack(track: pubAudioTrack, enable: !pubAudioEnabled)
+                    set = enableTrack(track: audioTrackPub, enable: !audioEnabledPub)
                 } else {
-                    set = enableTrack(track: pubVideoTrack, enable: !pubVideoEnabled)
+                    set = enableTrack(track: videoTrackPub, enable: !videoEnabledPub)
                 }
             } else {
                 if isAudio {
-                    set = enableTrack(track: subAudioTrack, enable: !subAudioEnabled)
+                    set = enableTrack(track: audioTrackSub, enable: !audioEnabledSub)
                 } else {
-                    set = enableTrack(track: subVideoTrack, enable: !subVideoEnabled)
+                    set = enableTrack(track: videoTrackSub, enable: !videoEnabledSub)
                 }
             }
             if set != nil {
@@ -628,7 +643,7 @@ class MillicastManager: ObservableObject {
     }
 
     // *********************************************************************************************
-    // Render
+    // Render - Audio
     // *********************************************************************************************
 
     public func getAudioPlaybackList()->[MCAudioPlayback]? {
@@ -670,33 +685,6 @@ class MillicastManager: ObservableObject {
         return true
     }
 
-    public func setRemoteAudioTrackVolume(volume: Double) {
-        if isSubscribing(), subAudioTrack != nil {
-            print("Setting audio track volume : \(volume)")
-            subAudioTrack?.setVolume(volume)
-        } else {
-            print("Can't set audio volume")
-        }
-    }
-
-    /**
-     Get the VideoView that renders the published video.
-     */
-    public func getPubVideoView()->VideoView {
-        let renderer = getPubRenderer()
-        let videoView = VideoView(renderer: renderer)
-        return videoView
-    }
-
-    /**
-     Get the VideoView that renders the subscribed video.
-     */
-    public func getSubVideoView()->VideoView {
-        let renderer = getSubRenderer()
-        let videoView = VideoView(renderer: renderer)
-        return videoView
-    }
-
     /**
      Process the subscribed audio.
      */
@@ -707,26 +695,57 @@ class MillicastManager: ObservableObject {
                 showAlert(logTag + "Failed! audioTrack does not exist.")
                 return
             }
-            subAudioTrack = track
+            audioTrackSub = track
             setMediaState(to: true, forPublisher: false, forAudio: true)
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe audio", task, queueSub)
     }
 
+    public func setRemoteAudioTrackVolume(volume: Double) {
+        if isSubscribing(), audioTrackSub != nil {
+            print("Setting audio track volume : \(volume)")
+            audioTrackSub?.setVolume(volume)
+        } else {
+            print("Can't set audio volume")
+        }
+    }
+
+    // *********************************************************************************************
+    // Render - Video
+    // *********************************************************************************************
+
+    /**
+     Get the VideoView that renders the published video.
+     */
+    public func getVideoViewPub()->VideoView {
+        let renderer = getRendererPub()
+        let videoView = VideoView(renderer: renderer)
+        return videoView
+    }
+
+    /**
+     Get the VideoView that renders the subscribed video.
+     */
+    public func getVideoViewSub()->VideoView {
+        let renderer = getRendererSub()
+        let videoView = VideoView(renderer: renderer)
+        return videoView
+    }
+
     /**
      Render the subscribed video.
      */
-    public func subRenderVideo(track: MCVideoTrack?) {
+    public func renderVideoSub(track: MCVideoTrack?) {
         let logTag = "[Sub][Render][Video] "
         let task = { [self] in
             guard let track = track else {
                 showAlert(logTag + "Failed! videoTrack does not exist.")
                 return
             }
-            subVideoTrack = track
+            videoTrackSub = track
             setMediaState(to: true, forPublisher: false, forAudio: false)
-            track.add(getSubRenderer())
+            track.add(getRendererSub())
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe video", task, queueSub)
@@ -855,16 +874,16 @@ class MillicastManager: ObservableObject {
     /**
      Connect to Millicast for publishing.
      Publishing credentials required.
-     Credentials specified in Constants.
+     Credentials are specified in Constants file, but can also be modified on Settings UI.
      This uses the publishing dispatchQueue.
      */
-    public func pubConnect() {
-        var logTag = "[Pub][Con] "
+    public func connectPub() {
+        let logTag = "[Pub][Con] "
         print(logTag + "Dispatching to queuePub...")
         let task = { [self] in
             // Create Publisher if not present
             guard let pub = getPublisher() else {
-                print(logTag + "Failed! Publisher is not available!")
+                print(logTag + "Failed! Publisher not available.")
                 return
             }
 
@@ -873,10 +892,18 @@ class MillicastManager: ObservableObject {
                 return
             }
 
-            pub.setOptions(optionsPub)
+            setPubState(to: .connecting)
 
-            // Connect publiser.
-            connectPublisher(pub: pub)
+            // Connect Publisher.
+            print(logTag + "Trying...")
+            let success = connectPubMc(pub: pub)
+
+            if success {
+                print(logTag + "OK.")
+            } else {
+                setPubState(to: .disconnected)
+                showAlert(logTag + "Failed! Connection requirements not fulfilled. Check inputs (e.g. credentials) and any Millicast error message.")
+            }
         }
         runOnQueue(logTag: logTag, log: "Connect Publisher", task, queuePub)
     }
@@ -884,16 +911,19 @@ class MillicastManager: ObservableObject {
     /**
      Connect to Millicast for subscribing.
      Subscribing credentials required.
-     Credentials specified in Constants.
+     Credentials are specified in Constants file, but can also be modified on Settings UI.
+     This uses the subscribing dispatchQueue.
      */
-    public func subConnect() {
+    public func connectSub() {
         let logTag = "[Sub][Con] "
+        print(logTag + "Dispatching to queueSub...")
         let task = { [self] in
             // Create Subscriber if not present
             guard let sub = getSubscriber() else {
                 print(logTag + "Failed as Subscriber is not available!")
                 return
             }
+
             if sub.isSubscribed() {
                 print(logTag + "Not subscribing as we're already subscribing!")
                 return
@@ -904,9 +934,18 @@ class MillicastManager: ObservableObject {
                 return
             }
 
-            // Connect to Millicast
-            print(logTag + "Trying to connect to Millicast...")
-            connectSubscriber(sub: sub)
+            setSubState(to: .connecting)
+
+            // Connect Subscriber.
+            print(logTag + "Trying...")
+            let success = connectSubMc(sub: sub)
+
+            if success {
+                print(logTag + "OK.")
+            } else {
+                setSubState(to: .disconnected)
+                showAlert(logTag + "Failed! Connection requirements not fulfilled. Check inputs (e.g. credentials) and any Millicast error message.")
+            }
         }
 
         runOnQueue(logTag: logTag, log: "Connect Subscriber", task, queueSub)
@@ -917,23 +956,27 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     * Add to Publisher the audio and video tracks that are already captured, and publish them.
+     * Publish audio and video tracks that are already captured.
      * Must first be connected to Millicast.
-     * Stream name specified in Constants.
+     * This uses the publishing dispatchQueue.
      */
-    public func pubStart() {
+    public func startPub() {
         queuePub.async { [self] in
             let logTag = "[Pub][Start] "
 
-            if isPublishing() {
-                print(logTag + "Not publishing as we're already publishing!")
+            guard let pub = getPublisher() else {
+                print(logTag + "Failed! Publisher is not available!")
                 return
             }
 
-            if !(publisher?.isConnected() ?? false) {
-                setPubState(to: .disconnected)
+            if !(pub.isConnected()) {
                 print(logTag + "Failed! Publisher not connected!" +
                     " pubState is \(pubState).")
+                return
+            }
+
+            if isPublishing() {
+                print(logTag + "Not publishing as we're already publishing!")
                 return
             }
 
@@ -942,17 +985,22 @@ class MillicastManager: ObservableObject {
                 return
             }
 
-            if let audio = pubAudioTrack {
-                publisher?.add(audio)
-            }
-            if let video = pubVideoTrack {
-                publisher?.add(video)
-            }
-
-            setCodecs()
-
-            publisher?.publish()
+            // Publish to Millicast
             print(logTag + "Trying...")
+            let success = startPubMc(pub: pub)
+
+            if success {
+                print(logTag + "Starting publish...")
+            } else {
+                setPubState(to: .disconnected)
+                showAlert(logTag + "Failed! Start publish requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            // Get Publisher stats about every 1 second.
+            pub.enableStats(true)
+            print(logTag + "Stats started.")
+            print(logTag + "OK.")
         }
     }
 
@@ -961,20 +1009,45 @@ class MillicastManager: ObservableObject {
      Does not affect capturing.
      This uses the publishing dispatchQueue.
      */
-    public func pubStop() {
+    public func stopPub() {
         let logTag = "[Pub][Stop] "
         print(logTag + "Dispatching to queuePub...")
         let task = { [self] in
             if !isPublishing() {
-                print(logTag + "Not stopping as we are not publishing!")
+                print(logTag + "Not doing as we're not publishing!")
                 return
             }
-            publisher?.unpublish()
-            setPubState(to: .connected)
-            print(logTag + " Stopped publish and going to disconnect...")
 
-            disconnectPublisher(pub: publisher!)
+            // Stop publishing
+            print(logTag + "Trying to stop publish...")
+            var success = stopPubMc(pub: publisher!)
+
+            if success {
+                print(logTag + "Publish stopped.")
+                setPubState(to: .connected)
+            } else {
+                showAlert(logTag + "Failed! Stop publishing requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            publisher!.enableStats(false)
+            print(logTag + "Stats stopped. Trying to disconnect...")
+
+            // Disconnect Publisher
+            success = disconnectPubMc(pub: publisher!)
+
+            if success {
+                print(logTag + "Disconnected.")
+                setPubState(to: .disconnected)
+            } else {
+                showAlert(logTag + "Failed! Disconnect requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            // Remove Publisher.
             publisher = nil
+            print(logTag + "Publisher removed.")
+            print(logTag + "OK.")
         }
         runOnQueue(logTag: logTag, log: "Stop Publish", task, queuePub)
     }
@@ -986,22 +1059,43 @@ class MillicastManager: ObservableObject {
     /**
      Subscribe to stream on Millicast.
      Must first be connected to Millicast.
-     Stream name specified in Constants.
+     This uses the subscribing dispatchQueue.
      */
-    public func subStart() {
+    public func startSub() {
         queueSub.async { [self] in
             let logTag = "[Sub][Start] "
 
-            if !(subscriber?.isConnected() ?? false) {
-                setSubState(to: .disconnected)
+            guard let sub = getSubscriber() else {
+                print(logTag + "Failed! Subscriber is not available!")
+                return
+            }
+
+            if !(sub.isConnected()) {
                 print(logTag + "Failed! Subscriber not connected!" +
                     " subState is \(subState).")
                 return
             }
 
+            if isSubscribing() {
+                print(logTag + "Not subscribing as we're already subscribing!")
+                return
+            }
+
             // Subscribe to Millicast
-            subscriber?.subscribe()
             print(logTag + "Trying...")
+            let success = startSubMc(sub: sub)
+
+            if success {
+                print(logTag + "Starting subscribe...")
+            } else {
+                showAlert(logTag + "Failed! Start subscribe requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            // Get Subscriber stats about every 1 second.
+            sub.enableStats(true)
+            print(logTag + "Stats started.")
+            print(logTag + "OK.")
         }
     }
 
@@ -1009,22 +1103,53 @@ class MillicastManager: ObservableObject {
      Stop subscribing and disconnect from Millicast.
      Does not affect capturing.
      */
-    public func subStop() {
-        queueSub.async { [self] in
-            let logTag = "[Sub][Stop] "
+    public func stopSub() {
+        let logTag = "[Sub][Stop] "
+        print(logTag + "Dispatching to queueSub...")
+        let task = { [self] in
 
             if !isSubscribing() {
-                print(logTag + "Not stopping as we are not publishing!")
+                print(logTag + "Not doing as we are not subscribing!")
                 return
             }
 
-            // Stop subscribe, rendering and processing of incoming media.
-            stopAudioVideoSubscribe()
-            print(logTag + " Stopped subscribe and going to disconnect...")
+            // Stop subscribing
+            print(logTag + "Trying to stop subscribe...")
+            var success = stopSubMc(sub: subscriber!)
 
-            // Disconnect Subscriber from Millicast.
-            disconnectSubscriber(sub: subscriber!)
+            if success {
+                print(logTag + "Subscribe stopped.")
+                setSubState(to: .connected)
+            } else {
+                showAlert(logTag + "Failed! Stop subscribing requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            subscriber!.enableStats(false)
+            print(logTag + "Stats stopped. Trying to disconnect...")
+
+            // Disconnect Subscriber
+            success = disconnectSubMc(sub: subscriber!)
+
+            if success {
+                print(logTag + "Disconnected.")
+                setSubState(to: .disconnected)
+            } else {
+                showAlert(logTag + "Failed! Disconnect requirements not fulfilled. Check current states and any Millicast error message.")
+                return
+            }
+
+            // Remove Subscriber.
+            subscriber = nil
+            print(logTag + "Subscriber removed.")
+
+            // Remove subscribed media
+            removeSubscribeMedia()
+            print(logTag + "Subscribe media removed.")
+
+            print(logTag + "OK.")
         }
+        runOnQueue(logTag: logTag, log: "Stop Subscribe", task, queueSub)
     }
 
     // *********************************************************************************************
@@ -1144,22 +1269,22 @@ class MillicastManager: ObservableObject {
 
             if forPublisher {
                 if forAudio {
-                    oldState = pubAudioEnabled
-                    pubAudioEnabled = newState
+                    oldState = audioEnabledPub
+                    audioEnabledPub = newState
                 } else {
                     media = "Video"
-                    oldState = pubVideoEnabled
-                    pubVideoEnabled = newState
+                    oldState = videoEnabledPub
+                    videoEnabledPub = newState
                 }
             } else {
                 client = "Subscriber"
                 if forAudio {
-                    oldState = subAudioEnabled
-                    subAudioEnabled = newState
+                    oldState = audioEnabledSub
+                    audioEnabledSub = newState
                 } else {
                     media = "Video"
-                    oldState = subVideoEnabled
-                    subVideoEnabled = newState
+                    oldState = videoEnabledSub
+                    videoEnabledSub = newState
                 }
             }
             print("[setMediaState] \(client) \(media) Now: \(newState)  Was: \(oldState)")
@@ -1175,7 +1300,7 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     // *********************************************************************************************
-    // Select/Switch videoSource, capability.
+    // Query/Select videoSource, capability.
     // *********************************************************************************************
 
     /**
@@ -1595,7 +1720,7 @@ class MillicastManager: ObservableObject {
 
             // Capture AudioTrack for publishing.
             let track = source.startCapture() as! MCAudioTrack
-            pubRenderAudio(track: track)
+            renderAudioPub(track: track)
             print(logTag + "OK")
         }
     }
@@ -1614,8 +1739,8 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK.")
 
         // Remove Track.
-        if pubAudioTrack != nil {
-            pubAudioTrack = nil
+        if audioTrackPub != nil {
+            audioTrackPub = nil
             print(logTag + "Track removed.")
         }
 
@@ -1641,19 +1766,6 @@ class MillicastManager: ObservableObject {
         print(logTag + "Setting new...")
         setAudioSourceIndex(audioSourceIndex)
         print(logTag + "OK.")
-    }
-
-    /**
-     Check if audio is captured.
-     */
-    private func isAudioCaptured()->Bool {
-        let logTag = "[Audio][Capture][?] "
-        if audioSource == nil || !audioSource!.isCapturing() {
-            print(logTag + "No.")
-            return false
-        }
-        print(logTag + "Yes.")
-        return true
     }
 
     /**
@@ -1697,7 +1809,7 @@ class MillicastManager: ObservableObject {
             showAlert(logTag + "VS.isCapturing FALSE!!! Despite having valid videoSource!")
         }
 
-        pubRenderVideo(track: track)
+        renderVideoPub(track: track)
     }
 
     /**
@@ -1714,12 +1826,12 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK.")
 
         // Remove Renderer from Track and remove Track.
-        if pubVideoTrack != nil {
-            if pubRenderer != nil {
-                pubVideoTrack!.remove(pubRenderer)
+        if videoTrackPub != nil {
+            if rendererPub != nil {
+                videoTrackPub!.remove(rendererPub)
                 print(logTag + "Publisher renderer removed from track.")
             }
-            pubVideoTrack = nil
+            videoTrackPub = nil
             print(logTag + "Track removed.")
         }
         setCapState(to: .notCaptured)
@@ -1748,11 +1860,24 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Check if video is captured.
+     * Check if either audio or video is captured.
      */
-    private func isVideoCaptured()->Bool {
-        let logTag = "[Video][Capture][?] "
-        if videoSource == nil || !videoSource!.isCapturing() {
+    private func isAudioVideoCaptured()->Bool {
+        let logTag = "[Capture][Audio][Video][?] "
+        if !isAudioCaptured(), !isVideoCaptured() {
+            print(logTag + " No.")
+            return false
+        }
+        print(logTag + "Yes.")
+        return true
+    }
+
+    /**
+     Check if audio is captured.
+     */
+    private func isAudioCaptured()->Bool {
+        let logTag = "[Capture][Audio][?] "
+        if audioSource == nil || !audioSource!.isCapturing() {
             print(logTag + "No.")
             return false
         }
@@ -1761,12 +1886,12 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     * Check if either audio or video is captured.
+     Check if video is captured.
      */
-    private func isAudioVideoCaptured()->Bool {
-        let logTag = "[Audio][Video][Capture][?] "
-        if !isAudioCaptured(), !isVideoCaptured() {
-            print(logTag + " No.")
+    private func isVideoCaptured()->Bool {
+        let logTag = "[Capture][Video][?] "
+        if videoSource == nil || !videoSource!.isCapturing() {
+            print(logTag + "No.")
             return false
         }
         print(logTag + "Yes.")
@@ -1792,7 +1917,7 @@ class MillicastManager: ObservableObject {
     }
 
     // *********************************************************************************************
-    // Render
+    // Render - Audio
     // *********************************************************************************************
 
     /**
@@ -1846,52 +1971,56 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Get the renderer for the Publisher.
-     Create one if none currently exists.
-     */
-    private func getPubRenderer()->MCIosVideoRenderer {
-        let logTag = "[Video][Render][Er][Pub] "
-        if pubRenderer == nil {
-            print(logTag + "Creating...")
-            pubRenderer = MCIosVideoRenderer()
-        } else {
-            print(logTag + "Using existing.")
-        }
-        print(logTag + "OK")
-        return pubRenderer!
-    }
-
-    /**
      Process the local audio.
      */
-    private func pubRenderAudio(track: MCAudioTrack?) {
+    private func renderAudioPub(track: MCAudioTrack?) {
         let logTag = "[Pub][Render][Audio] "
         let task = { [self] in
             guard let track = track else {
                 showAlert(logTag + "Failed! audioTrack does not exist.")
                 return
             }
-            pubAudioTrack = track
+            audioTrackPub = track
             setMediaState(to: true, forPublisher: true, forAudio: true)
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render local audio", task, queuePub)
     }
 
+    // *********************************************************************************************
+    // Render - Video
+    // *********************************************************************************************
+
+    /**
+     Get the renderer for the Publisher.
+     Create one if none currently exists.
+     */
+    private func getRendererPub()->MCIosVideoRenderer {
+        let logTag = "[Video][Render][Er][Pub] "
+        if rendererPub == nil {
+            print(logTag + "Creating...")
+            rendererPub = MCIosVideoRenderer()
+        } else {
+            print(logTag + "Using existing.")
+        }
+        print(logTag + "OK")
+        return rendererPub!
+    }
+
     /**
      Render the local video.
      */
-    private func pubRenderVideo(track: MCVideoTrack?) {
+    private func renderVideoPub(track: MCVideoTrack?) {
         let logTag = "[Pub][Render][Video] "
         let task = { [self] in
             guard let track = track else {
                 showAlert(logTag + "Failed! videoTrack does not exist.")
                 return
             }
-            pubVideoTrack = track
+            videoTrackPub = track
             setCapState(to: .isCaptured, tag: logTag)
             setMediaState(to: true, forPublisher: true, forAudio: false)
-            track.add(getPubRenderer())
+            track.add(getRendererPub())
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render captured video", task, queuePub)
@@ -1901,67 +2030,42 @@ class MillicastManager: ObservableObject {
      Get the renderer for the Subscriber.
      Create one if none currently exists.
      */
-    private func getSubRenderer()->MCIosVideoRenderer {
+    private func getRendererSub()->MCIosVideoRenderer {
         let logTag = "[Video][Render][Er][Sub] "
-        if subRenderer == nil {
+        if rendererSub == nil {
             print(logTag + "Creating...")
-            subRenderer = MCIosVideoRenderer()
+            rendererSub = MCIosVideoRenderer()
         } else {
             print(logTag + "Using existing.")
         }
         print(logTag + "OK")
-        return subRenderer!
+        return rendererSub!
     }
 
     /**
-     Stop subscribing and rendering audio and video.
+     Stop rendering, release and remove subscribe audio and video objects and reset their states to default values.
      */
-    private func stopAudioVideoSubscribe() {
-        let logTag = "[Sub][Audio][Video][Remove] "
-        subscriber?.unsubscribe()
-        setSubState(to: .connected)
-        print(logTag + "Disconnected. Going to remove media...")
-        // Remove Renderer from Track and remove Track.
-        removeAudioSubscribed()
-        removeVideoSubscribed()
-    }
+    private func removeSubscribeMedia() {
+        let logTag = "[Sub][Audio][Video][X] "
 
-    /**
-     * Set the subscribed audioTrack to nil.
-     */
-    private func removeAudioSubscribed() {
-        let logTag = "[Sub][Audio][Remove] "
+        // Remove audio.
         setMediaState(to: false, forPublisher: false, forAudio: true)
-        guard let track = subAudioTrack else {
-            print(logTag + "OK. Track did not exist.")
-            return
-        }
-        subAudioTrack = nil
-        print(logTag + "OK. Track removed.")
-    }
+        audioTrackSub = nil
+        print(logTag + "Audio removed.")
 
-    /**
-     * Stop rendering the subscribed video.
-     * Set the subscribed videoTrack to nil.
-     */
-    private func removeVideoSubscribed() {
-        let logTag = "[Sub][Video][Remove] "
+        // Remove video
         setMediaState(to: false, forPublisher: false, forAudio: false)
-        guard let track = subVideoTrack else {
-            print(logTag + "OK. Track did not exist.")
-            return
+        if rendererSub != nil {
+            if let track = videoTrackSub {
+                track.remove(rendererSub)
+                print(logTag + "Renderer removed from track.")
+            }
+        } else {
+            print(logTag + "Not removing renderer as it did not exist.")
         }
-        guard let renderer = subRenderer else {
-            print(logTag + "OK. Not removing renderer as it did not exist.")
-            subVideoTrack = nil
-            return
-        }
-
-        track.remove(renderer)
-        print(logTag + "Renderer removed from track.")
-
-        subVideoTrack = nil
-        print(logTag + "OK. Track removed.")
+        videoTrackSub = nil
+        print(logTag + "Video removed.")
+        print(logTag + "OK.")
     }
 
     // *********************************************************************************************
@@ -1970,8 +2074,7 @@ class MillicastManager: ObservableObject {
 
     /**
      * Set the current audio/videoCodec at the audio/videoCodecIndex of the current audio/videoCodecList,
-     * and in the publisher as preferred codecs if available and not currently publishing.
-     * The current videoCodec will NOT be set if the Publisher is publishing.
+     * and in the Publisher Options as preferred codecs if available and NOT currently publishing.
      */
     private func setCodecs() {
         let logTag = "[Codec][Set] "
@@ -2033,23 +2136,20 @@ class MillicastManager: ObservableObject {
                 if none != ac {
                     audioCodec = ac
                     optionsPub.audioCodec = ac
-                    log += "Set Audio:\(audioCodec) on Publisher. "
+                    log += "Set preferred Audio:\(audioCodec) on Publisher. "
                 } else {
                     log += "Audio NOT set on Publisher."
                 }
                 if none != vc {
                     videoCodec = vc
                     optionsPub.videoCodec = vc
-                    log += "Set Video:\(videoCodec) on Publisher."
+                    log += "Set preferred Video:\(videoCodec) on Publisher."
                 } else {
                     log += "Video NOT set on Publisher."
                 }
 
                 // Make adjustment to videoCodec if needed:
                 adjustCodec()
-
-                // Set Options into Publisher
-                publisher?.setOptions(optionsPub)
 
             } else {
                 log += "NOT set, as publishing is ongoing: "
@@ -2095,74 +2195,89 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     Connect to Millicast for publishing. Publishing credentials required.
+     Millicast methods to connect to Millicast for publishing.
+     Publishing credentials required.
+     If connecting requirements are met, will return true and trigger SDK to start connecting to Millicast. Otherwise, will return false.
+     Actual connection success will be reported by Publisher.Listener.onConnected().
      */
-    private func connectPublisher(pub: MCPublisher) {
+    private func connectPubMc(pub: MCPublisher)->Bool {
         let logTag = "[Pub][Con][Mc] "
-        if pub.isConnected() {
-            print(logTag + "Not doing as we're already connected!")
-            return
-        }
-        setPubState(to: .connecting)
-        pub.setCredentials(pubCreds)
 
-        if pub.connect() {
-            print(logTag + "Connecting to Millicast...")
+        // Set Credentials
+        pub.setCredentials(credsPub)
+        print(logTag + "Set Credentials.")
+
+        // Connect Publisher to Millicast.
+        let success = pub.connect()
+
+        if success {
+            print(logTag + "OK. Connecting to Millicast.")
         } else {
-            setPubState(to: .disconnected)
-            showAlert(logTag + "Failed! Could not connect to Millicast! Please check your credentials.")
+            print(logTag + "Failed!")
         }
+
+        return success
     }
 
     /**
-     Disconnect Publisher from Millicast.
+     Millicast methods to disconnect Publisher from Millicast.
      */
-    private func disconnectPublisher(pub: MCPublisher) {
-        let logTag = "[Pub][Con][X] "
-        if !pub.isConnected() {
-            print(logTag + "Not doing as we're not connected!")
-            return
+    private func disconnectPubMc(pub: MCPublisher)->Bool {
+        let logTag = "[Pub][Con][X][Mc] "
+
+        // Disconnect from Millicast.
+        let success = pub.disconnect()
+
+        if success {
+            print(logTag + "OK. Disconnecting from Millicast.")
+        } else {
+            print(logTag + "Failed!")
         }
-        pub.disconnect()
-        setPubState(to: .disconnected)
-        // Reset videoCodec to default.
-        optionsPub.videoCodec = defaultVideoCodec
-        print(logTag + "OK.")
+
+        return success
     }
 
     /**
-     Connect to Millicast for subscribing. Subscribing credentials required.
+     Millicast methods to connect to Millicast for subscribing.
+     Subscribing credentials required.
+     If connecting requirements are met, will return true and trigger SDK to start connecting to Millicast. Otherwise, will return false.
+     Actual connection success will be reported by Subscriber.Listener.onConnected().
      */
-    private func connectSubscriber(sub: MCSubscriber) {
+    private func connectSubMc(sub: MCSubscriber)->Bool {
         let logTag = "[Sub][Con][Mc] "
-        if sub.isConnected() {
-            print(logTag + "Not doing as we're already connected!")
-            return
-        }
-        setSubState(to: .connecting)
-        print(logTag + "accountId:\(subCreds.accountId), streamName:\(subCreds.streamName), apiUrl:\(subCreds.apiUrl)")
-        sub.setCredentials(subCreds)
 
-        if sub.connect() {
-            print(logTag + "Connecting to Millicast...")
+        // Set Credentials
+        sub.setCredentials(credsSub)
+        print(logTag + "Set Credentials.")
+
+        // Connect Subscriber to Millicast.
+        let success = sub.connect()
+
+        if success {
+            print(logTag + "OK. Connecting to Millicast.")
         } else {
-            setSubState(to: .disconnected)
-            showAlert(logTag + "Failed! Could not connect to Millicast! Please check your credentials.")
+            print(logTag + "Failed!")
         }
+
+        return success
     }
 
     /**
-     Disconnect Subscriber from Millicast.
+     Millicast methods to disconnect Subscriber from Millicast.
      */
-    private func disconnectSubscriber(sub: MCSubscriber) {
-        let logTag = "[Sub][Con][X] "
-        if !sub.isConnected() {
-            print(logTag + "Not doing as we're not connected!")
-            return
+    private func disconnectSubMc(sub: MCSubscriber)->Bool {
+        let logTag = "[Sub][Con][X][Mc] "
+
+        // Disconnect from Millicast.
+        let success = sub.disconnect()
+
+        if success {
+            print(logTag + "OK. Disconnecting from Millicast.")
+        } else {
+            print(logTag + "Failed!")
         }
-        sub.disconnect()
-        setSubState(to: .disconnected)
-        print(logTag + "OK.")
+
+        return success
     }
 
     // *********************************************************************************************
@@ -2170,17 +2285,17 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     Get the PubListener.
+     Get the Publisher's listener.
      If none exist, create and return a new one.
      */
     private func getPubListener()->PubListener? {
         let logTag = "[Pub][Ltn] "
 
-        guard let ltn = pubListener else {
+        guard let ltn = listenerPub else {
             print(logTag + "Trying to create one...")
-            pubListener = PubListener()
+            listenerPub = PubListener()
             print(logTag + "Created and returning a new one.")
-            return pubListener
+            return listenerPub
         }
 
         print(logTag + "Returning existing one.")
@@ -2220,6 +2335,65 @@ class MillicastManager: ObservableObject {
     }
 
     /**
+     * Millicast methods to start publishing.
+     * Audio and video tracks that are already captured will be added to Publisher.
+     * Publisher's MCClientOptions (including preferred codecs) will be set into Publisher.
+     * If publishing requirements are met, will return true and trigger SDK to start publish. Otherwise, will return false.
+     * Actual publishing success will be reported by MCPublisherListener.onPublishing().
+     */
+    private func startPubMc(pub: MCPublisher)->Bool {
+        let logTag = "[Pub][Start][Mc] "
+
+        if let audio = audioTrackPub {
+            pub.add(audio)
+            print(logTag + "Audio track added.")
+        } else {
+            print(logTag + "Audio track NOT added as it does not exist.")
+        }
+        if let video = videoTrackPub {
+            pub.add(video)
+            print(logTag + "Video track added.")
+        } else {
+            print(logTag + "Video track NOT added as it does not exist.")
+        }
+
+        // Set Publisher Options
+        setCodecs()
+        print(logTag + "Preferred codecs set in Option.")
+        pub.setOptions(optionsPub)
+        print(logTag + "Options set.")
+
+        // Publish to Millicast.
+        let success = pub.publish()
+
+        if success {
+            print(logTag + "OK. Starting publish to Millicast.")
+        } else {
+            print(logTag + "Failed!")
+        }
+
+        return success
+    }
+
+    /**
+     Millicast methods to stop publishing.
+     */
+    private func stopPubMc(pub: MCPublisher)->Bool {
+        let logTag = "[Pub][Stop][Mc] "
+
+        // Stop publishing to Millicast.
+        let success = pub.unpublish()
+
+        if success {
+            print(logTag + "OK. Stopped publishing to Millicast.")
+        } else {
+            print(logTag + "Failed!")
+        }
+
+        return success
+    }
+
+    /**
      * Check if we are currently publishing.
      */
     private func isPublishing()->Bool {
@@ -2237,17 +2411,17 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     Get the SubListener.
-     If none exist, create and return a new one.
+     * Get the Subscriber's listener.
+     * If none exist, create and return a new one.
      */
     private func getSubListener()->SubListener? {
         let logTag = "[Sub][Ltn] "
 
-        guard let ltn = subListener else {
+        guard let ltn = listenerSub else {
             print(logTag + "Trying to create one...")
-            subListener = SubListener()
+            listenerSub = SubListener()
             print(logTag + "Created and returning a new one.")
-            return subListener
+            return listenerSub
         }
 
         print(logTag + "Returning existing one.")
@@ -2256,7 +2430,7 @@ class MillicastManager: ObservableObject {
 
     /**
      * Get the Subscriber.
-     * If none exist, create one if a Subscribe View had been set.
+     * If none exist, create  and return a new one.
      */
     private func getSubscriber() ->MCSubscriber? {
         let logTag = "[Sub] "
@@ -2281,6 +2455,49 @@ class MillicastManager: ObservableObject {
 
         print(logTag + "Returning existing one.")
         return sub
+    }
+
+    /**
+     * Millicast methods to start subscribing.
+     * Subscriber's MCClientOptions will be set into Subscriber.
+     * If subscribing requirements are met, will return true and trigger SDK to start subscribe. Otherwise, will return false.
+     * Actual subscribing success will be reported by MCSubscriberListener.onSubscribed().
+     */
+    private func startSubMc(sub: MCSubscriber)->Bool {
+        let logTag = "[Sub][Start][Mc] "
+
+        // Set Subscriber Options
+        sub.setOptions(optionsSub)
+        print(logTag + "Options set.")
+
+        // Subscribe to Millicast.
+        let success = sub.subscribe()
+
+        if success {
+            print(logTag + "OK. Starting subscribe to Millicast.")
+        } else {
+            print(logTag + "Failed!")
+        }
+
+        return success
+    }
+
+    /**
+     Millicast methods to stop subscribing.
+     */
+    private func stopSubMc(sub: MCSubscriber)->Bool {
+        let logTag = "[Sub][Stop][Mc] "
+
+        // Stop subscribing to Millicast.
+        let success = sub.unsubscribe()
+
+        if success {
+            print(logTag + "OK. Stopped subscribing to Millicast.")
+        } else {
+            print(logTag + "Failed!")
+        }
+
+        return success
     }
 
     /**

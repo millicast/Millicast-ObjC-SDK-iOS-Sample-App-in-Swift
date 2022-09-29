@@ -2,15 +2,15 @@
 //  ContentView.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 29/7/21.
-//
 
 import SwiftUI
 
+/**
+ * Menu of the pages available in this SA.
+ */
 struct ContentView: View {
-    
     var mcSA = MillicastSA.getInstance()
-    
+
     var body: some View {
         NavigationView {
             VStack {

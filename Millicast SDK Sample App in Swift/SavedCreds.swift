@@ -2,15 +2,13 @@
 //  CredsManager.swift
 //  Millicast SDK Sample App in Swift
 //
-//  Created by CoSMo Software on 17/8/21.
-//
 
 import Foundation
 
 /**
- Serve as a source of Millicast Credentials.
- Read from UserDefaults, if present.
- Otherwise, read from Constants file.
+ Serves as a device memory based source of Millicast Credentials.
+ Reads from UserDefaults, if present.
+ Otherwise, reads from Constants file.
  */
 class SavedCreds: CredentialSource {
     var credsType = SourceType.saved
