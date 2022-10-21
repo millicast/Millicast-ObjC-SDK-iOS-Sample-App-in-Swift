@@ -11,7 +11,8 @@
     },
     {
       "scale" : "2x",
-      "idiom" : "tv"
+      "idiom" : "tv",
+      "filename" : "Front@2x.png"
     }
   ]
 }
