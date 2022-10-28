@@ -3,13 +3,15 @@ This file documents the release notes for each version of the Millicast Objectiv
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
 ## 1.4.0 (2022-10-??)
-Upgraded to use SDK 1.4.0, synced Android & iOS SA, and improved documentation.
+Upgraded to use SDK 1.4.0 (no bitcode), synced Android & iOS SA, added stats logging and improved documentation.
 ### Major changes
-- Upgraded to new SDK 1.4.0.
+- Upgraded to new SDK 1.4.0 (no bitcode).
+  - Updated bitcode settings to be **not** enabled for all targets.
 - Greatly synchronised MillicastManager code between Android and iOS SAs, including:
   - Variable, state and method names.
   - Init, Publisher & Subscriber connect/disconnect, start/stop methods.
   - Methods categorised into similar sections.
+- Added examples for reading and logging stats reports for both publishing and subscribing.
 - Every class now has a brief documentation on its purpose.
 ### Fixed
 - N.A.

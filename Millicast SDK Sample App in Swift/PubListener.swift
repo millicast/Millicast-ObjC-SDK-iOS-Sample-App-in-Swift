@@ -51,7 +51,8 @@ class PubListener: MCPublisherListener {
     
     func onStatsReport(_ report: MCStatsReport!) {
         let logTag = "[Pub][Ltn][Stat] "
-        print(logTag + "\(report).")
+        let type = MCOutboundRtpStreamStats.get_type()
+        mcMan.printStats(forType: type, report: report, logTag: logTag)
     }
     
     func onViewerCount(_ count: Int32) {

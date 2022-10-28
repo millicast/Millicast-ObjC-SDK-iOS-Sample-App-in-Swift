@@ -126,7 +126,9 @@ class MillicastManager: ObservableObject {
         // Create Publisher and Subscriber Options
         optionsPub = MCClientOptions()
         optionsPub.stereo = true
+        optionsPub.statsDelayMs = 1000
         optionsSub = MCClientOptions()
+        optionsSub.statsDelayMs = 1000
 
         // Set credentials from stored values if present, else from Constants file values.
         // Publishing credentials
@@ -1228,6 +1230,83 @@ class MillicastManager: ObservableObject {
         log += "Selected: " + name
         print(log)
         return name
+    }
+
+    /**
+     * Log stats of the given MCStatsType from the input MCStatsReport.
+     * If the given MCStatsType does not exist, a nil statement is logged.
+     */
+    public func printStats(forType statsType: MCStatsType, report: MCStatsReport?, logTag: String) {
+        var log = logTag
+        switch statsType {
+            case OUTBOUND_RTP:
+                log += getStatsStrOutboundRtp(report: report)
+            case INBOUND_RTP:
+                log += getStatsStrInboundRtp(report: report)
+
+            default:
+                log += "StatsType \(statsType) is not logged by this method."
+        }
+        print(log)
+    }
+
+    /**
+     * Get a string representation of INBOUND_RTP stats from the input MCStatsReport.
+     * If the given MCStatsType does not exist, a nil representation is returned.
+     */
+    public func getStatsStrInboundRtp(report: MCStatsReport?)->String {
+        let type = MCInboundRtpStreamStats.get_type()
+        var str = ""
+        if let statsReport = report?.getStatsOf(type) {
+            for stats in statsReport {
+                let s = stats as! MCInboundRtpStreamStats
+                let sid = s.sid ?? "Nil"
+                let decoder_impl = s.decoder_implementation ?? "Nil"
+                str += "[ Sid:\(sid) Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
+                str += ", Audio level:\(s.audio_level) total energy:\(s.total_audio_energy)"
+                str += ", Frames recv:\(s.frames_received)"
+                str += ", Frames decoded:\(s.frames_decoded)"
+                str += ", Frames bit depth:\(s.frame_bit_depth)"
+                str += ", Nack count:\(s.nack_count)"
+                str += ", Decoder impl:\(decoder_impl)"
+                str += ", Bytes recv:\(s.bytes_received)"
+                str += ", Total sample duration:\(s.total_samples_duration) ] "
+            }
+        }
+        if str == "" {
+            str += "NONE"
+        }
+        str = "\(type): " + str
+        return str
+    }
+
+    /**
+     * Get a string representation of OUTBOUND_RTP stats from the input MCStatsReport.
+     * If the given MCStatsType does not exist, a nil representation is returned.
+     */
+    public func getStatsStrOutboundRtp(report: MCStatsReport?)->String {
+        let type = MCOutboundRtpStreamStats.get_type()
+        var str = ""
+        if let statsReport = report?.getStatsOf(type) {
+            for stats in statsReport {
+                let s = stats as! MCOutboundRtpStreamStats
+                let sid = s.sid ?? "Nil"
+                let senderId = s.sender_id ?? "Nil"
+                let remoteId = s.remote_id ?? "Nil"
+                let encoder_impl = s.encoder_implementation ?? "Nil"
+                str += "[ Sid:\(sid) SendId:\(senderId) RemoteId:x\(remoteId)"
+                str += ", Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
+                str += ", Frames sent:\(s.frames_sent)"
+                str += ", Frames encoded:\(s.frames_encoded)"
+                str += ", Nack count:\(s.nack_count)"
+                str += ", Encoder impl:\(encoder_impl) ] "
+            }
+        }
+        if str == "" {
+            str += "NONE"
+        }
+        str = "\(type): " + str
+        return str
     }
 
     // *********************************************************************************************
