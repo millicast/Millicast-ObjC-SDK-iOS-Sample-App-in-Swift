@@ -2,6 +2,15 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.4.2 (2022-11-11)
+Removed CocoaPods specific build settings.
+### Major changes
+- N.A.
+### Fixed
+- Removed CocoaPods specific build settings that obstructed the use of other dependency managers, e.g. SPM.
+### Known issues
+- As before.
+
 ## 1.4.1 (2022-11-07)
 Upgraded to use SDK 1.4.1 (no bitcode), synced Android & iOS SA, added stats logging and improved documentation.
 ### Major changes
