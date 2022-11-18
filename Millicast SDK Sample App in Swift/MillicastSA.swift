@@ -187,22 +187,7 @@ class MillicastSA: ObservableObject {
     /*
      Render
      */
-    /**
-     Get the VideoView that renders the published video.
-     */
-    func getPubVideoView() -> VideoView {
-        print("[McSA][getPubVideoView]")
-        return mcManager.getVideoViewPub()
-    }
-    
-    /**
-     Get the VideoView that renders the subscribed video.
-     */
-    func getSubVideoView() -> VideoView {
-        print("[McSA][getSubVideoView]")
-        return mcManager.getVideoViewSub()
-    }
-    
+
     /*
      Mute / unmute audio / video.
      */

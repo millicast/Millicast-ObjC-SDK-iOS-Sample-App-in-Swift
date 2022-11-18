@@ -32,7 +32,7 @@ struct SubscribeView: View {
     var body: some View {
         VStack {
             Spacer()
-            mcSA.getSubVideoView()
+            mcMan.getRendererSub()
             Spacer()
             
             #if os(iOS)

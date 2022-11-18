@@ -97,8 +97,10 @@ class MillicastManager: ObservableObject {
     var videoTrackSub: MCVideoTrack?
 
     // Display
-    var rendererPub: MCIosVideoRenderer?
-    var rendererSub: MCIosVideoRenderer?
+    var rendererPub: MCSwiftVideoRenderer?
+    var rendererSub: MCSwiftVideoRenderer?
+    // Whether Publisher's local video view is mirrored.
+    @Published var mirroredPub = false
 
     // Publish/Subscribe
     var publisher: MCPublisher?
@@ -718,25 +720,39 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     Get the VideoView that renders the published video.
+     * Gets the VideoRenderer for the Publisher.
+     * Creates one if none currently exists.
      */
-    public func getVideoViewPub()->VideoView {
-        let renderer = getRendererPub()
-        let videoView = VideoView(renderer: renderer)
-        return videoView
+    public func getRendererPub()->MCSwiftVideoRenderer {
+        let logTag = "[Video][Render][er][Pub] "
+        if rendererPub == nil {
+            print(logTag + "Creating...")
+            rendererPub = MCSwiftVideoRenderer(mcMan: self)
+        } else {
+            print(logTag + "Using existing.")
+        }
+        print(logTag + "OK")
+        return rendererPub!
     }
 
     /**
-     Get the VideoView that renders the subscribed video.
+     * Gets the VideoRenderer for the Subscriber.
+     * Create one if none currently exists.
      */
-    public func getVideoViewSub()->VideoView {
-        let renderer = getRendererSub()
-        let videoView = VideoView(renderer: renderer)
-        return videoView
+    public func getRendererSub()->MCSwiftVideoRenderer {
+        let logTag = "[Video][Render][er][Sub] "
+        if rendererSub == nil {
+            print(logTag + "Creating...")
+            rendererSub = MCSwiftVideoRenderer(mcMan: self)
+        } else {
+            print(logTag + "Using existing.")
+        }
+        print(logTag + "OK")
+        return rendererSub!
     }
 
     /**
-     Render the subscribed video.
+     Renders the subscribed video.
      */
     public func renderVideoSub(track: MCVideoTrack?) {
         let logTag = "[Sub][Render][Video] "
@@ -751,6 +767,59 @@ class MillicastManager: ObservableObject {
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe video", task, queueSub)
+    }
+
+    /**
+     * Checks if the Publisher's local video view is mirrored.
+     *
+     * @return True if mirrored, false otherwise.
+     */
+    public func isMirroredPub()->Bool {
+        let logTag = "[Mirror][Pub][?] "
+        print(logTag + "\(mirroredPub).")
+        return mirroredPub
+    }
+
+    /**
+     * Sets the mirroring of the Publisher's local video view to the specified value.
+     * The mirroring effect is local only and is not transmitted to the Subscriber(s).
+     *
+     * @param toMirror If true, view is mirrored, else not.
+     */
+    public func setMirror(_ toMirror: Bool) {
+        let logTag = "[Mirror][Set][Pub] "
+
+        guard let renderer = rendererPub else {
+            print(logTag + "Failed! The videoRenderer is not available.")
+            return
+        }
+
+        if toMirror == mirroredPub {
+            print(logTag + "Not setting mirroring to \(toMirror) as current mirror state is already \(mirroredPub).")
+            return
+        }
+
+        var mirrorSet = renderer.setMirror(toMirror)
+        var task = { [self] in
+            if mirrorSet {
+                mirroredPub = toMirror
+                print(logTag + "OK. Updated mirroredPub to \(toMirror).")
+            } else {
+                print(logTag + "Failed! Unable to set mirror state of videoRenderer. Not updating mirroredPub (\(mirroredPub)) to \(toMirror).")
+            }
+        }
+        runOnMain(logTag: logTag, log: "Update mirroredPub", task)
+    }
+
+    /**
+     * Switches the mirroring of the Publisher's local video view from mirrored to not mirrored,
+     * and vice-versa.
+     *
+     */
+    public func switchMirror() {
+        let logTag = "[Mirror][Switch][Pub] "
+        print(logTag + "Trying to set mirroring for videoRenderer to: \(!mirroredPub).")
+        setMirror(!mirroredPub)
     }
 
     // *********************************************************************************************
@@ -1230,6 +1299,23 @@ class MillicastManager: ObservableObject {
         log += "Selected: " + name
         print(log)
         return name
+    }
+
+    /**
+     Run the given task sync on main thread.
+     If currently on main thread, task will run immediately on current thread.
+     */
+    public func runOnMain(logTag: String, log: String = "", _ task: ()->()) {
+        let tag = "[Q][Main]" + logTag
+        if Thread.current.isMainThread {
+            print(tag + "Running on the current (main) thread: " + log + "...")
+            task()
+        } else {
+            DispatchQueue.main.sync {
+                print(tag + "Dispatching sync on the main thread: " + log + "...")
+                task()
+            }
+        }
     }
 
     /**
@@ -1848,7 +1934,7 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Using the selected videoSource and capability, capture video into a pubVideoTrack.
+     Using the selected videoSource and capability, capture video into a video track for publishing.
      */
     private func startCaptureVideo() {
         let logTag = "[Video][Capture][Start] "
@@ -1888,6 +1974,7 @@ class MillicastManager: ObservableObject {
             showAlert(logTag + "VS.isCapturing FALSE!!! Despite having valid videoSource!")
         }
 
+        mirrorFrontCamera()
         renderVideoPub(track: track)
     }
 
@@ -2071,22 +2158,6 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
-     Get the renderer for the Publisher.
-     Create one if none currently exists.
-     */
-    private func getRendererPub()->MCIosVideoRenderer {
-        let logTag = "[Video][Render][Er][Pub] "
-        if rendererPub == nil {
-            print(logTag + "Creating...")
-            rendererPub = MCIosVideoRenderer()
-        } else {
-            print(logTag + "Using existing.")
-        }
-        print(logTag + "OK")
-        return rendererPub!
-    }
-
-    /**
      Render the local video.
      */
     private func renderVideoPub(track: MCVideoTrack?) {
@@ -2103,22 +2174,6 @@ class MillicastManager: ObservableObject {
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render captured video", task, queuePub)
-    }
-
-    /**
-     Get the renderer for the Subscriber.
-     Create one if none currently exists.
-     */
-    private func getRendererSub()->MCIosVideoRenderer {
-        let logTag = "[Video][Render][Er][Sub] "
-        if rendererSub == nil {
-            print(logTag + "Creating...")
-            rendererSub = MCIosVideoRenderer()
-        } else {
-            print(logTag + "Using existing.")
-        }
-        print(logTag + "OK")
-        return rendererSub!
     }
 
     /**
@@ -2144,6 +2199,27 @@ class MillicastManager: ObservableObject {
         }
         videoTrackSub = nil
         print(logTag + "Video removed.")
+        print(logTag + "OK.")
+    }
+
+    /**
+     * By default, if the active video source is a front facing camera, the local Publisher video view will be mirrored,
+     * to give the Publisher a natural feel when looking at the local Publisher video view.
+     * If it is a non-front facing camera, the local video view will be set to not mirrored.
+     */
+    private func mirrorFrontCamera() {
+        let logTag = "[Video][Front][Mirror] "
+        guard let src = getVideoSource() else {
+            print(logTag + "Failed! The video source does not exist.")
+            return
+        }
+        if isCameraFront(src) {
+            print(logTag + "Mirroring front camera view...")
+            setMirror(true)
+        } else {
+            print(logTag + "Not mirroring non-front camera view...")
+            setMirror(false)
+        }
         print(logTag + "OK.")
     }
 
@@ -2648,20 +2724,28 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Run the given task sync on main thread.
-     If currently on main thread, task will run immediately on current thread.
+     * Checks if the given video source is a front facing camera.
+     *
+     * @return True if video source is a front facing camera, false otherwise.
      */
-    private func runOnMain(logTag: String, log: String = "", _ task: ()->()) {
-        let tag = "[Q][Main]" + logTag
-        if Thread.current.isMainThread {
-            print(tag + "Running on the current (main) thread: " + log + "...")
-            task()
-        } else {
-            DispatchQueue.main.sync {
-                print(tag + "Dispatching sync on the main thread: " + log + "...")
-                task()
-            }
+    private func isCameraFront(_ source: MCVideoSource?) ->Bool {
+        let logTag = "[Video][Front][?] "
+        guard let src = source else {
+            print(logTag + "N. The video source does not exist.")
+            return false
         }
+
+        let name = src.getName()
+        // Expected name of a front facing camera should contain "Front".
+        let isFront = name?.lowercased().contains("front") ?? false
+        var log = ""
+        if isFront {
+            log = "Y"
+        } else {
+            log = "N"
+        }
+        print(logTag + log + ". Cam:\(name ?? "None").")
+        return isFront
     }
 
     /**

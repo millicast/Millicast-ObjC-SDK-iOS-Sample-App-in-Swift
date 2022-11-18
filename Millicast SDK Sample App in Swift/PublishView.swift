@@ -35,56 +35,57 @@ struct PublishView: View {
     
     var body: some View {
         VStack {
-            mcSA.getPubVideoView()
+            mcMan.getRendererPub()
             VStack {
                 Text("Stream: \(mcMan.credsPub.streamName)")
                 Text("Token:\(mcMan.credsPub.token)")
                     .multilineTextAlignment(.center)
             }
+            Spacer()
             HStack {
-                Spacer()
-                VStack {
-                    Button(getLabelCamera()) {
-                        mcSA.toggleCamera()
-                        print("[PubView] Toggled Camera.")
-                    }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
-                    
-                    Button(getLabelResolution()) {
-                        mcSA.toggleResolution()
-                        print("[PubView] Toggled resolution.")
-                    }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
-                    
-                    Button("Switch Camera") {
-                        print("[PubView] Switch Camera")
-                        mcSA.switchCamera()
-                    }.padding().disabled(!getEnableSwitch())
-                }
-                Spacer()
-                VStack {
-                    Button(getLabelCapture()) {
-                        print("[PubView] Capture.")
-                        getActionCapture()()
-                    }.padding().disabled(!getEnableCapture())
-                    
-                    Button(getLabelPublish()) {
-                        print("[PubView] Publish.")
-                        getActionPublish()()
-                    }.padding().disabled(!getEnablePublish())
-                }
-                Spacer()
-                VStack {
-                    Button(getLabelAudio()) {
-                        print("[PubView] Toggled Audio.")
-                        mcSA.toggleMedia(forPublisher: true, forAudio: true)
-                    }.padding().disabled(!getEnableAudio())
-                    
-                    Button(getLabelVideo()) {
-                        print("[PubView] Toggled Video.")
-                        mcSA.toggleMedia(forPublisher: true, forAudio: false)
-                    }.padding().disabled(!getEnableVideo())
-                }
-                Spacer()
+                Button(getLabelCamera()) {
+                    mcSA.toggleCamera()
+                    print("[PubView] Toggled Camera.")
+                }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
+                
+                Button(getLabelResolution()) {
+                    mcSA.toggleResolution()
+                    print("[PubView] Toggled resolution.")
+                }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
+                
+                Button(getLabelCapture()) {
+                    print("[PubView] Capture.")
+                    getActionCapture()()
+                }.padding().disabled(!getEnableCapture())
             }
+            Spacer()
+            HStack {
+                Button("Switch Camera") {
+                    print("[PubView] Switch Camera")
+                    mcSA.switchCamera()
+                }.padding().disabled(!getEnableSwitch())
+                
+                Button(getLabelMirror()) {
+                    print("[PubView] Switched Mirror.")
+                    mcMan.switchMirror()
+                }.padding().disabled(!getEnableVideo())
+                
+                Button(getLabelAudio()) {
+                    print("[PubView] Toggled Audio.")
+                    mcSA.toggleMedia(forPublisher: true, forAudio: true)
+                }.padding().disabled(!getEnableAudio())
+                
+                Button(getLabelVideo()) {
+                    print("[PubView] Toggled Video.")
+                    mcSA.toggleMedia(forPublisher: true, forAudio: false)
+                }.padding().disabled(!getEnableVideo())
+                
+                Button(getLabelPublish()) {
+                    print("[PubView] Publish.")
+                    getActionPublish()()
+                }.padding().disabled(!getEnablePublish())
+            }
+            Spacer()
         }.alert(isPresented: $mcMan.alert) {
             Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
         }
@@ -130,21 +131,21 @@ struct PublishView: View {
         
         if canChangeCapture {
             switch mcMan.capState {
-                case .notCaptured:
-                    labelCapture = PublishView.labelCaptureStart
-                    actionCapture = mcSA.startCapture
-                    enableCapture = true
-                case .tryCapture:
-                    labelCapture = PublishView.labelCaptureTry
-                    enableCapture = false
-                case .isCaptured:
-                    labelCapture = PublishView.labelCaptureStop
-                    actionCapture = mcSA.stopCapture
-                    enableCapture = true
-                    enableSwitch = true
-                    // If not publishing, only allow audio/video buttons to be enabled when video is captured.
-                    enableAudio = true
-                    enableVideo = true
+            case .notCaptured:
+                labelCapture = PublishView.labelCaptureStart
+                actionCapture = mcSA.startCapture
+                enableCapture = true
+            case .tryCapture:
+                labelCapture = PublishView.labelCaptureTry
+                enableCapture = false
+            case .isCaptured:
+                labelCapture = PublishView.labelCaptureStop
+                actionCapture = mcSA.stopCapture
+                enableCapture = true
+                enableSwitch = true
+                // If not publishing, only allow audio/video buttons to be enabled when video is captured.
+                enableAudio = true
+                enableVideo = true
             }
         } else {
             enableCapture = false
@@ -160,19 +161,19 @@ struct PublishView: View {
         }
         
         switch mcMan.pubState {
-            case .disconnected:
-                labelPublish = PublishView.labelPublishStart
-                actionPublish = mcSA.startPublish
-                enablePublish = true
-            case .connecting, .connected:
-                labelPublish = PublishView.labelPublishTry
-                enablePublish = false
-            case .publishing:
-                labelPublish = PublishView.labelPublishStop
-                actionPublish = mcSA.stopPublishCapture
-                enablePublish = true
+        case .disconnected:
+            labelPublish = PublishView.labelPublishStart
+            actionPublish = mcSA.startPublish
+            enablePublish = true
+        case .connecting, .connected:
+            labelPublish = PublishView.labelPublishTry
+            enablePublish = false
+        case .publishing:
+            labelPublish = PublishView.labelPublishStop
+            actionPublish = mcSA.stopPublishCapture
+            enablePublish = true
         }
-        // Always allow audio/video buttons to be enabled when publishing.
+        // Always allow audio/video buttons to be enabled when able to publish, as publisher might want to start publish with audio/video muted.
         enableAudio = true
         enableVideo = true
         
@@ -243,6 +244,23 @@ struct PublishView: View {
     
     func getEnableVideo() -> Bool {
         return getStates().enableVideo
+    }
+    
+    /**
+     * Shows the Mirrored state (true / false) of the Publisher's local view.
+     * When video is not captured, that state is indicated.
+     */
+    func getLabelMirror() -> String {
+        var mirror = "Mirror: "
+        if getEnableVideo() {
+            if mcMan.mirroredPub {
+                mirror += "T"
+            } else {
+                mirror += "F"
+            }
+            return mirror
+        }
+        return mirror + PublishView.labelVideoNo
     }
 }
 
