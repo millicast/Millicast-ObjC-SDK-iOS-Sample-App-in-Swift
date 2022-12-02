@@ -23,7 +23,7 @@ class MillicastSA: ObservableObject {
     @Published var apiUrlSub: String = ""
 
     static var instance: MillicastSA!
-    var mcManager: MillicastManager
+    var mcMan: MillicastManager
     var cat: AVAudioSession.Category?
     var catOpt: AVAudioSession.CategoryOptions?
 
@@ -31,21 +31,21 @@ class MillicastSA: ObservableObject {
      Creds from Constants file.
      */
     var fileCreds: FileCreds {
-        return mcManager.fileCreds
+        return mcMan.fileCreds
     }
 
     /**
      Creds saved in device memory
      */
     var savedCreds: SavedCreds {
-        return mcManager.savedCreds
+        return mcMan.savedCreds
     }
 
     /**
      Creds currently applied in MillicastManager
      */
     var currentCreds: CurrentCreds {
-        return mcManager.currentCreds
+        return mcMan.currentCreds
     }
 
     /**
@@ -55,7 +55,7 @@ class MillicastSA: ObservableObject {
     var uiCreds: UiCreds
     
     private init() {
-        mcManager = MillicastManager.getInstance()
+        mcMan = MillicastManager.getInstance()
         uiCreds = UiCreds()
         accountId = currentCreds.getAccountId()
         streamNamePub = currentCreds.getStreamNamePub()
@@ -89,7 +89,7 @@ class MillicastSA: ObservableObject {
         print(logTag + Utils.getCredStr(creds: creds))
         
         // Set new values into MillicastManager
-        mcManager.setCreds(using: creds, save: save)
+        mcMan.setCreds(using: creds, save: save)
 
         // Update Published values based on currently applied creds in McMan.
         accountId = currentCreds.getAccountId()
@@ -135,17 +135,17 @@ class MillicastSA: ObservableObject {
     
     func startCapture() {
         print("[McSA][startCapture]")
-        mcManager.startAudioVideoCapture()
+        mcMan.startAudioVideoCapture()
     }
     
     func stopCapture() {
         print("[McSA][stopCapture]")
-        mcManager.stopAudioVideoCapture()
+        mcMan.stopAudioVideoCapture()
     }
     
     func switchCamera() {
         print("[McSA][switchCamera]")
-        mcManager.switchVideoSource(ascending: true)
+        mcMan.switchVideoSource(ascending: true)
     }
     
     /**
@@ -154,7 +154,7 @@ class MillicastSA: ObservableObject {
      */
     func toggleCamera() {
         print("[McSA][toggleCamera]")
-        mcManager.toggleVideoSource(ascending: true)
+        mcMan.toggleVideoSource(ascending: true)
     }
     
     /**
@@ -163,14 +163,14 @@ class MillicastSA: ObservableObject {
      */
     func toggleResolution() {
         print("[McSA][toggleResolution]")
-        mcManager.toggleCapability(ascending: true)
+        mcMan.toggleCapability(ascending: true)
     }
     
     /**
      Get the currently selected camera as a string, if any.
      */
     func getCameraName() -> String {
-        let name = mcManager.getVideoSourceName()
+        let name = mcMan.getVideoSourceName()
         print("[McSA][getCameraName] \(name)")
         return name
     }
@@ -179,7 +179,7 @@ class MillicastSA: ObservableObject {
      Get the currently selected resolution as a string, if any.
      */
     func getResolution() -> String {
-        let name = mcManager.getCapabilityName()
+        let name = mcMan.getCapabilityName()
         print("[McSA][getResolution] \(name)")
         return name
     }
@@ -199,24 +199,24 @@ class MillicastSA: ObservableObject {
      */
     func toggleMedia(forPublisher isPublisher: Bool, forAudio isAudio: Bool) {
         print("[McSA][toggleMedia] forPublisher:\(isPublisher) forAudio:\(isAudio)")
-        mcManager.toggleMediaState(forPublisher: isPublisher, forAudio: isAudio)
+        mcMan.toggleMediaState(forPublisher: isPublisher, forAudio: isAudio)
     }
     
     /*
      Publish
      */
     func startPublish() {
-        print("[McSA][startPublish]")
-        mcManager.connectPub()
+        print("[McSA][Pub][Start]")
+        mcMan.connectPub()
     }
     
     func stopPublish() {
-        print("[McSA][stopPublish]")
-        mcManager.stopPub()
+        print("[McSA][Pub][Stop]")
+        mcMan.stopPub()
     }
     
     func stopPublishCapture() {
-        print("[McSA][stopPublishCapture]")
+        print("[McSA][Pub][Capture][Stop]")
         stopPublish()
         stopCapture()
     }
@@ -226,13 +226,13 @@ class MillicastSA: ObservableObject {
      */
     
     func startSubscribe() {
-        print("[McSA][startSubscribe]")
-        mcManager.connectSub()
+        print("[McSA][Sub][Start]")
+        mcMan.connectSub()
     }
     
     func stopSubscribe() {
-        print("[McSA][stopSubscribe]")
-        mcManager.stopSub()
+        print("[McSA][Sub][Stop]")
+        mcMan.stopSub()
     }
     
     /*
@@ -241,17 +241,17 @@ class MillicastSA: ObservableObject {
     
     func getPublishView() -> PublishView {
         print("[McSA][getPublishView]")
-        return PublishView(manager: mcManager)
+        return PublishView(manager: mcMan)
     }
     
     func getSubscribeView() -> SubscribeView {
         print("[McSA][getSubscribeView]")
-        return SubscribeView(manager: mcManager)
+        return SubscribeView(manager: mcMan)
     }
     
     func getSettingsView() -> SettingsMcView {
         print("[McSA][getSettingsView]")
-        return SettingsMcView(manager: mcManager)
+        return SettingsMcView(manager: mcMan)
     }
     
     /*
@@ -259,27 +259,13 @@ class MillicastSA: ObservableObject {
      */
 
     /**
-     Configure the AVAudioSession to use videoChat mode, which will allow Bluetooth and default to the device's speakers when no other audio route is connected.
-     */
-    private func configureAudioSession() {
-        #if os(iOS)
-        let logTag = "[Route][Configure][Audio] "
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat)
-        } catch {
-            print(logTag + "Failed!")
-            return
-        }
-        print(logTag + "OK. VideoChat mode set: Will allow Bluetooth and default to device's speakers when no other audio route is connected.")
-        #endif
-    }
-
-    /**
-     Allow SA to receive and handle iOS notifications.
+     * Allows SA to receive and handle iOS notifications.
+     * The main purpose here is to configure the AVAudioSession with customized settings.
+     * By default, the SDK upon publishing will set the AVAudioSession to the playAndRecord category, with voiceChat mode and allowBluetooth option.
+     * If desired, the App can configure the AVAudioSession with its own settings, as shown below using the Utils.configureAudioSession() method. Refer to the method's description for more details.
      */
     private func setupNotifications() {
-        let logTag = "[Notif][Route] "
+        let logTag = "[Notif][Setup] "
 
         // Get the default notification center instance.
         let nc = NotificationCenter.default
@@ -287,16 +273,59 @@ class MillicastSA: ObservableObject {
                        selector: #selector(routeChangeHandler),
                        name: AVAudioSession.routeChangeNotification,
                        object: nil)
-        print(logTag + "Added Observer for Route Change.")
-        configureAudioSession()
+        print(logTag + "Added Observer for Audio Route Change.")
+        nc.addObserver(self,
+                       selector: #selector(handleInterruption),
+                       name: AVAudioSession.interruptionNotification,
+                       object: AVAudioSession.sharedInstance())
+        print(logTag + "Added Observer for Audio Interruption.")
     }
     
     /**
-     Handle notification for Audio route change and log them.
-     Configures AVAudioSession for videoChat each time the Audio route changes.
+     * Handles interruptions of AVAudioSession and logs them.
+     */
+    @objc func handleInterruption(notification: Notification) {
+        let logTag = "[Interrupt][Notif][Audio][Session] "
+        guard let userInfo = notification.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue)
+        else {
+            return
+        }
+
+        // Switch over the interruption type.
+        switch type {
+        case .began:
+            // An interruption began.
+            print(logTag + "Began.")
+
+        case .ended:
+            // An interruption ended.
+            print(logTag + "Ended.")
+
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else {
+                print(logTag + "Ended. No interrruption option.")
+                return
+            }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                print(logTag + "Ended. Option: Should resume.")
+            } else {
+                print(logTag + "Ended. Option: No resume option.")
+            }
+
+        default:
+            print(logTag + "Unknown type!")
+        }
+    }
+    
+    /**
+     * Handles notification for Audio route change and logs them.
+     * Configures AVAudioSession with SA settings each time the Audio route changes.
+     * See Utils.configureAudioSession() for more details.
      */
     @objc private func routeChangeHandler(notification: Notification) {
-        let logTag = "[Route][Notif][Audio] "
+        let logTag = "[Route][Notif][Audio][Session] "
         var log = ""
         guard let userInfo = notification.userInfo,
               let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
@@ -305,33 +334,33 @@ class MillicastSA: ObservableObject {
             return
         }
         
-        print(logTag + String(describing: userInfo))
-        
         // Log the audio route change reason.
         var session = AVAudioSession.sharedInstance()
         switch reason {
         case .newDeviceAvailable:
             print(logTag + "New device added.")
+            print(logTag + Utils.audioOutputLog(userInfo: userInfo))
 
         case .oldDeviceUnavailable:
             print(logTag + "Old device removed.")
+            print(logTag + Utils.audioOutputLog(userInfo: userInfo))
 
         case .unknown:
             print(logTag + "Unknown reason!")
             
         case .categoryChange:
             var catOld = String(describing: cat?.rawValue ?? "None")
-            var catOptOld = String(describing: catOpt?.rawValue ?? 0)
-            log = ", Old:\(catOld)[\(catOptOld)]"
+            var catOptOld = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
+            log = ", Old:\(catOld)\(catOptOld)"
 
             cat = session.category
             catOpt = session.categoryOptions
             
             var catNow = String(describing: cat?.rawValue ?? "None")
-            var catOptNow = String(describing: catOpt?.rawValue ?? 0)
-            log = "Category Changed! Now:\(catNow)[\(catOptNow)]" + log
+            var catOptNow = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
+            log = "Category Changed! Now:\(catNow)\(catOptNow)" + log
             print(logTag + log)
-            
+
         case .override:
             print(logTag + "Route Overriden!")
         case .wakeFromSleep:
@@ -346,50 +375,9 @@ class MillicastSA: ObservableObject {
         @unknown default:
             print(logTag + "Default case for Reason! Unknown switch error!")
         }
-        
-        outputAudioLog(userInfo: userInfo)
-        configureAudioSession()
-    }
-    
-    /**
-     Logs the current and previous audio output device.
-     */
-    private func outputAudioLog(userInfo: [AnyHashable: Any]) {
-        let logTag = "[Route][Output][Audio] "
-        var log = ""
-        // Get current
-        let session = AVAudioSession.sharedInstance()
-        let routeCur = session.currentRoute
-        let routeCurStr = outputAudioStr(route: routeCur)
-        log += "Cur: \(routeCurStr), Old: "
-        
-        // Get previous
-        guard let routePrev =
-            userInfo[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription
-        else {
-            log += "None!"
-            return
-        }
-        
-        let routePrevStr = outputAudioStr(route: routePrev)
-        log += "\(routePrevStr)"
 
-        print(logTag + log)
-    }
-    
-    /**
-     Get a String representation of the audio output port(s) in the given AVAudioSessionRouteDescription.
-     */
-    private func outputAudioStr(route routeDescription: AVAudioSessionRouteDescription) -> String {
-        var outputs = routeDescription.outputs
-        
-        var ports = ""
-        for port in outputs {
-            ports += "\(port.portType.rawValue),"
-        }
-        if ports != "" {
-            ports.removeLast()
-        }
-        return ports
+        // Configure the AVAudioSession with our settings.
+        Utils.configureAudioSession()
+        print(logTag + "OK.")
     }
 }

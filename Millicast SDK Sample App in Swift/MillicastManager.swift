@@ -615,6 +615,35 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
 
     /**
+     Sets the published/subscribed audio/video to the specified state, either enabled or disabled (i.e. muted).
+     To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
+     To do so for audio, set isAudio to true, else it would be for video.
+     */
+    public func enableMediaState(forPublisher isPub: Bool, forAudio isAudio: Bool, enable: Bool) {
+        let logTag = "[State][Media][Enable]:\(enable)"
+        var set: Bool?
+        let task = { [self] in
+            if isPub {
+                if isAudio {
+                    set = enableTrack(track: audioTrackPub, enable: enable)
+                } else {
+                    set = enableTrack(track: videoTrackPub, enable: enable)
+                }
+            } else {
+                if isAudio {
+                    set = enableTrack(track: audioTrackSub, enable: enable)
+                } else {
+                    set = enableTrack(track: videoTrackSub, enable: enable)
+                }
+            }
+            if set != nil {
+                setMediaState(to: set!, forPublisher: isPub, forAudio: isAudio)
+            }
+        }
+        runOnMain(logTag: logTag, log: "Set Media state", task)
+    }
+
+    /**
      Toggle published/subscribed audio/video between enabled and disabled (i.e. muted) state.
      To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
      To do so for audio, set isAudio to true, else it would be for video.
@@ -690,7 +719,8 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Process the subscribed audio.
+     * Processes the subscribed audio.
+     * Configures the AVAudioSession with SA settings.
      */
     public func subRenderAudio(track: MCAudioTrack?) {
         let logTag = "[Sub][Render][Audio] "
@@ -701,6 +731,8 @@ class MillicastManager: ObservableObject {
             }
             audioTrackSub = track
             setMediaState(to: true, forPublisher: false, forAudio: true)
+            // Configure the AVAudioSession with our settings.
+            Utils.configureAudioSession()
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe audio", task, queueSub)
@@ -763,7 +795,7 @@ class MillicastManager: ObservableObject {
             }
             videoTrackSub = track
             setMediaState(to: true, forPublisher: false, forAudio: false)
-            track.add(getRendererSub())
+            track.add(getRendererSub().getIosVideoRenderer())
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe video", task, queueSub)
@@ -1403,7 +1435,7 @@ class MillicastManager: ObservableObject {
         DispatchQueue.main.async { [self] in
             let oldState = capState
             capState = newState
-            let logTag = "[setCapState]" + tag
+            let logTag = "[State][Cap][Set]" + tag
             print("\(logTag) Now: \(self.capState)  Was: \(oldState)")
         }
     }
@@ -1412,7 +1444,7 @@ class MillicastManager: ObservableObject {
         DispatchQueue.main.async {
             let oldState = self.pubState
             self.pubState = newState
-            let logTag = "[setPubState]" + tag
+            let logTag = "[State][Pub][Set]" + tag
             print("\(logTag) Now: \(self.pubState)  Was: \(oldState)")
         }
     }
@@ -1421,13 +1453,14 @@ class MillicastManager: ObservableObject {
         DispatchQueue.main.async {
             let oldState = self.subState
             self.subState = newState
-            let logTag = "[setSubState]" + tag
+            let logTag = "[State][Sub][Set]" + tag
             print("\(logTag) Now: \(self.subState)  Was: \(oldState)")
         }
     }
 
     public func setMediaState(to newState: Bool, forPublisher: Bool, forAudio: Bool) {
-        DispatchQueue.main.async { [self] in
+        let logTag = "[State][Media][Set] "
+        let task = { [self] in
             var oldState: Bool
             var client = "Publisher"
             var media = "Audio"
@@ -1452,8 +1485,9 @@ class MillicastManager: ObservableObject {
                     videoEnabledSub = newState
                 }
             }
-            print("[setMediaState] \(client) \(media) Now: \(newState)  Was: \(oldState)")
+            print(logTag + "\(client) \(media) Now: \(newState)  Was: \(oldState)")
         }
+        runOnMain(logTag: logTag, log: "Set Media state", task)
     }
 
     // *********************************************************************************************
@@ -1994,7 +2028,7 @@ class MillicastManager: ObservableObject {
         // Remove Renderer from Track and remove Track.
         if videoTrackPub != nil {
             if rendererPub != nil {
-                videoTrackPub!.remove(rendererPub)
+                videoTrackPub!.remove(rendererPub?.getIosVideoRenderer())
                 print(logTag + "Publisher renderer removed from track.")
             }
             videoTrackPub = nil
@@ -2170,7 +2204,7 @@ class MillicastManager: ObservableObject {
             videoTrackPub = track
             setCapState(to: .isCaptured, tag: logTag)
             setMediaState(to: true, forPublisher: true, forAudio: false)
-            track.add(getRendererPub())
+            track.add(getRendererPub().getIosVideoRenderer())
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render captured video", task, queuePub)
@@ -2191,7 +2225,7 @@ class MillicastManager: ObservableObject {
         setMediaState(to: false, forPublisher: false, forAudio: false)
         if rendererSub != nil {
             if let track = videoTrackSub {
-                track.remove(rendererSub)
+                track.remove(rendererSub?.getIosVideoRenderer())
                 print(logTag + "Renderer removed from track.")
             }
         } else {

@@ -2,6 +2,27 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.4.3 (2022-12-??)
+Upgraded to use SDK 1.4.2, added SwiftVideoRenderer that can mirror its video view, fixed interrupting other Apps' audio when in background, fixed soft audio if subscribe started after publish, and improved configuration of AVAudioSession.
+### Major changes
+- Upgraded to new SDK 1.4.2.
+- Added a SwiftVideoRenderer that has a function to mirror its video view.
+  - Added MCSwiftVideoRenderer class that replaces the previous VideoView class.
+  - Able to set its video view to be mirrored.
+- New MillicastManager APIs to control mirroring of the Publisher's local video view.
+  - By default, the Publisher's local video view will be mirrored if its camera is facing front, and not mirrored if it is not facing front.
+- Improved configuration of AVAudioSession.
+  - Consistently enables loud speaker volume.
+  - Allows playing in the background without interrupting other Apps' audio.
+    - Note: Mute SA subscribed audio when not desired in the background.
+  - Detailed in code description of AVAudioSession configuration.
+  - Detailed logging of AVAudioSession parameters.
+### Fixed
+- Interrupting other Apps' audio when SA is in background.
+- Softer subscribed audio if subscribe started after publish.
+### Known issues
+- As before.
+
 ## 1.4.2 (2022-11-11)
 Removed CocoaPods specific build settings.
 ### Major changes

@@ -12,27 +12,31 @@ import SwiftUI
  * Swift version of the MCIosVideoRenderer that can be used in Swift UI.
  * It renders video frames in a UI view and also provides an API to mirror the view.
  */
-final class MCSwiftVideoRenderer: MCIosVideoRenderer, UIViewRepresentable {
+struct MCSwiftVideoRenderer: UIViewRepresentable {
     var mcMan: MillicastManager?
+    var iosRenderer: MCIosVideoRenderer
     var uiView: UIView?
-    var isMirrored = false
-    
+
     init(mcMan: MillicastManager) {
-        super.init(colorRangeExpansion: false)
+        iosRenderer = MCIosVideoRenderer(colorRangeExpansion: false)
         self.mcMan = mcMan
-        uiView = getView()
+        uiView = iosRenderer.getView()
     }
-    
+
     func makeUIView(context: Context) -> UIView {
-        guard let view = getView() else {
-            return UIView()
-        }
         uiView?.contentMode = .scaleAspectFit
         return uiView!
     }
-    
+
     func updateUIView(_ uiView: UIView, context: Context) {}
-    
+
+    /**
+     * Get the MCIosVideoRenderer equivalent of this MCSwiftVideoRenderer.
+     */
+    public func getIosVideoRenderer() -> MCIosVideoRenderer {
+        return iosRenderer
+    }
+
     /**
      * Sets the UIView to be mirrored or not based on the parameter.
      * Runs on main thread.
@@ -41,10 +45,6 @@ final class MCSwiftVideoRenderer: MCIosVideoRenderer, UIViewRepresentable {
      */
     public func setMirror(_ mirror: Bool) -> Bool {
         let logTag = "[Video][Render][er][Mirror]:\(mirror). "
-        if isMirrored == mirror {
-            print(logTag + "Not setting as current mirrored state is already \(isMirrored).")
-            return false
-        }
         if let view = uiView {
             var task = { [self] in
                 var log = "Set current mirrored state to "
@@ -55,8 +55,7 @@ final class MCSwiftVideoRenderer: MCIosVideoRenderer, UIViewRepresentable {
                     view.transform = .identity
                     log += "false."
                 }
-                isMirrored = mirror
-                print(logTag + log + " isMirrored:\(isMirrored).")
+                print(logTag + log + " isMirrored:\(mirror).")
             }
             mcMan?.runOnMain(logTag: logTag, log: "Mirror view", task)
             return true
