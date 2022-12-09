@@ -56,6 +56,8 @@
 		8695907928911F6B003CE073 /* FileCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907428911F6B003CE073 /* FileCreds.swift */; };
 		8695907A28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
 		8695907B28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
+		8697685D29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
+		8697685E29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +110,7 @@
 		8695907328911F6B003CE073 /* CurrentCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentCreds.swift; sourceTree = "<group>"; };
 		8695907428911F6B003CE073 /* FileCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCreds.swift; sourceTree = "<group>"; };
 		8695907528911F6B003CE073 /* UiCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiCreds.swift; sourceTree = "<group>"; };
+		8697685C29431BAF00055C0D /* MCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +189,7 @@
 				3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */,
 				86625CF82913B03600305683 /* MCSwiftVideoRenderer.swift */,
 				3F8C0C1926D73A1F0027A323 /* MCStates.swift */,
+				8697685C29431BAF00055C0D /* MCTypes.swift */,
 				3FB2293026C3DE9000982391 /* Constants.swift */,
 				3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */,
 				8695907428911F6B003CE073 /* FileCreds.swift */,
@@ -409,6 +413,7 @@
 				8695907A28911F6B003CE073 /* UiCreds.swift in Sources */,
 				3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */,
 				3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */,
+				8697685D29431BAF00055C0D /* MCTypes.swift in Sources */,
 				3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,6 +455,7 @@
 				8695907B28911F6B003CE073 /* UiCreds.swift in Sources */,
 				631DD25D26F1E18E0023D24A /* CredentialSource.swift in Sources */,
 				631DD25F26F1E18E0023D24A /* SubscribeView.swift in Sources */,
+				8697685E29431BAF00055C0D /* MCTypes.swift in Sources */,
 				631DD26026F1E18E0023D24A /* SavedCreds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

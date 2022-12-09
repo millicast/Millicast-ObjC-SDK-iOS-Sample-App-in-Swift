@@ -854,9 +854,47 @@ class MillicastManager: ObservableObject {
         setMirror(!mirroredPub)
     }
 
-    // *********************************************************************************************
-    // Publish - Codecs
-    // *********************************************************************************************
+    // **********************************************************************************************
+    // Publish - Options
+    // **********************************************************************************************
+
+    /**
+     * Set the specified BitrateSettings to use for publishing.
+     * Setting this will only affect the next publish,
+     * and not the current publish if one is ongoing.
+     * Values set are only guidelines and will be affected by other factors such as the bandwidth available.
+     *
+     * @param bitrate
+     * @param type
+     */
+    public func setBitrate(_ bitrate: Int, _ type: Bitrate) {
+        var logTag = "[Bitrate][Set]"
+        if bitrate < 0 {
+            print(logTag + " Failed! Bitrate value \(bitrate) must be positive.")
+        }
+        if getPublisher() == nil {
+            print(logTag + " Failed! Publisher not available.")
+            return
+        }
+
+        guard let settings = optionsPub.bitrateSettings else {
+            print(logTag + " Failed! BitrateSettings option not available.")
+            return
+        }
+
+        switch type {
+            case Bitrate.START:
+                logTag += "[Start] "
+                settings.startBitrateKbps = bitrate
+            case Bitrate.MIN:
+                logTag += "[Min] "
+                settings.minBitrateKbps = bitrate
+            case Bitrate.MAX:
+                logTag += "[Max] "
+                settings.maxBitrateKbps = bitrate
+        }
+        print(logTag + "\(bitrate) kbps.")
+    }
 
     /**
      * Get or generate (if nil) the current list of Audio or Video Codec supported.
@@ -2549,8 +2587,14 @@ class MillicastManager: ObservableObject {
         // Set Publisher Options
         setCodecs()
         print(logTag + "Preferred codecs set in Option.")
+
+        setBitrate(300, Bitrate.START)
+        setBitrate(0, Bitrate.MIN)
+        setBitrate(2500, Bitrate.MAX)
+        print(logTag + "Preferred bitrates set in Option.")
+
         pub.setOptions(optionsPub)
-        print(logTag + "Options set.")
+        print(logTag + "Options set in Publisher.")
 
         // Publish to Millicast.
         let success = pub.publish()

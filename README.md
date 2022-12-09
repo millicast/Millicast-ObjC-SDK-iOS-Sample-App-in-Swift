@@ -139,6 +139,9 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
 # Miscellaneous
 - The SA enables Background Mode for "[Audio, AirPlay, and Picture in Picture](https://developer.apple.com/documentation/avfoundation/media_playback/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio)".
   - This allows the SA to continue subscribing and not lose its connection to the Millicast backend when it is moved to the background for any reason.
+  - SA also adds the AVAudioSession mixWithOthers category option.
+    - This allows playing in the background without interrupting other Apps' audio.
+    - Note: Mute SA subscribed audio when not desired in the background.
 - When publishing, the SDK will set the AVAudioSession to the playAndRecord category, with voiceChat mode and allowBluetooth option.
   - If desired, the App can configure the AVAudioSession with its own settings.
   - To see how the SA does this, please refer to these methods:
