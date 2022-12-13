@@ -88,6 +88,9 @@
             <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Bitrate.html">Bitrate</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/CaptureState.html">CaptureState</a>
               </li>
               <li class="nav-group-task">
@@ -119,6 +122,9 @@
                 <a class="nav-group-task-link" href="../Structs/ContentView.html">ContentView</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Millicast_SDK_Sample_App_in_SwiftApp.html">Millicast_SDK_Sample_App_in_SwiftApp</a>
               </li>
               <li class="nav-group-task">
@@ -138,9 +144,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SubscribeView_Previews.html">SubscribeView_Previews</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/VideoView.html">VideoView</a>
               </li>
             </ul>
           </li>
@@ -180,7 +183,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Get a String representing the specified CredentialSource.</p>
+                        <p>Gets a String representing the specified CredentialSource.</p>
 
                       </div>
                       <div class="declaration">
@@ -188,6 +191,238 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getCredStr</span><span class="p">(</span><span class="nv">creds</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CredentialSource.html">CredentialSource</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC21configureAudioSessionyyFZ"></a>
+                    <a name="//apple_ref/swift/Method/configureAudioSession()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC21configureAudioSessionyyFZ">configureAudioSession()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Configures the AVAudioSession to use:</p>
+
+<ul>
+<li>Category playAndRecord for iOS, or playback for tvOS, with the mixWithOthers option.
+
+<ul>
+<li>This will allow:</li>
+<li>Recording on iOS.</li>
+<li>Audio playback in the backgroud, and even when the screen is locked.</li>
+<li>Mixing with audio from other apps that also allow mixing.</li>
+</ul></li>
+<li>Mode videoChat, which will optimise the audio for voice and allow Bluetooth Hands-Free Profile (HFP) device as input and output.</li>
+<li>Audio will default to the device&rsquo;s speakers when no other audio route is connected.
+For full control of the AVAudioSession, this method should be called:</li>
+<li>When the Subscriber&rsquo;s audioTrack is rendered, for e.g. at MillicastManager.subRenderAudio(track: MCAudioTrack?).</li>
+<li>When the AVAudioSession route changes, for e.g. at MillicastSA.routeChangeHandler(notification: Notification).</li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configureAudioSession</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC15setAudioSession6activeySb_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/setAudioSession(active:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC15setAudioSession6activeySb_tFZ">setAudioSession(active:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the AVAudioSession to active or not active as indicated by the parameter.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">setAudioSession</span><span class="p">(</span><span class="nv">active</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC15audioSessionStr7sessionSSSo07AVAudioG0C_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioSessionStr(session:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC15audioSessionStr7sessionSSSo07AVAudioG0C_tFZ">audioSessionStr(session:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representing characteristics of the current AVAudioSession.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioSessionStr</span><span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">AVAudioSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC14audioCatOptStr5valueSSSu_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioCatOptStr(value:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC14audioCatOptStr5valueSSSu_tFZ">audioCatOptStr(value:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representing the specified AVAudioSession.CategoryOptions.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioCatOptStr</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="kt">UInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC14audioOutputLog8userInfoSSSDys11AnyHashableVypG_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioOutputLog(userInfo:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC14audioOutputLog8userInfoSSSDys11AnyHashableVypG_tFZ">audioOutputLog(userInfo:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Logs the current and previous audio output device.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioOutputLog</span><span class="p">(</span><span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">AnyHashable</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC13inputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/inputAudioStr(route:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC13inputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ">inputAudioStr(route:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the audio input port(s) in the given AVAudioSessionRouteDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">inputAudioStr</span><span class="p">(</span><span class="n">route</span> <span class="nv">routeDescription</span><span class="p">:</span> <span class="kt">AVAudioSessionRouteDescription</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC14outputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/outputAudioStr(route:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC14outputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ">outputAudioStr(route:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the audio output port(s) in the given AVAudioSessionRouteDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">outputAudioStr</span><span class="p">(</span><span class="n">route</span> <span class="nv">routeDescription</span><span class="p">:</span> <span class="kt">AVAudioSessionRouteDescription</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC7portStr5portsSSSaySo29AVAudioSessionPortDescriptionCG_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/portStr(ports:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC7portStr5portsSSSaySo29AVAudioSessionPortDescriptionCG_tFZ">portStr(ports:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the given list of AVAudioSessionPortDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">portStr</span><span class="p">(</span><span class="nv">ports</span><span class="p">:</span> <span class="p">[</span><span class="kt">AVAudioSessionPortDescription</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -207,7 +442,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Get a String value from UserDefaults, if available.
+                        <p>Gets a String value from UserDefaults, if available.
 If not, return the specified defaultValue.</p>
 
                       </div>
@@ -235,7 +470,7 @@ If not, return the specified defaultValue.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Get an integer value from UserDefaults, if available.
+                        <p>Gets an integer value from UserDefaults, if available.
 If not, return the specified defaultValue.</p>
 
                       </div>
@@ -294,7 +529,7 @@ If not, return the specified defaultValue.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-11-07)</p>
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-12-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

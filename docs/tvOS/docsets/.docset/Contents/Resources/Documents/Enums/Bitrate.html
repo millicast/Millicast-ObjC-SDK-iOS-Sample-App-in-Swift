@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CaptureState Enumeration Reference</title>
+    <title>Bitrate Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/CaptureState" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/Bitrate" class="dashAnchor"></a>
 
-    <a title="CaptureState Enumeration Reference"></a>
+    <a title="Bitrate Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -38,7 +38,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html"> Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      CaptureState Enumeration Reference
+      Bitrate Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -153,17 +153,17 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>CaptureState</h1>
+            <h1>Bitrate</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">CaptureState</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Bitrate</span></code></pre>
 
                 </div>
               </div>
-            <p>Enums for Millicast related states that help ensure Millicast SDK APIs are called in valid ways.</p>
+            <p>Enums for types used in the Sample App.</p>
 
-<p>States for video capturing.</p>
+<p>The type of BitrateSettings referred to.</p>
 
           </div>
         </section>
@@ -175,9 +175,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12SwiftSa_tvOS12CaptureStateO11notCapturedyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/notCaptured" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12SwiftSa_tvOS12CaptureStateO11notCapturedyA2CmF">notCaptured</a>
+                    <a name="/s:12SwiftSa_tvOS7BitrateO5STARTyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/START" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS7BitrateO5STARTyA2CmF">START</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -185,13 +185,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>startBitrateKbps</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">notCaptured</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">START</span></code></pre>
 
                         </div>
                       </div>
@@ -201,9 +202,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12SwiftSa_tvOS12CaptureStateO03tryE0yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/tryCapture" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12SwiftSa_tvOS12CaptureStateO03tryE0yA2CmF">tryCapture</a>
+                    <a name="/s:12SwiftSa_tvOS7BitrateO3MINyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/MIN" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS7BitrateO3MINyA2CmF">MIN</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -211,13 +212,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>minBitrateKbps</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">tryCapture</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">MIN</span></code></pre>
 
                         </div>
                       </div>
@@ -227,9 +229,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12SwiftSa_tvOS12CaptureStateO10isCapturedyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/isCaptured" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12SwiftSa_tvOS12CaptureStateO10isCapturedyA2CmF">isCaptured</a>
+                    <a name="/s:12SwiftSa_tvOS7BitrateO3MAXyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/MAX" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS7BitrateO3MAXyA2CmF">MAX</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -237,13 +239,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>maxBitrateKbps</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">isCaptured</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kt">MAX</span></code></pre>
 
                         </div>
                       </div>
