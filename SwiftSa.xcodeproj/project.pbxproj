@@ -616,7 +616,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< Updated upstream
 				MARKETING_VERSION = 1.4.2;
+=======
+				MARKETING_VERSION = 1.4.2.1;
+>>>>>>> Stashed changes
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -648,7 +652,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< Updated upstream
 				MARKETING_VERSION = 1.4.2;
+=======
+				MARKETING_VERSION = 1.4.2.1;
+>>>>>>> Stashed changes
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -763,7 +771,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< Updated upstream
 				MARKETING_VERSION = 1.4.2;
+=======
+				MARKETING_VERSION = 1.4.2.1;
+>>>>>>> Stashed changes
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -796,7 +808,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< Updated upstream
 				MARKETING_VERSION = 1.4.2;
+=======
+				MARKETING_VERSION = 1.4.2.1;
+>>>>>>> Stashed changes
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.cosmosoftware.millicast.swift-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
