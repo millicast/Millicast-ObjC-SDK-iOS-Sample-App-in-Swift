@@ -58,8 +58,8 @@ class SubListener: MCSubscriberListener {
     
     func onStatsReport(_ report: MCStatsReport!) {
         let logTag = "[Sub][Ltn][Stat] "
-        let type = MCInboundRtpStreamStats.get_type()
-        mcMan.printStats(forType: type, report: report, logTag: logTag)
+        print(logTag + mcMan.getStatsStr(MCInboundRtpStreamStats.self, report: report))
+        print(logTag + mcMan.getStatsStr(MCRemoteOutboundRtpStreamStats.self, report: report))
     }
     
     func onAudioTrack(_ track: MCAudioTrack!, withMid: String) {

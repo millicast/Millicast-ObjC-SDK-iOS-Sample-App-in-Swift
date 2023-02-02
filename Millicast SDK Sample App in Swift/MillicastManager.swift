@@ -1389,26 +1389,31 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     * Log stats of the given MCStatsType from the input MCStatsReport.
-     * If the given MCStatsType does not exist, a nil statement is logged.
+     * Get a string representation of the given MCStats from the input MCStatsReport.
+     * If this MCStats does not exist, a nil representation is returned.
      */
-    public func printStats(forType statsType: MCStatsType, report: MCStatsReport?, logTag: String) {
-        var log = logTag
-        switch statsType {
-            case OUTBOUND_RTP:
+    public func getStatsStr(_ mcStats: AnyClass, report: MCStatsReport?)->String {
+        var log = ""
+        switch mcStats {
+            case is MCOutboundRtpStreamStats.Type:
                 log += getStatsStrOutboundRtp(report: report)
-            case INBOUND_RTP:
+            case is MCInboundRtpStreamStats.Type:
                 log += getStatsStrInboundRtp(report: report)
+            case is MCRemoteInboundRtpStreamStats.Type:
+                log += getStatsStrRemoteInboundRtp(report: report)
+            case is MCRemoteOutboundRtpStreamStats.Type:
+                log += getStatsStrRemoteOutboundRtp(report: report)
 
             default:
-                log += "StatsType \(statsType) is not logged by this method."
+                log += "MCStats \(mcStats) is not logged by this method."
         }
-        print(log)
+        return log
     }
 
     /**
-     * Get a string representation of INBOUND_RTP stats from the input MCStatsReport.
-     * If the given MCStatsType does not exist, a nil representation is returned.
+     * Get a string representation of MCInboundRtpStreamStats from the input MCStatsReport.
+     * If this MCStats does not exist, a nil representation is returned.
+     * Some of the fields in this Stats are only populated for an audio or video stream.
      */
     public func getStatsStrInboundRtp(report: MCStatsReport?)->String {
         let type = MCInboundRtpStreamStats.get_type()
@@ -1417,28 +1422,39 @@ class MillicastManager: ObservableObject {
             for stats in statsReport {
                 let s = stats as! MCInboundRtpStreamStats
                 let sid = s.sid ?? "Nil"
+                let kind = s.kind ?? "N.A."
+                let codec = s.codec_id ?? "Nil"
                 let decoder_impl = s.decoder_implementation ?? "Nil"
-                str += "[ Sid:\(sid) Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
-                str += ", Audio level:\(s.audio_level) total energy:\(s.total_audio_energy)"
-                str += ", Frames recv:\(s.frames_received)"
-                str += ", Frames decoded:\(s.frames_decoded)"
-                str += ", Frames bit depth:\(s.frame_bit_depth)"
-                str += ", Nack count:\(s.nack_count)"
-                str += ", Decoder impl:\(decoder_impl)"
+                str += "[ Sid:\(sid) Time:\(s.timestamp) Kind:\(kind) Codec:\(codec)"
+                // Print audio stats if not a video stream.
+                if kind != "video" {
+                    str += ", Audio level:\(s.audio_level) total energy:\(s.total_audio_energy)"
+                    str += ", Total sample duration:\(s.total_samples_duration)"
+                }
+                // Print video stats if not an audio stream.
+                if kind != "audio" {
+                    str += ", Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
+                    str += ", Frames recv:\(s.frames_received)"
+                    str += ", Frames decoded:\(s.frames_decoded)"
+                    str += ", Frames bit depth:\(s.frame_bit_depth)"
+                    str += ", Nack count:\(s.nack_count)"
+                }
                 str += ", Bytes recv:\(s.bytes_received)"
-                str += ", Total sample duration:\(s.total_samples_duration) ] "
+                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost) discarded:\(s.packets_discarded)"
+                str += ", Jitter:\(s.jitter)"
+                str += ", Decoder impl:\(decoder_impl) ] "
             }
         }
         if str == "" {
             str += "NONE"
         }
-        str = "\(type): " + str
+        str = "\(MCInboundRtpStreamStats.self): " + str
         return str
     }
 
     /**
-     * Get a string representation of OUTBOUND_RTP stats from the input MCStatsReport.
-     * If the given MCStatsType does not exist, a nil representation is returned.
+     * Get a string representation of MCOutboundRtpStreamStats stats from the input MCStatsReport.
+     * If this MCStats does not exist, a nil representation is returned.
      */
     public func getStatsStrOutboundRtp(report: MCStatsReport?)->String {
         let type = MCOutboundRtpStreamStats.get_type()
@@ -1447,21 +1463,81 @@ class MillicastManager: ObservableObject {
             for stats in statsReport {
                 let s = stats as! MCOutboundRtpStreamStats
                 let sid = s.sid ?? "Nil"
+                let kind = s.kind ?? "N.A."
+                let codec = s.codec_id ?? "Nil"
                 let senderId = s.sender_id ?? "Nil"
                 let remoteId = s.remote_id ?? "Nil"
                 let encoder_impl = s.encoder_implementation ?? "Nil"
-                str += "[ Sid:\(sid) SendId:\(senderId) RemoteId:x\(remoteId)"
-                str += ", Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
-                str += ", Frames sent:\(s.frames_sent)"
-                str += ", Frames encoded:\(s.frames_encoded)"
-                str += ", Nack count:\(s.nack_count)"
+                str += "[ \(s.type) Sid:\(sid) Time:\(s.timestamp) Kind:\(kind) Codec:\(codec) SendId:\(senderId) RemoteId:x\(remoteId)"
+                // Print video stats if not an audio stream.
+                if kind != "audio" {
+                    str += ", Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
+                    str += ", Frames sent:\(s.frames_sent)"
+                    str += ", Frames encoded:\(s.frames_encoded)"
+                    str += ", Nack count:\(s.nack_count)"
+                }
+                str += ", Bytes sent:\(s.bytes_sent)"
+                str += ", Packets sent:\(s.packets_sent)"
+                str += ", Target bitrate:\(s.target_bitrate)"
                 str += ", Encoder impl:\(encoder_impl) ] "
             }
         }
         if str == "" {
             str += "NONE"
         }
-        str = "\(type): " + str
+        str = "\(MCOutboundRtpStreamStats.self): " + str
+        return str
+    }
+
+    /**
+     * Get a string representation of MCRemoteInboundRtpStreamStats from the input MCStatsReport.
+     * If this MCStats does not exist, a nil representation is returned.
+     * This Stats is reported from the Publisher when it is being subscribed to.
+     */
+    public func getStatsStrRemoteInboundRtp(report: MCStatsReport?)->String {
+        let type = MCRemoteInboundRtpStreamStats.get_type()
+        var str = ""
+        if let statsReport = report?.getStatsOf(type) {
+            for stats in statsReport {
+                let s = stats as! MCRemoteInboundRtpStreamStats
+                let sid = s.sid ?? "Nil"
+                let kind = s.kind ?? "N.A."
+                str += "[ \(s.type) Sid:\(sid) Time:\(s.timestamp) Kind:\(kind)"
+                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost) discarded:\(s.packets_discarded)"
+                str += ", Frames dropped:\(s.frames_dropped)"
+                str += ", Jitter:\(s.jitter)"
+                str += ", RTT:\(s.round_trip_time) ]"
+            }
+        }
+        if str == "" {
+            str += "NONE"
+        }
+        str = "\(MCRemoteInboundRtpStreamStats.self): " + str
+        return str
+    }
+
+    /**
+     * Get a string representation of MCRemoteOutboundRtpStreamStats from the input MCStatsReport.
+     * If this MCStats does not exist, a nil representation is returned.
+     * This Stats is reported from the Subscriber when it is subscribing to a Publisher.
+     */
+    public func getStatsStrRemoteOutboundRtp(report: MCStatsReport?)->String {
+        let type = MCRemoteOutboundRtpStreamStats.get_type()
+        var str = ""
+        if let statsReport = report?.getStatsOf(type) {
+            for stats in statsReport {
+                let s = stats as! MCRemoteOutboundRtpStreamStats
+                let sid = s.sid ?? "Nil"
+                let kind = s.kind ?? "N.A."
+                str += "[ \(s.type) Sid:\(sid) Time:\(s.timestamp) Kind:\(kind)"
+                str += ", Bytes sent:\(s.bytes_sent)"
+                str += ", Packets sent:\(s.packets_sent) ]"
+            }
+        }
+        if str == "" {
+            str += "NONE"
+        }
+        str = "\(MCRemoteOutboundRtpStreamStats.self): " + str
         return str
     }
 
