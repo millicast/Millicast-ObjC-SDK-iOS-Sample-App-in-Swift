@@ -52,10 +52,10 @@ struct SubscribeView: View {
             #endif
             VStack {
                 HStack {
-                    Text("Account: \(mcMan.credsSub.accountId)")
-                    Text("Stream: \(mcMan.credsSub.streamName)")
+                    Text("Account: \(mcMan.currentCreds.getAccountId())")
+                    Text("Stream: \(mcMan.currentCreds.getStreamNameSub())")
                 }
-                Text("Token:\(mcMan.credsSub.token)")
+                Text("Token:\(mcMan.currentCreds.getTokenSub())")
                     .multilineTextAlignment(.center)
             }
             HStack {

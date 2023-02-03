@@ -40,14 +40,22 @@ class MillicastManager: ObservableObject {
     var ndiOutputAudio = false
 
     // Millicast platform & credential values.
-    // Default values are assign from Constants,
+    // Default values are assign from Constants file,
     // and updated with values in device memory, if these exist.
     // These can also be modified from the UI at the Millicast Settings page.
+    /**
+     Creds from Constants file.
+     */
     var fileCreds: FileCreds!
+    /**
+     Creds saved in device memory
+     */
     var savedCreds: SavedCreds!
+    /**
+     Creds currently applied in MillicastManager
+     These values publishes to UI the currently applied creds.
+     */
     var currentCreds: CurrentCreds!
-    var credsPub: MCPublisherCredentials!
-    var credsSub: MCSubscriberCredentials!
 
     var audioSourceList: [MCAudioSource]?
     let audioSourceIndexKey = "AUDIO_SOURCE_INDEX"
@@ -132,17 +140,11 @@ class MillicastManager: ObservableObject {
         optionsSub = MCClientOptions()
         optionsSub.statsDelayMs = 1000
 
-        // Set credentials from stored values if present, else from Constants file values.
-        // Publishing credentials
-        credsPub = MCPublisherCredentials()
-        // Subscribing credentials
-        credsSub = MCSubscriberCredentials()
-
-        // Credential Sources
+        // Initialize Credential Sources
         fileCreds = FileCreds()
         savedCreds = SavedCreds()
         currentCreds = CurrentCreds(mcMan: self)
-        // Set initial creds from UserDefaults, if present.
+        // Set initial creds from stored values (UserDefaults), if present.
         // Otherwise set from Constants file.
         setCreds(using: savedCreds, save: false)
 
@@ -172,7 +174,10 @@ class MillicastManager: ObservableObject {
     }
 
     /**
-     Read Millicast credentials and set into MillicastManager using CredentialSource.
+     * Read Millicast credentials from the given CredentialSource and set these as currently applied creds given following conditions hold:
+     * - Publishing creds can only be set when our Publisher is not connected.
+     * - Subscribing creds can only be set when our Subscriber is not connected.
+     * Credentials that are set are also saved into UserDefaults if the save parameter is true.
      */
     public func setCreds(using creds: CredentialSource, save: Bool) {
         let logTag = "[McMan][Creds][Set] "
@@ -180,14 +185,17 @@ class MillicastManager: ObservableObject {
 
         // Publish creds - Only set if Publisher not currently connected
         if pubState == .disconnected {
-            credsPub.streamName = creds.getStreamNamePub()
-            credsPub.token = creds.getTokenPub()
-            credsPub.apiUrl = creds.getApiUrlPub()
+            currentCreds.setStreamNamePub(creds.getStreamNamePub())
+            currentCreds.setTokenPub(creds.getTokenPub())
+            currentCreds.setApiUrlPub(creds.getApiUrlPub())
             if save {
                 // Set new values into UserDefaults
                 UserDefaults.standard.setValue(creds.getStreamNamePub(), forKey: savedCreds.streamNamePub)
                 UserDefaults.standard.setValue(creds.getTokenPub(), forKey: savedCreds.tokenPub)
                 UserDefaults.standard.setValue(creds.getApiUrlPub(), forKey: savedCreds.apiUrlPub)
+                print(logTag + "Publish creds set and saved to UserDefaults.")
+            } else {
+                print(logTag + "Publish creds set but NOT requested to save to UserDefaults.")
             }
         } else {
             showAlert(logTag + "Publish creds NOT updated as currently publishing!")
@@ -195,16 +203,19 @@ class MillicastManager: ObservableObject {
 
         // Subscribe creds - Only set if Subscriber not currently connected
         if subState == .disconnected {
-            credsSub.accountId = creds.getAccountId()
-            credsSub.streamName = creds.getStreamNameSub()
-            credsSub.token = creds.getTokenSub()
-            credsSub.apiUrl = creds.getApiUrlSub()
+            currentCreds.setAccountId(creds.getAccountId())
+            currentCreds.setStreamNameSub(creds.getStreamNameSub())
+            currentCreds.setTokenSub(creds.getTokenSub())
+            currentCreds.setApiUrlSub(creds.getApiUrlSub())
             if save {
                 // Set new values into UserDefaults
                 UserDefaults.standard.setValue(creds.getAccountId(), forKey: savedCreds.accountId)
                 UserDefaults.standard.setValue(creds.getStreamNameSub(), forKey: savedCreds.streamNameSub)
                 UserDefaults.standard.setValue(creds.getTokenSub(), forKey: savedCreds.tokenSub)
                 UserDefaults.standard.setValue(creds.getApiUrlSub(), forKey: savedCreds.apiUrlSub)
+                print(logTag + "Subscribe creds set and saved to UserDefaults.")
+            } else {
+                print(logTag + "Subscribe creds set but NOT requested to save to UserDefaults.")
             }
         } else {
             showAlert(logTag + "Subscribe creds NOT updated as currently subscribing!")
@@ -2507,7 +2518,7 @@ class MillicastManager: ObservableObject {
         let logTag = "[Pub][Con][Mc] "
 
         // Set Credentials
-        pub.setCredentials(credsPub)
+        pub.setCredentials(currentCreds.getCredsPub())
         print(logTag + "Set Credentials.")
 
         // Connect Publisher to Millicast.
@@ -2550,7 +2561,7 @@ class MillicastManager: ObservableObject {
         let logTag = "[Sub][Con][Mc] "
 
         // Set Credentials
-        sub.setCredentials(credsSub)
+        sub.setCredentials(currentCreds.getCredsSub())
         print(logTag + "Set Credentials.")
 
         // Connect Subscriber to Millicast.

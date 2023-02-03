@@ -3,12 +3,15 @@ This file documents the release notes for each version of the Millicast Objectiv
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
 ## 1.5.0 (2023-01-??)
-Upgraded to use SDK 1.5.0, and improved Stats reporting.
+Upgraded to use SDK 1.5.0, improved stats reporting, and improved management of credentials.
 ### Major changes
 - Upgraded to new SDK 1.5.0.
-- Improved Stats reporting.
+- Improved stats reporting.
   - Method to print stats more straightforward to use.
   - Added more stats and stats types, including stats from the remote side.
+- Improved management of credentials.
+  - Simplified logic of reading, writing and publishing to UI of current credentials.
+  - Simplified MillicastSA's involvement in credentials management to only that of holding and publishing UI creds.
 ### Fixed
 - N.A.
 ### Known issues

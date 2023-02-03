@@ -11,42 +11,10 @@ import Foundation
  * It publishes data from the MillicastManager to the various views.
  */
 class MillicastSA: ObservableObject {
-    /**
-     These values publishes to UI the currently applied creds.
-     */
-    @Published var accountId: String = ""
-    @Published var streamNamePub: String = ""
-    @Published var streamNameSub: String = ""
-    @Published var tokenPub: String = ""
-    @Published var tokenSub: String = ""
-    @Published var apiUrlPub: String = ""
-    @Published var apiUrlSub: String = ""
-
     static var instance: MillicastSA!
     var mcMan: MillicastManager
     var cat: AVAudioSession.Category?
     var catOpt: AVAudioSession.CategoryOptions?
-
-    /**
-     Creds from Constants file.
-     */
-    var fileCreds: FileCreds {
-        return mcMan.fileCreds
-    }
-
-    /**
-     Creds saved in device memory
-     */
-    var savedCreds: SavedCreds {
-        return mcMan.savedCreds
-    }
-
-    /**
-     Creds currently applied in MillicastManager
-     */
-    var currentCreds: CurrentCreds {
-        return mcMan.currentCreds
-    }
 
     /**
      Creds currently in the UI.
@@ -55,17 +23,12 @@ class MillicastSA: ObservableObject {
     var uiCreds: UiCreds
     
     private init() {
+        // Get an instance of MillicastManager to ensure it is initialized
+        // before any of its properties are used.
         mcMan = MillicastManager.getInstance()
         uiCreds = UiCreds()
-        accountId = currentCreds.getAccountId()
-        streamNamePub = currentCreds.getStreamNamePub()
-        streamNameSub = currentCreds.getStreamNameSub()
-        tokenPub = currentCreds.getTokenPub()
-        tokenSub = currentCreds.getTokenSub()
-        apiUrlPub = currentCreds.getApiUrlPub()
-        apiUrlSub = currentCreds.getApiUrlSub()
-        // When App initializes, load UI creds using currently applied values.
-        uiCreds.setCreds(using: currentCreds)
+        // After App initializes, load UI creds using currently applied values.
+        uiCreds.setCreds(using: mcMan.currentCreds)
         // Listen to iOS Notifications
         setupNotifications()
     }
@@ -80,45 +43,7 @@ class MillicastSA: ObservableObject {
     /*
      Millicast connections
      */
-    /**
-     Read Millicast credentials from a CredentialSource like SettingsView and set them into App.
-     If save is true, values will be saved into UserDefaults.
-     */
-    func setCreds(from creds: CredentialSource, save: Bool) {
-        let logTag = "[McSA][Creds][Set] "
-        print(logTag + Utils.getCredStr(creds: creds))
-        
-        // Set new values into MillicastManager
-        mcMan.setCreds(using: creds, save: save)
 
-        // Update Published values based on currently applied creds in McMan.
-        accountId = currentCreds.getAccountId()
-        streamNamePub = currentCreds.getStreamNamePub()
-        streamNameSub = currentCreds.getStreamNameSub()
-        tokenPub = currentCreds.getTokenPub()
-        tokenSub = currentCreds.getTokenSub()
-        apiUrlPub = currentCreds.getApiUrlPub()
-        apiUrlSub = currentCreds.getApiUrlSub()
-    }
-    
-    func getFileCreds() -> FileCreds {
-        let logTag = "[McSA][Creds] "
-        print(logTag + "Type: \(fileCreds.credsType).")
-        return fileCreds
-    }
-    
-    func getSavedCreds() -> SavedCreds {
-        let logTag = "[McSA][Creds] "
-        print(logTag + "Type: \(savedCreds.credsType).")
-        return savedCreds
-    }
-    
-    func getCurrentCreds() -> CurrentCreds {
-        let logTag = "[McSA][Creds] "
-        print(logTag + "Type: \(currentCreds.credsType).")
-        return currentCreds
-    }
-    
     func getUiCreds() -> UiCreds {
         let logTag = "[McSA][Creds] "
         print(logTag + "Type: \(uiCreds.credsType).")

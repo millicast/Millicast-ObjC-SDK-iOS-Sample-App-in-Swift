@@ -37,8 +37,8 @@ struct PublishView: View {
         VStack {
             mcMan.getRendererPub()
             VStack {
-                Text("Stream: \(mcMan.credsPub.streamName)")
-                Text("Token:\(mcMan.credsPub.token)")
+                Text("Stream: \(mcMan.currentCreds.getStreamNamePub())")
+                Text("Token:\(mcMan.currentCreds.getTokenPub())")
                     .multilineTextAlignment(.center)
             }
             Spacer()

@@ -29,10 +29,12 @@ struct SettingsMcView: View, CredentialSource {
     
     @ObservedObject var mcMan: MillicastManager
     @ObservedObject var mcSA: MillicastSA
+    @ObservedObject var creds: CurrentCreds
     var credsType = SourceType.ui
     
     init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
+        creds = mcMan.currentCreds
         mcSA = MillicastSA.getInstance()
     }
     
@@ -40,37 +42,37 @@ struct SettingsMcView: View, CredentialSource {
         VStack {
             HStack {
                 Text("Account ID:")
-                TextField("Account ID", text: $accountId).background(useColor(ui: accountId, applied: mcSA.accountId))
+                TextField("Account ID", text: $accountId).background(useColor(ui: accountId, applied: creds.getAccountId()))
             }
 #if os(iOS)
             HStack {
                 Text("Publishing stream name:")
-                TextField("Publishing stream name", text: $streamNamePub).background(useColor(ui: streamNamePub, applied: mcSA.streamNamePub))
+                TextField("Publishing stream name", text: $streamNamePub).background(useColor(ui: streamNamePub, applied: creds.getStreamNamePub()))
             }
 #endif
             HStack {
                 Text("Subscribing stream name:")
-                TextField("Subscribing stream name", text: $streamNameSub).background(useColor(ui: streamNameSub, applied: mcSA.streamNameSub))
+                TextField("Subscribing stream name", text: $streamNameSub).background(useColor(ui: streamNameSub, applied: creds.getStreamNameSub()))
             }
 #if os(iOS)
             HStack {
                 Text("Publishing token:")
-                TextField("Publishing token", text: $tokenPub).background(useColor(ui: tokenPub, applied: mcSA.tokenPub))
+                TextField("Publishing token", text: $tokenPub).background(useColor(ui: tokenPub, applied: creds.getTokenPub()))
             }
 #endif
             HStack {
                 Text("Subscribing token:")
-                TextField("Subscribing token", text: $tokenSub).background(useColor(ui: tokenSub, applied: mcSA.tokenSub))
+                TextField("Subscribing token", text: $tokenSub).background(useColor(ui: tokenSub, applied: creds.getTokenSub()))
             }
 #if os(iOS)
             HStack {
                 Text("Publishing API url:")
-                TextField("Publishing API url", text: $apiUrlPub).background(useColor(ui: apiUrlPub, applied: mcSA.apiUrlPub))
+                TextField("Publishing API url", text: $apiUrlPub).background(useColor(ui: apiUrlPub, applied: creds.getApiUrlPub()))
             }
 #endif
             HStack {
                 Text("Subscribing API url:")
-                TextField("Subscribing API url", text: $apiUrlSub).background(useColor(ui: apiUrlSub, applied: mcSA.apiUrlSub))
+                TextField("Subscribing API url", text: $apiUrlSub).background(useColor(ui: apiUrlSub, applied: creds.getApiUrlSub()))
             }
             HStack {
                 VStack {
@@ -78,15 +80,15 @@ struct SettingsMcView: View, CredentialSource {
                     Text("Load values using:").padding()
                     
                     Button("APPLIED") {
-                        setUiCreds(creds: mcSA.getCurrentCreds())
+                        setUiCreds(creds: creds)
                     }
                     Spacer()
                     Button("MEMORY") {
-                        setUiCreds(creds: mcSA.getSavedCreds())
+                        setUiCreds(creds: mcMan.savedCreds)
                     }
                     Spacer()
                     Button("FILE") {
-                        setUiCreds(creds: mcSA.getFileCreds())
+                        setUiCreds(creds: mcMan.fileCreds)
                     }
                     Spacer()
                 }
@@ -94,11 +96,11 @@ struct SettingsMcView: View, CredentialSource {
                     Spacer()
                     Text("Changes only apply after clicking:").padding()
                     Button("Apply UI values") {
-                        mcSA.setCreds(from: self, save: false)
+                        mcMan.setCreds(using: self, save: false)
                     }
                     Spacer()
                     Button("Apply & save UI values") {
-                        mcSA.setCreds(from: self, save: true)
+                        mcMan.setCreds(using: self, save: true)
                     }
                     Spacer()
                 }
