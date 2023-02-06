@@ -43,15 +43,17 @@ struct PublishView: View {
             }
             Spacer()
             HStack {
+                Toggle(getLabelAudioOnly(), isOn: $mcMan.audioOnly).padding().disabled(!getStates().enableSwitchAudioOnly)
+                
                 Button(getLabelCamera()) {
                     mcSA.toggleCamera()
                     print("[PubView] Toggled Camera.")
-                }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
+                }.padding().disabled(mcMan.capState != CaptureState.notCaptured || mcMan.isAudioOnly())
                 
                 Button(getLabelResolution()) {
                     mcSA.toggleResolution()
                     print("[PubView] Toggled resolution.")
-                }.padding().disabled(mcMan.capState != CaptureState.notCaptured)
+                }.padding().disabled(mcMan.capState != CaptureState.notCaptured || mcMan.isAudioOnly())
                 
                 Button(getLabelCapture()) {
                     print("[PubView] Capture.")
@@ -102,7 +104,8 @@ struct PublishView: View {
     func getStates() -> (labelCapture: String,
                          actionCapture: () -> (),
                          enableCapture: Bool,
-                         enableSwitch: Bool,
+                         enableSwitchCam: Bool,
+                         enableSwitchAudioOnly: Bool,
                          labelPublish: String,
                          actionPublish: () -> (),
                          enablePublish: Bool,
@@ -112,14 +115,15 @@ struct PublishView: View {
         var labelCapture = ""
         var actionCapture: (() -> ()) = {}
         var enableCapture = false
-        var enableSwitch = false
+        var enableSwitchCam = false
+        var enableSwitchAudioOnly = false
         var labelPublish = ""
         var actionPublish: (() -> ()) = {}
         var enablePublish = false
         // Whether to enable buttons for Audio/Video on the UI.
         var enableAudio = false
         var enableVideo = false
-        
+               
         var readyToPublish = false
         var canChangeCapture = false
         if mcMan.capState == .isCaptured {
@@ -135,28 +139,32 @@ struct PublishView: View {
                 labelCapture = PublishView.labelCaptureStart
                 actionCapture = mcSA.startCapture
                 enableCapture = true
+                enableSwitchAudioOnly = true
             case .tryCapture:
                 labelCapture = PublishView.labelCaptureTry
-                enableCapture = false
             case .isCaptured:
                 labelCapture = PublishView.labelCaptureStop
                 actionCapture = mcSA.stopCapture
                 enableCapture = true
-                enableSwitch = true
+                enableSwitchCam = true
                 // If not publishing, only allow audio/video buttons to be enabled when video is captured.
                 enableAudio = true
                 enableVideo = true
             }
         } else {
-            enableCapture = false
-            enableSwitch = true
+            enableSwitchCam = true
+        }
+        
+        // Adjust for AudioOnly mode.
+        if mcMan.isAudioOnly() {
+            enableSwitchCam = false
+            enableVideo = false
         }
         
         if !readyToPublish {
             if mcMan.pubState == .disconnected {
                 labelPublish = PublishView.labelPublishNot
-                enablePublish = false
-                return (labelCapture, actionCapture, enableCapture, enableSwitch, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
+                return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
             }
         }
         
@@ -167,19 +175,37 @@ struct PublishView: View {
             enablePublish = true
         case .connecting, .connected:
             labelPublish = PublishView.labelPublishTry
-            enablePublish = false
         case .publishing:
             labelPublish = PublishView.labelPublishStop
             actionPublish = mcSA.stopPublishCapture
             enablePublish = true
         }
-        // Always allow audio/video buttons to be enabled when able to publish, as publisher might want to start publish with audio/video muted.
+        
+        // Always allow audio button to be enabled when able to publish, as publisher might want to start publish with audio/video muted.
         enableAudio = true
         enableVideo = true
+        // Adjust for AudioOnly mode.
+        if mcMan.isAudioOnly() {
+            enableVideo = false
+        }
         
-        return (labelCapture, actionCapture, enableCapture, enableSwitch, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
+        return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
     }
     
+    /**
+     * Shows the Mirrored state (true / false) of the Publisher's local view.
+     * When video is not captured, that state is indicated.
+     */
+    func getLabelAudioOnly() -> String {
+        var label = "AudioOnly: "
+        if mcMan.isAudioOnly() {
+            label += "T"
+        } else {
+            label += "F"
+        }
+        return label
+    }
+
     func getLabelCamera() -> String {
         return "\(mcSA.getCameraName())"
     }
@@ -201,7 +227,7 @@ struct PublishView: View {
     }
     
     func getEnableSwitch() -> Bool {
-        return getStates().enableSwitch
+        return getStates().enableSwitchCam
     }
     
     func getLabelPublish() -> String {

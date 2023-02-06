@@ -30,6 +30,8 @@ class MillicastManager: ObservableObject {
     @Published var capState: CaptureState = .notCaptured
     @Published var pubState: PublisherState = .disconnected
     @Published var subState: SubscriberState = .disconnected
+    // Set the AudioOnly state to true if not capturing video.
+    @Published var audioOnly = false
 
     // States: Audio/Video mute.
     @Published var audioEnabledPub = false
@@ -149,6 +151,7 @@ class MillicastManager: ObservableObject {
         setCreds(using: savedCreds, save: false)
 
         // Set media values using indices.
+        setAudioPlaybackIndex(newValue: audioPlaybackIndex)
         setAudioSourceIndex(audioSourceIndex)
         setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
 
@@ -591,6 +594,22 @@ class MillicastManager: ObservableObject {
     // *********************************************************************************************
     // Capture
     // *********************************************************************************************
+
+    /**
+     * Checks if we are in AudioOnly mode, i.e. video is not captured.
+     */
+    public func isAudioOnly()->Bool {
+        return audioOnly
+    }
+
+    /**
+     * Sets AudioOnly mode as desired. In AudioOnly mode, video is not captured.
+     *
+     * @param audioOnly True to turn on AudioOnly mode, false otherwise.
+     */
+    public func setAudioOnly(audioOnly: Bool) {
+        self.audioOnly = audioOnly
+    }
 
     /**
      Start capturing both audio and video (based on selected videoSource).
@@ -2030,23 +2049,27 @@ class MillicastManager: ObservableObject {
      Using the selected audioSource, capture audio into a pubAudioTrack.
      */
     private func startCaptureAudio() {
-        queuePub.async { [self] in
-            let logTag = "[Audio][Capture][Start] "
-            if isAudioCaptured() {
-                showAlert(logTag + "Source is already capturing!")
-                return
-            }
-
-            guard let source = getAudioSource() else {
-                showAlert(logTag + "Failed! Source does not exists.")
-                return
-            }
-
-            // Capture AudioTrack for publishing.
-            let track = source.startCapture() as! MCAudioTrack
-            renderAudioPub(track: track)
-            print(logTag + "OK")
+        let logTag = "[Audio][Capture][Start] "
+        if isAudioCaptured() {
+            showAlert(logTag + "Source is already capturing!")
+            return
         }
+
+        guard let source = getAudioSource() else {
+            showAlert(logTag + "Failed! Source does not exists.")
+            return
+        }
+
+        // Capture AudioTrack for publishing.
+        let track = source.startCapture() as! MCAudioTrack
+        renderAudioPub(track: track)
+
+        // Set capState if video is not captured.
+        if videoSource == nil || audioOnly {
+            setCapState(to: CaptureState.isCaptured)
+            print(logTag + "Set CapState to \(capState) as video is not captured.")
+        }
+        print(logTag + "OK")
     }
 
     /**
@@ -2060,7 +2083,8 @@ class MillicastManager: ObservableObject {
         }
 
         removeAudioSource()
-        print(logTag + "OK.")
+        print(logTag + "Audio captured stopped.")
+        setMediaState(to: false, forPublisher: true, forAudio: true)
 
         // Remove Track.
         if audioTrackPub != nil {
@@ -2068,7 +2092,13 @@ class MillicastManager: ObservableObject {
             print(logTag + "Track removed.")
         }
 
-        setMediaState(to: false, forPublisher: true, forAudio: true)
+        // Set capState if video is not captured.
+        if videoSource == nil || audioOnly {
+            setCapState(to: CaptureState.notCaptured)
+            print(logTag + "Set CapState to \(capState) as video is not captured.")
+        }
+
+        print(logTag + "OK.")
     }
 
     /**
@@ -2078,7 +2108,7 @@ class MillicastManager: ObservableObject {
      * based on audioSourceIndex.
      */
     private func removeAudioSource() {
-        let logTag = "[Source][Audio][Remove] "
+        let logTag = "[Audio][Source][Remove] "
 
         // Remove all videoSource
         if isAudioCaptured() {
@@ -2098,6 +2128,12 @@ class MillicastManager: ObservableObject {
     private func startCaptureVideo() {
         let logTag = "[Video][Capture][Start] "
         print(logTag)
+
+        if isAudioOnly() {
+            print(logTag + " NOT continuing as we are in AudioOnly mode.")
+            return
+        }
+
         if isVideoCaptured() || capState != .notCaptured {
             showAlert(logTag + "Source is already capturing!")
             return
@@ -2170,7 +2206,7 @@ class MillicastManager: ObservableObject {
      * based on videoSourceIndex and capabilityIndex.
      */
     private func removeVideoSource() {
-        let logTag = "[Source][Video][Remove] "
+        let logTag = "[Video][Source][Remove] "
 
         // Remove all videoSource
         if isVideoCaptured() {
@@ -2300,16 +2336,13 @@ class MillicastManager: ObservableObject {
      */
     private func renderAudioPub(track: MCAudioTrack?) {
         let logTag = "[Pub][Render][Audio] "
-        let task = { [self] in
-            guard let track = track else {
-                showAlert(logTag + "Failed! audioTrack does not exist.")
-                return
-            }
-            audioTrackPub = track
-            setMediaState(to: true, forPublisher: true, forAudio: true)
-            print(logTag + "OK")
+        guard let track = track else {
+            showAlert(logTag + "Failed! audioTrack does not exist.")
+            return
         }
-        runOnQueue(logTag: logTag, log: "Render local audio", task, queuePub)
+        audioTrackPub = track
+        setMediaState(to: true, forPublisher: true, forAudio: true)
+        print(logTag + "OK")
     }
 
     // *********************************************************************************************
@@ -2321,18 +2354,15 @@ class MillicastManager: ObservableObject {
      */
     private func renderVideoPub(track: MCVideoTrack?) {
         let logTag = "[Pub][Render][Video] "
-        let task = { [self] in
-            guard let track = track else {
-                showAlert(logTag + "Failed! videoTrack does not exist.")
-                return
-            }
-            videoTrackPub = track
-            setCapState(to: .isCaptured, tag: logTag)
-            setMediaState(to: true, forPublisher: true, forAudio: false)
-            track.add(getRendererPub().getIosVideoRenderer())
-            print(logTag + "OK")
+        guard let track = track else {
+            showAlert(logTag + "Failed! videoTrack does not exist.")
+            return
         }
-        runOnQueue(logTag: logTag, log: "Render captured video", task, queuePub)
+        videoTrackPub = track
+        setCapState(to: .isCaptured, tag: logTag)
+        setMediaState(to: true, forPublisher: true, forAudio: false)
+        track.add(getRendererPub().getIosVideoRenderer())
+        print(logTag + "OK")
     }
 
     /**

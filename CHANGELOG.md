@@ -2,10 +2,13 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
-## 1.5.0 (2023-01-??)
-Upgraded to use SDK 1.5.0, improved stats reporting, and improved management of credentials.
+## 1.5.0 (2023-??-??)
+Upgraded to use SDK 1.5.0, added AudioOnly publishing, improved stats reporting, and improved management of credentials.
 ### Major changes
 - Upgraded to new SDK 1.5.0.
+- AudioOnly mode allows publishing with only audio.
+  - To activate or inactivate mode, simply toggle switch on Publish view.
+  - Devices with only audio source(s) and no video source will automatically be able to publish with only audio regardless of the state of this mode.
 - Improved stats reporting.
   - Method to print stats more straightforward to use.
   - Added more stats and stats types, including stats from the remote side.
