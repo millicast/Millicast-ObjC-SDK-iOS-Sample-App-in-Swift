@@ -12,6 +12,7 @@ Upgraded to use SDK 1.5.0, added AudioOnly publishing, improved stats reporting,
 - Improved stats reporting.
   - Method to print stats more straightforward to use.
   - Added more stats and stats types, including stats from the remote side.
+  - Removed some stats that were removed in SDK 1.5.0 due to their no longer being present in m108 libWebrtc.
 - Improved management of credentials.
   - Simplified logic of reading, writing and publishing to UI of current credentials.
   - Simplified MillicastSA's involvement in credentials management to only that of holding and publishing UI creds.

@@ -1464,12 +1464,12 @@ class MillicastManager: ObservableObject {
                 // Print video stats if not an audio stream.
                 if kind != "audio" {
                     str += ", Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
-                    str += ", Frames recv:\(s.frames_received) bitDepth:\(s.frame_bit_depth) decoded:\(s.frames_decoded) keyFramesDecoded:\(s.key_frames_decoded) dropped:\(s.frames_dropped) totalDecodeTime:\(s.total_decode_time)"
+                    str += ", Frames recv:\(s.frames_received) decoded:\(s.frames_decoded) keyFramesDecoded:\(s.key_frames_decoded) dropped:\(s.frames_dropped) totalDecodeTime:\(s.total_decode_time)"
                     str += ", Decoder impl:\(decoder_impl)"
                     str += ", Counts Fir:\(s.fir_count) Pli:\(s.pli_count) Nack:\(s.nack_count)"
                 }
                 str += ", Bytes recv:\(s.bytes_received)"
-                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost) discarded:\(s.packets_discarded)"
+                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost)"
                 str += ", Jitter:\(s.jitter) ]"
             }
         }
@@ -1538,7 +1538,7 @@ class MillicastManager: ObservableObject {
                 let codecId = s.codec_id ?? "Nil"
                 let transportId = s.transport_id ?? "Nil"
                 str += "[ Sid:\(sid) Time:\(s.timestamp) Kind:\(kind) CodecId:\(codecId) TransportId:\(transportId)"
-                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost) discarded:\(s.packets_discarded) fractionLost: \(s.fraction_lost)"
+                str += ", Packets recv:\(s.packets_received) lost:\(s.packets_lost) fractionLost: \(s.fraction_lost)"
                 str += ", Frames dropped:\(s.frames_dropped)"
                 str += ", Jitter:\(s.jitter)"
                 str += ", RTT this:\(s.round_trip_time) total:\(s.total_round_trip_time) measurements:\(s.round_trip_time_measurements) ]"
