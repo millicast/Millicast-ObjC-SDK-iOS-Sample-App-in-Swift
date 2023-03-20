@@ -26,27 +26,36 @@ class Utils {
 
     /**
      * Configures the AVAudioSession to use:
-     * - Category playAndRecord for iOS, or playback for tvOS, with the mixWithOthers option.
+     * When audio recording is not required:
+     * - Category: playback; Category Option: mixWithOthers.
      *  - This will allow:
-     *   - Recording on iOS.
-     *   - Audio playback in the backgroud, and even when the screen is locked.
-     *   - Mixing with audio from other apps that also allow mixing.
+     *   - Playback with Bluetooth A2DP device, which has better audio quality than Bluetooth Hands-Free Profile (HFP), and also supports stereo.
+     * When audio recording is required:
+     * - Category: playAndRecord; Category Option: mixWithOthers, allowBluetoothA2DP.
+     *  - This will allow:
+     *   - Audio recording where needed on iOS.
+     *   - Playback with Bluetooth A2DP on paired device that only supports A2DP - if the device supports both HFP and A2DP, HFP will be preferred by iOS.
      * - Mode videoChat, which will optimise the audio for voice and allow Bluetooth Hands-Free Profile (HFP) device as input and output.
+     * In all cases:
      * - Audio will default to the device's speakers when no other audio route is connected.
+     * - Audio can playback in the backgroud, and even when the screen is locked.
+     * - Audio can mix with audio from other apps that also allow mixing.
      * For full control of the AVAudioSession, this method should be called:
+     * - When starting audio capture, for e.g. at MillicastManager.startCaptureAudio().
+     * - When stopping audio capture, for e.g. at MillicastManager.stopCaptureAudio().
      * - When the Subscriber's audioTrack is rendered, for e.g. at MillicastManager.subRenderAudio(track: MCAudioTrack?).
      * - When the AVAudioSession route changes, for e.g. at MillicastSA.routeChangeHandler(notification: Notification).
      */
-    public static func configureAudioSession() {
+    public static func configureAudioSession(isCapturing: Bool) {
         let logTag = "[Configure][Audio][Session] "
         let session = AVAudioSession.sharedInstance()
         print(logTag + "Now: " + Utils.audioSessionStr(session: session))
         do {
-            #if os(iOS)
-            try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [.mixWithOthers])
-            #else
-            try session.setCategory(AVAudioSession.Category.playback, options: [.mixWithOthers])
-            #endif
+            if isCapturing {
+                try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [.mixWithOthers, .allowBluetoothA2DP])
+            } else {
+                try session.setCategory(AVAudioSession.Category.playback, options: [.mixWithOthers])
+            }
             try session.setActive(true)
         } catch {
             print(logTag + "Failed! Error: \(error)")

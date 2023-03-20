@@ -2,6 +2,19 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
+## 1.6.0 (2023-??-??)
+Upgraded to use SDK 1.6.0, and improved Bluetooth audio playout quality.
+### Major changes
+- Upgraded to new SDK 1.6.0.
+- Improved Bluetooth audio playout quality.
+  - Better control of AVAudioSession configuration to allow:
+    - Bluetooth A2DP when not capturing.
+    - Bluetooth HFP when capturing.
+### Fixed
+- N.A.
+### Known issues
+- As before.
+
 ## 1.5.0 (2023-03-21)
 Upgraded to use SDK 1.5.0, added AudioOnly publishing, improved stats reporting, and improved management of credentials.
 ### Major changes

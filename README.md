@@ -142,8 +142,12 @@ The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be 
   - SA also adds the AVAudioSession mixWithOthers category option.
     - This allows playing in the background without interrupting other Apps' audio.
     - Note: Mute SA subscribed audio when not desired in the background.
-- When publishing, the SDK will set the AVAudioSession to the playAndRecord category, with voiceChat mode and allowBluetooth option.
+- AVAudioSession configuration:
+  - When publishing, the SDK will set the AVAudioSession to the playAndRecord category, with voiceChat mode and allowBluetooth option.
   - If desired, the App can configure the AVAudioSession with its own settings.
+  - The SA uses the playAndRecord category when publishing, and playback category otherwise.
+    - This allows the Bluetooth A2DP profile to be used when not capturing audio.
+    - Bluetooth A2DP allows better audio quality and stereo audio compared to the mono audio on Bluetooth HFP.
   - To see how the SA does this, please refer to these methods:
     - MillicastSA.swift: MillicastSA.setupNotifications()
     - Utils.swift: Utils.configureAudioSession()

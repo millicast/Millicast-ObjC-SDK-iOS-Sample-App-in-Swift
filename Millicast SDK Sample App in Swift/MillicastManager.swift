@@ -603,6 +603,45 @@ class MillicastManager: ObservableObject {
     }
 
     /**
+     * Check if either audio or video is captured.
+     */
+    public func isAudioVideoCaptured()->Bool {
+        let logTag = "[Capture][Audio][Video][?] "
+        if !isAudioCaptured(), !isVideoCaptured() {
+            print(logTag + " No.")
+            return false
+        }
+        print(logTag + "Yes.")
+        return true
+    }
+
+    /**
+     Check if audio is captured.
+     */
+    public func isAudioCaptured()->Bool {
+        let logTag = "[Capture][Audio][?] "
+        if audioSource == nil || !audioSource!.isCapturing() {
+            print(logTag + "No.")
+            return false
+        }
+        print(logTag + "Yes.")
+        return true
+    }
+
+    /**
+     Check if video is captured.
+     */
+    public func isVideoCaptured()->Bool {
+        let logTag = "[Capture][Video][?] "
+        if videoSource == nil || !videoSource!.isCapturing() {
+            print(logTag + "No.")
+            return false
+        }
+        print(logTag + "Yes.")
+        return true
+    }
+
+    /**
      * Sets AudioOnly mode as desired. In AudioOnly mode, video is not captured.
      *
      * @param audioOnly True to turn on AudioOnly mode, false otherwise.
@@ -762,7 +801,7 @@ class MillicastManager: ObservableObject {
             audioTrackSub = track
             setMediaState(to: true, forPublisher: false, forAudio: true)
             // Configure the AVAudioSession with our settings.
-            Utils.configureAudioSession()
+            Utils.configureAudioSession(isCapturing: isAudioCaptured())
             print(logTag + "OK")
         }
         runOnQueue(logTag: logTag, log: "Render subscribe audio", task, queueSub)
@@ -2070,6 +2109,9 @@ class MillicastManager: ObservableObject {
             return
         }
 
+        // Set AVAudioSession to allow recording.
+        Utils.configureAudioSession(isCapturing: true)
+
         // Capture AudioTrack for publishing.
         let track = source.startCapture() as! MCAudioTrack
         renderAudioPub(track: track)
@@ -2094,6 +2136,10 @@ class MillicastManager: ObservableObject {
 
         removeAudioSource()
         print(logTag + "Audio captured stopped.")
+
+        // Set AVAudioSession to allow playout only.
+        Utils.configureAudioSession(isCapturing: false)
+
         setMediaState(to: false, forPublisher: true, forAudio: true)
 
         // Remove Track.
@@ -2228,45 +2274,6 @@ class MillicastManager: ObservableObject {
         print(logTag + "Setting new...")
         setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
         print(logTag + "OK.")
-    }
-
-    /**
-     * Check if either audio or video is captured.
-     */
-    private func isAudioVideoCaptured()->Bool {
-        let logTag = "[Capture][Audio][Video][?] "
-        if !isAudioCaptured(), !isVideoCaptured() {
-            print(logTag + " No.")
-            return false
-        }
-        print(logTag + "Yes.")
-        return true
-    }
-
-    /**
-     Check if audio is captured.
-     */
-    private func isAudioCaptured()->Bool {
-        let logTag = "[Capture][Audio][?] "
-        if audioSource == nil || !audioSource!.isCapturing() {
-            print(logTag + "No.")
-            return false
-        }
-        print(logTag + "Yes.")
-        return true
-    }
-
-    /**
-     Check if video is captured.
-     */
-    private func isVideoCaptured()->Bool {
-        let logTag = "[Capture][Video][?] "
-        if videoSource == nil || !videoSource!.isCapturing() {
-            print(logTag + "No.")
-            return false
-        }
-        print(logTag + "Yes.")
-        return true
     }
 
     // *********************************************************************************************

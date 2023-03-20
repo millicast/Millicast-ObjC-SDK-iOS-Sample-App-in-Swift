@@ -302,7 +302,7 @@ class MillicastSA: ObservableObject {
         }
 
         // Configure the AVAudioSession with our settings.
-        Utils.configureAudioSession()
+        Utils.configureAudioSession(isCapturing: mcMan.isAudioCaptured())
         print(logTag + "OK.")
     }
 }
