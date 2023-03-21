@@ -2,7 +2,7 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
-## 1.5.0 (2023-??-??)
+## 1.5.0 (2023-03-21)
 Upgraded to use SDK 1.5.0, added AudioOnly publishing, improved stats reporting, and improved management of credentials.
 ### Major changes
 - Upgraded to new SDK 1.5.0.
