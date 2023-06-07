@@ -25,6 +25,7 @@ class MillicastManager: ObservableObject {
     let queueLabelKey = DispatchSpecificKey<String>()
 
     static var instance: MillicastManager!
+    var logger: MCLoggerDelegate!
 
     // States: Millicast
     @Published var capState: CaptureState = .notCaptured
@@ -126,6 +127,39 @@ class MillicastManager: ObservableObject {
     private init() {
         queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
         queueSub.setSpecific(key: queueLabelKey, value: queueSub.label)
+
+        // Add a Logger that will print out SDK logs at the desired level.
+        class LoggerDelegate: NSObject, MCLoggerDelegate {
+            func onLog(withMessage message: String!, level: MCLogLevel) {
+                // Set the minimum severity level to log.
+                // Any level(s) less severe than this will not be log in iOS.
+                let minLvl = MC_LOG
+                if level.rawValue > minLvl.rawValue {
+                    return
+                }
+                // Get String representation of level:
+                var lvl = "Unknown"
+                switch level {
+                    case MC_FATAL:
+                        lvl = "FATAL"
+                    case MC_ERROR:
+                        lvl = "ERROR"
+                    case MC_WARNING:
+                        lvl = "WARNING"
+                    case MC_LOG:
+                        lvl = "LOG"
+                    case MC_DEBUG:
+                        lvl = "DEBUG"
+                    default:
+                        print("Received unknown MCLogLevel: \(level)!")
+                }
+                // Print out the SDK log:
+                let logTag = "\(Utils.timeStr()) [SDK][\(lvl)]"
+                print(logTag + message)
+            }
+        }
+        logger = LoggerDelegate()
+        MCLogger.setDelegate(logger)
 
         // Get media indices from stored values if present, else from default values.
         audioSourceIndex = Utils.getValue(tag: "[McMan][init][Audio][Source][Index]", key: audioSourceIndexKey, defaultValue: audioSourceIndexDefault)

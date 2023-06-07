@@ -185,9 +185,9 @@ class MillicastSA: ObservableObject {
 
     /**
      * Allows SA to receive and handle iOS notifications.
-     * The main purpose here is to configure the AVAudioSession with customized settings.
+     * The main purpose here is to log the AVAudioSession for the settings applied.
      * By default, the SDK upon publishing will set the AVAudioSession to the playAndRecord category, with voiceChat mode and allowBluetooth option.
-     * If desired, the App can configure the AVAudioSession with its own settings, as shown below using the Utils.configureAudioSession() method. Refer to the method's description for more details.
+     * If desired, the App can configure the AVAudioSession with its own settings, as shown by the Utils.configureAudioSession() method. Refer to the method's description for more details.
      */
     private func setupNotifications() {
         let logTag = "[Notif][Setup] "
@@ -246,8 +246,6 @@ class MillicastSA: ObservableObject {
     
     /**
      * Handles notification for Audio route change and logs them.
-     * Configures AVAudioSession with SA settings each time the Audio route changes.
-     * See Utils.configureAudioSession() for more details.
      */
     @objc private func routeChangeHandler(notification: Notification) {
         let logTag = "[Route][Notif][Audio][Session] "
@@ -264,11 +262,11 @@ class MillicastSA: ObservableObject {
         switch reason {
         case .newDeviceAvailable:
             print(logTag + "New device added.")
-            print(logTag + Utils.audioOutputLog(userInfo: userInfo))
+            print(Utils.timeStr() + logTag + Utils.audioOutputLog(userInfo: userInfo))
 
         case .oldDeviceUnavailable:
             print(logTag + "Old device removed.")
-            print(logTag + Utils.audioOutputLog(userInfo: userInfo))
+            print(Utils.timeStr() + logTag + Utils.audioOutputLog(userInfo: userInfo))
 
         case .unknown:
             print(logTag + "Unknown reason!")
@@ -300,9 +298,6 @@ class MillicastSA: ObservableObject {
         @unknown default:
             print(logTag + "Default case for Reason! Unknown switch error!")
         }
-
-        // Configure the AVAudioSession with our settings.
-        Utils.configureAudioSession(isCapturing: mcMan.isAudioCaptured())
         print(logTag + "OK.")
     }
 }

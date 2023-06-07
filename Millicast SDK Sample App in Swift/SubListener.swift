@@ -13,27 +13,28 @@ import UIKit
  * This handles events sent to the Subscriber being listened to.
  */
 class SubListener: MCSubscriberListener {
-    var mcMan: MillicastManager
+    private var mcMan: MillicastManager
+    private let tag = "[Sub][Ltn]"
     
     init() {
-        let logTag = "[Sub][Ltn] "
+        let logTag = "\(tag) "
         mcMan = MillicastManager.getInstance()
         print(logTag + "SubListener created.")
     }
     
     func onSubscribed() {
-        let logTag = "[Sub][Ltn][On] "
+        let logTag = "\(tag)[On] "
         mcMan.setSubState(to: .subscribing)
         print(logTag + "Subscribing to Millicast.")
     }
     
     func onSubscribedError(_ error: String) {
-        let logTag = "[Sub][Ltn][Error] "
+        let logTag = "\(tag)[Error] "
         print(logTag + "\(error).")
     }
     
     func onConnected() {
-        let logTag = "[Sub][Ltn][Con] "
+        let logTag = "\(tag)[Con] "
         mcMan.setSubState(to: .connected)
         print(logTag + "Connected to Millicast.")
         mcMan.startSub()
@@ -41,43 +42,48 @@ class SubListener: MCSubscriberListener {
     }
     
     func onConnectionError(_ status: Int32, withReason reason: String!) {
-        let logTag = "[Sub][Ltn][Con][Error] "
+        let logTag = "\(tag)[Con][Error] "
         mcMan.setSubState(to: .disconnected)
         mcMan.showAlert(logTag + "Failed to connect as \(reason!)! Status: \(status)")
     }
     
+    func onDisconnected() {
+        let logTag = "\(tag)[Con][X] "
+        print(logTag + "OK.")
+    }
+    
     func onStopped() {
-        let logTag = "[Sub][Ltn][Stop] "
+        let logTag = "\(tag)[Stop] "
         print(logTag + "OK.")
     }
     
     func onSignalingError(_ error: String) {
-        let logTag = "[Sub][Ltn][Error][Sig] "
+        let logTag = "\(tag)[Error][Sig] "
         print(logTag + "\(error).")
     }
     
     func onStatsReport(_ report: MCStatsReport!) {
-        let logTag = "[Sub][Ltn][Stat] "
+        let logTag = "\(tag)[Stat] "
         print(logTag + mcMan.getStatsStr(MCInboundRtpStreamStats.self, report: report))
         print(logTag + mcMan.getStatsStr(MCRemoteOutboundRtpStreamStats.self, report: report))
     }
     
     func onAudioTrack(_ track: MCAudioTrack!, withMid: String) {
-        let logTag = "[Sub][Ltn][Track][Audio] "
+        let logTag = "\(tag)[Track][Audio] "
         let trackId = track.getId()
         print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
         mcMan.subRenderAudio(track: track)
     }
     
     func onVideoTrack(_ track: MCVideoTrack!, withMid: String) {
-        let logTag = "[Sub][Ltn][Track][Video] "
+        let logTag = "\(tag)[Track][Video] "
         let trackId = track.getId()
         print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
         mcMan.renderVideoSub(track: track)
     }
     
     func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
-        var logTag = "[Sub][Ltn][Active][Source][Id]"
+        var logTag = "\(tag)[Active][Source][Id]"
         for track in tracks {
             let split = track.split(separator: "/")
             let type = String(split[0])
@@ -93,22 +99,22 @@ class SubListener: MCSubscriberListener {
     }
     
     func onInactive(_ streamId: String!, sourceId: String!) {
-        let logTag = "[Sub][Ltn][Active][In][Source][Id] "
+        let logTag = "\(tag)[Active][In][Source][Id] "
         print(logTag + "OK.")
     }
     
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
-        let logTag = "[Sub][Ltn][Layer] "
+        let logTag = "\(tag)[Layer] "
         print(logTag + "OK.")
     }
 
     func onVad(_ mid: String!, sourceId: String!) {
-        let logTag = "[Sub][Ltn][Vad][Source][Id] "
+        let logTag = "\(tag)[Vad][Source][Id] "
         print(logTag + "OK.")
     }
     
     func onViewerCount(_ count: Int32) {
-        let logTag = "[Sub][Ltn][Viewer] "
+        let logTag = "\(tag)[Viewer] "
         print(logTag + "Count: \(count).")
     }
 }
