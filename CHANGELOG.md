@@ -2,7 +2,7 @@
 This file documents the release notes for each version of the Millicast Objective C SDK iOS Sample App (SA) in Swift.
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
-## 1.5.1 (2023-??-??)
+## 1.5.1 (2023-07-05)
 Upgraded to use SDK 1.5.1, added SDK LoggerDelegate, improved Bluetooth audio playout quality, and fixed Bluetooth headsets not working properly on iOS 16.4.1.
 ### Major changes
 - Upgraded to new SDK 1.5.1.

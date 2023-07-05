@@ -173,6 +173,84 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC13dateFormatterSo06NSDateG0CSgvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/dateFormatter" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC13dateFormatterSo06NSDateG0CSgvpZ">dateFormatter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">dateFormatter</span><span class="p">:</span> <span class="kt">DateFormatter</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC16getDateFormatterSo06NSDateH0CSgyFZ"></a>
+                    <a name="//apple_ref/swift/Method/getDateFormatter()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC16getDateFormatterSo06NSDateH0CSgyFZ">getDateFormatter()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getDateFormatter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">DateFormatter</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC7timeStrSSyFZ"></a>
+                    <a name="//apple_ref/swift/Method/timeStr()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC7timeStrSSyFZ">timeStr()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">timeStr</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:12SwiftSa_tvOS5UtilsC10getCredStr5credsSSAA16CredentialSource_p_tFZ"></a>
                     <a name="//apple_ref/swift/Method/getCredStr(creds:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC10getCredStr5credsSSAA16CredentialSource_p_tFZ">getCredStr(creds:<wbr>)</a>
@@ -200,9 +278,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12SwiftSa_tvOS5UtilsC21configureAudioSessionyyFZ"></a>
-                    <a name="//apple_ref/swift/Method/configureAudioSession()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC21configureAudioSessionyyFZ">configureAudioSession()</a>
+                    <a name="/s:12SwiftSa_tvOS5UtilsC21configureAudioSession11isCapturingySb_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/configureAudioSession(isCapturing:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS5UtilsC21configureAudioSession11isCapturingySb_tFZ">configureAudioSession(isCapturing:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -210,22 +288,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Configures the AVAudioSession to use:</p>
+                        <p>Configures the AVAudioSession to use, based on whether audio capture is required:
+When audio recording is not required:</p>
 
 <ul>
-<li>Category playAndRecord for iOS, or playback for tvOS, with the mixWithOthers option.
+<li>Category: playback; Category Option: mixWithOthers.
 
 <ul>
 <li>This will allow:</li>
-<li>Recording on iOS.</li>
-<li>Audio playback in the backgroud, and even when the screen is locked.</li>
-<li>Mixing with audio from other apps that also allow mixing.</li>
+<li>Playback with Bluetooth A2DP device, which has better audio quality than Bluetooth Hands-Free Profile (HFP), and also supports stereo.
+When audio recording is required:</li>
 </ul></li>
-<li>Mode videoChat, which will optimise the audio for voice and allow Bluetooth Hands-Free Profile (HFP) device as input and output.</li>
-<li>Audio will default to the device&rsquo;s speakers when no other audio route is connected.
+<li>Category: playAndRecord; Category Option: mixWithOthers, allowBluetooth, allowBluetoothA2DP.
+
+<ul>
+<li>This will allow:</li>
+<li>Audio recording where needed on iOS.</li>
+<li>Playback with Bluetooth A2DP on paired device that only supports A2DP - if the device supports both HFP and A2DP, HFP will be preferred by iOS.</li>
+</ul></li>
+<li>Mode videoChat, which will optimise the audio for voice and allow Bluetooth Hands-Free Profile (HFP) device as input and output.
+In all cases:</li>
+<li>Audio will default to the device&rsquo;s speakers when no other audio route is connected.</li>
+<li>Audio can playback in the backgroud, and even when the screen is locked.</li>
+<li>Audio can mix with audio from other apps that also allow mixing.
 For full control of the AVAudioSession, this method should be called:</li>
+<li>When starting audio capture, for e.g. at MillicastManager.startCaptureAudio().</li>
+<li>When stopping audio capture, for e.g. at MillicastManager.stopCaptureAudio().</li>
 <li>When the Subscriber&rsquo;s audioTrack is rendered, for e.g. at MillicastManager.subRenderAudio(track: MCAudioTrack?).</li>
-<li>When the AVAudioSession route changes, for e.g. at MillicastSA.routeChangeHandler(notification: Notification).</li>
 </ul>
 
                       </div>
@@ -233,7 +322,7 @@ For full control of the AVAudioSession, this method should be called:</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configureAudioSession</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configureAudioSession</span><span class="p">(</span><span class="nv">isCapturing</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -529,7 +618,7 @@ If not, return the specified defaultValue.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2023 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2023-03-21)</p>
+      <p>&copy; 2023 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2023-07-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>
