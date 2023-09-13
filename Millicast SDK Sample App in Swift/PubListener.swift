@@ -28,7 +28,7 @@ class PubListener: MCPublisherListener {
     
     func onPublishingError(_ error: String!) {
         let logTag = "\(tag)[Error] "
-        print(logTag + "\(error).")
+        print(logTag + "\(String(describing: error)).")
     }
 
     func onConnected() {
@@ -39,10 +39,10 @@ class PubListener: MCPublisherListener {
         print(logTag + "Trying to publish to Millicast.")
     }
     
-    func onConnectionError(_ status: Int32, withReason reason: String!) {
+    func onConnectionError(_ status: Int32, withReason reason: String) {
         let logTag = "\(tag)[Con][Error] "
         mcMan.setPubState(to: .disconnected)
-        mcMan.showAlert(logTag + "Failed to connect as \(reason!)! Status: \(status)")
+        mcMan.showAlert(logTag + "Failed to connect as \(reason)! Status: \(status)")
     }
     
     func onDisconnected() {
@@ -50,12 +50,12 @@ class PubListener: MCPublisherListener {
         print(logTag + "OK.")
     }
     
-    func onSignalingError(_ error: String!) {
+    func onSignalingError(_ error: String) {
         let logTag = "\(tag)[Error][Sig] "
         print(logTag + "\(error).")
     }
     
-    func onStatsReport(_ report: MCStatsReport!) {
+    func onStatsReport(_ report: MCStatsReport) {
         let logTag = "\(tag)[Stat] "
         print(logTag + mcMan.getStatsStr(MCOutboundRtpStreamStats.self, report: report))
         print(logTag + mcMan.getStatsStr(MCRemoteInboundRtpStreamStats.self, report: report))
@@ -75,4 +75,6 @@ class PubListener: MCPublisherListener {
         let logTag = "\(tag)[Viewer][Active][In] "
         print(logTag + "No viewers are currently subscribed to our stream.")
     }
+    
+    func onTransformableFrame(_ data: NSMutableArray!, withSsrc ssrc: Int32, withTimestamp timestamp: Int32) {}
 }

@@ -258,7 +258,7 @@ class MillicastSA: ObservableObject {
         }
         
         // Log the audio route change reason.
-        var session = AVAudioSession.sharedInstance()
+        let session = AVAudioSession.sharedInstance()
         switch reason {
         case .newDeviceAvailable:
             print(logTag + "New device added.")
@@ -272,15 +272,15 @@ class MillicastSA: ObservableObject {
             print(logTag + "Unknown reason!")
             
         case .categoryChange:
-            var catOld = String(describing: cat?.rawValue ?? "None")
-            var catOptOld = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
+            let catOld = String(describing: cat?.rawValue ?? "None")
+            let catOptOld = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
             log = ", Old:\(catOld)\(catOptOld)"
 
             cat = session.category
             catOpt = session.categoryOptions
             
-            var catNow = String(describing: cat?.rawValue ?? "None")
-            var catOptNow = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
+            let catNow = String(describing: cat?.rawValue ?? "None")
+            let catOptNow = Utils.audioCatOptStr(value: catOpt?.rawValue ?? 0)
             log = "Category Changed! Now:\(catNow)\(catOptNow)" + log
             print(logTag + log)
 
@@ -289,7 +289,7 @@ class MillicastSA: ObservableObject {
         case .wakeFromSleep:
             print(logTag + "Device woke from sleep.")
         case .noSuitableRouteForCategory:
-            var catNow = String(describing: cat?.rawValue ?? "None")
+            let catNow = String(describing: cat?.rawValue ?? "None")
             print(logTag + "There is no Suitable Route For Category \(catNow)!")
             
         case .routeConfigurationChange:

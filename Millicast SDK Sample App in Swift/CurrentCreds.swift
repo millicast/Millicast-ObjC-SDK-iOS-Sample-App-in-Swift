@@ -43,7 +43,7 @@ class CurrentCreds: CredentialSource, ObservableObject {
     
     func getAccountId() -> String {
         let logTag = "[Creds][Cur][Account][Id] "
-        let value = credsSub.accountId ?? ""
+        let value = credsSub.accountId
         print(logTag + value)
         return value
     }
@@ -71,7 +71,7 @@ class CurrentCreds: CredentialSource, ObservableObject {
     
     func getStreamNameSub() -> String {
         let logTag = "[Creds][Cur][Sub][Stream][Name] "
-        let value = credsSub.streamName ?? ""
+        let value = credsSub.streamName
         print(logTag + value)
         return value
     }
@@ -99,7 +99,7 @@ class CurrentCreds: CredentialSource, ObservableObject {
 
     func getTokenSub() -> String {
         let logTag = "[Creds][Cur][Sub][Token] "
-        let value = credsSub.token ?? ""
+        let value = credsSub.token
         print(logTag + value)
         return value
     }
@@ -127,7 +127,7 @@ class CurrentCreds: CredentialSource, ObservableObject {
 
     func getApiUrlSub() -> String {
         let logTag = "[Creds][Cur][Sub][Api][Url] "
-        let value = credsSub.apiUrl ?? ""
+        let value = credsSub.apiUrl
         print(logTag + value)
         return value
     }

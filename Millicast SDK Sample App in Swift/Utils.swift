@@ -64,7 +64,7 @@ class Utils {
      */
     public static func configureAudioSession(isCapturing: Bool) {
         let logTag = "[Configure][Audio][Session][SDK] "
-        var task = { [] in
+        let task = { [] in
             let session = AVAudioSession.sharedInstance()
             print(timeStr() + logTag + "Now: " + Utils.audioSessionStr(session: session))
             do {
@@ -145,7 +145,7 @@ class Utils {
      * Gets a String representing the specified AVAudioSession.CategoryOptions.
      */
     public static func audioCatOptStr(value: UInt) -> String {
-        var opt = AVAudioSession.CategoryOptions(rawValue: value)
+        let opt = AVAudioSession.CategoryOptions(rawValue: value)
         var str = ""
 
         addOptToStr(catOpt: .mixWithOthers, desc: "mixWithOthers")
@@ -207,7 +207,7 @@ class Utils {
      * Gets a String representation of the audio input port(s) in the given AVAudioSessionRouteDescription.
      */
     public static func inputAudioStr(route routeDescription: AVAudioSessionRouteDescription) -> String {
-        var ports = portStr(ports: routeDescription.inputs)
+        let ports = portStr(ports: routeDescription.inputs)
         return ports
     }
 
@@ -215,7 +215,7 @@ class Utils {
      * Gets a String representation of the audio output port(s) in the given AVAudioSessionRouteDescription.
      */
     public static func outputAudioStr(route routeDescription: AVAudioSessionRouteDescription) -> String {
-        var ports = portStr(ports: routeDescription.outputs)
+        let ports = portStr(ports: routeDescription.outputs)
         return ports
     }
 

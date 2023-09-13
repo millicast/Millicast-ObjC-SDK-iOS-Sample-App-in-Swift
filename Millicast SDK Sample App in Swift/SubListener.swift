@@ -41,10 +41,10 @@ class SubListener: MCSubscriberListener {
         print(logTag + "Trying to subscribe to Millicast.")
     }
     
-    func onConnectionError(_ status: Int32, withReason reason: String!) {
+    func onConnectionError(_ status: Int32, withReason reason: String) {
         let logTag = "\(tag)[Con][Error] "
         mcMan.setSubState(to: .disconnected)
-        mcMan.showAlert(logTag + "Failed to connect as \(reason!)! Status: \(status)")
+        mcMan.showAlert(logTag + "Failed to connect as \(reason)! Status: \(status)")
     }
     
     func onDisconnected() {
@@ -62,28 +62,28 @@ class SubListener: MCSubscriberListener {
         print(logTag + "\(error).")
     }
     
-    func onStatsReport(_ report: MCStatsReport!) {
+    func onStatsReport(_ report: MCStatsReport) {
         let logTag = "\(tag)[Stat] "
         print(logTag + mcMan.getStatsStr(MCInboundRtpStreamStats.self, report: report))
         print(logTag + mcMan.getStatsStr(MCRemoteOutboundRtpStreamStats.self, report: report))
     }
     
-    func onAudioTrack(_ track: MCAudioTrack!, withMid: String) {
+    func onAudioTrack(_ track: MCAudioTrack, withMid: String) {
         let logTag = "\(tag)[Track][Audio] "
         let trackId = track.getId()
-        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+        print(logTag + "Name: \(String(describing: trackId)), TransceiverId: \(withMid) has been negotiated.")
         mcMan.subRenderAudio(track: track)
     }
     
-    func onVideoTrack(_ track: MCVideoTrack!, withMid: String) {
+    func onVideoTrack(_ track: MCVideoTrack, withMid: String) {
         let logTag = "\(tag)[Track][Video] "
         let trackId = track.getId()
-        print(logTag + "Name: \(trackId), TransceiverId: \(withMid) has been negotiated.")
+        print(logTag + "Name: \(String(describing: trackId)), TransceiverId: \(withMid) has been negotiated.")
         mcMan.renderVideoSub(track: track)
     }
     
-    func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
-        var logTag = "\(tag)[Active][Source][Id]"
+    func onActive(_ _: String, tracks: [String], sourceId: String) {
+        let logTag = "\(tag)[Active][Source][Id]"
         for track in tracks {
             let split = track.split(separator: "/")
             let type = String(split[0])
@@ -98,17 +98,17 @@ class SubListener: MCSubscriberListener {
         print(logTag + "OK.")
     }
     
-    func onInactive(_ streamId: String!, sourceId: String!) {
+    func onInactive(_ streamId: String, sourceId: String) {
         let logTag = "\(tag)[Active][In][Source][Id] "
         print(logTag + "OK.")
     }
     
-    func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
+    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
         let logTag = "\(tag)[Layer] "
         print(logTag + "OK.")
     }
 
-    func onVad(_ mid: String!, sourceId: String!) {
+    func onVad(_ mid: String, sourceId: String) {
         let logTag = "\(tag)[Vad][Source][Id] "
         print(logTag + "OK.")
     }
@@ -117,4 +117,6 @@ class SubListener: MCSubscriberListener {
         let logTag = "\(tag)[Viewer] "
         print(logTag + "Count: \(count).")
     }
+    
+    func onFrameMetadata(_ data: UnsafePointer<UInt8>, withLength length: Int32, withSsrc ssrc: Int32, withTimestamp timestamp: Int32) {}
 }

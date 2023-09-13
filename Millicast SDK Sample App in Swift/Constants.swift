@@ -18,13 +18,13 @@ struct Constants {
     // Set the following as default values if desired.
     
     //Set Millicast account ID here.
-    static let ACCOUNT_ID = ""
+    static let ACCOUNT_ID = "k9Mwad"
     // Set publishing stream name here. Optional if not publishing.
-    static let STREAM_NAME_PUB = ""
+    static let STREAM_NAME_PUB = "l7az5uxm"
     // Set subscribing stream name here. Optional if not subscribing.
-    static let STREAM_NAME_SUB = ""
+    static let STREAM_NAME_SUB = "multiview"
     // Set publishing token here. Optional if not publishing.
-    static let TOKEN_PUB = ""
+    static let TOKEN_PUB = "d5fe0fc8355cc9a34ac6d44f184079be038ae21f0fd203595dbaa40489fe390c"
     // Set the publish API url here.
     static let URL_PUB = "https://director.millicast.com/api/director/publish"
     // Set the subscribe API url here.

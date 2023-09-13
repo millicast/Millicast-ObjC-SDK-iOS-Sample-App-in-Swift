@@ -268,7 +268,7 @@ class MillicastManager: ObservableObject {
      *
      */
     public func getAudioSourceList(refresh: Bool = false)->[MCAudioSource]? {
-        var logTag = "[Audio][Source][List] "
+        let logTag = "[Audio][Source][List] "
         if audioSourceList == nil || refresh {
             print(logTag + "Getting new audioSourceList.")
             // Get new audioSources.
@@ -283,7 +283,7 @@ class MillicastManager: ObservableObject {
 
         // Print out list of audioSources.
         print(logTag + "Checking for audioSources...")
-        var size = audioSourceList!.count
+        let size = audioSourceList!.count
         if size < 1 {
             print(logTag + "No audioSource is available!")
             return nil
@@ -313,12 +313,12 @@ class MillicastManager: ObservableObject {
      * @return true if new index set, false otherwise.
      */
     public func setAudioSourceIndex(_ newValue: Int)->Bool {
-        var logTag = "[Audio][Source][Index][Set] "
+        let logTag = "[Audio][Source][Index][Set] "
 
         // If currently capturing, do not set new audioSourceIndex.
         if isAudioCaptured() {
-            var log = "NOT setting to \(newValue) as currently capturing.\n" +
-                "Captured: \(getAudioSourceStr(audioSource, longForm: true)) Capturing: \(audioSource?.isCapturing())."
+            let log = "NOT setting to \(newValue) as currently capturing.\n" +
+            "Captured: \(getAudioSourceStr(audioSource, longForm: true)) Capturing: \(String(describing: audioSource?.isCapturing()))."
             print(logTag + log)
             return false
         }
@@ -341,7 +341,7 @@ class MillicastManager: ObservableObject {
      * @param refresh
      */
     public func getVideoSourceList(refresh: Bool = false)->[MCVideoSource]? {
-        var logTag = "[Video][Source][List] "
+        let logTag = "[Video][Source][List] "
         if videoSourceList == nil || refresh {
             print(logTag + "Getting new videoSources.")
             // Get new videoSources.
@@ -393,8 +393,8 @@ class MillicastManager: ObservableObject {
 
         // If currently capturing, do not set new videoSourceIndex.
         if isVideoCaptured() {
-            var log = "NOT setting to \(newValue) as currently capturing.\n" +
-                "Captured: \(getVideoSourceStr(videoSource, longForm: true)) Capturing: \(videoSource?.isCapturing())."
+            let log = "NOT setting to \(newValue) as currently capturing.\n" +
+            "Captured: \(getVideoSourceStr(videoSource, longForm: true)) Capturing: \(String(describing: videoSource?.isCapturing()))."
             print(logTag + log)
             return log
         }
@@ -487,7 +487,7 @@ class MillicastManager: ObservableObject {
      * @return nil if audioSource could be set, else an error message might be returned.
      */
     public func switchAudioSource(ascending: Bool)->String? {
-        var logTag = "[Audio][Source][Switch] "
+        let logTag = "[Audio][Source][Switch] "
         var error: String
         var newValue: Int?
 
@@ -507,7 +507,7 @@ class MillicastManager: ObservableObject {
         }
 
         // Set new audioSource
-        print(logTag + "Setting audioSource index to:\(newValue).")
+        print(logTag + "Setting audioSource index to:\(String(describing: newValue)).")
         setAudioSourceIndex(newValue!)
 
         print(logTag + "OK.")
@@ -786,13 +786,13 @@ class MillicastManager: ObservableObject {
         if audioPlaybackList == nil {
             audioPlaybackList = MCMedia.getPlaybackDevices()
         }
-        var log = "[Audio][Playback][List] AudioPlaybackList is: \(audioPlaybackList)"
+        let log = "[Audio][Playback][List] AudioPlaybackList is: \(audioPlaybackList)"
         print(log)
         return audioPlaybackList
     }
 
     public func getAudioPlaybackIndex()->Int {
-        var log = "[Audio][Playback][Index]  \(audioPlaybackIndex)."
+        let log = "[Audio][Playback][Index]  \(audioPlaybackIndex)."
         print(log)
         return audioPlaybackIndex
     }
@@ -805,7 +805,7 @@ class MillicastManager: ObservableObject {
      * as changes can only be made when there is no subscription on going.
      */
     public func setAudioPlaybackIndex(newValue: Int)->Bool {
-        var logTag = "[Audio][Playback][Index][Set] "
+        let logTag = "[Audio][Playback][Index][Set] "
 
         // If currently subscribing, do not set new audioSourceIndex.
         if isSubscribing() {
@@ -934,8 +934,8 @@ class MillicastManager: ObservableObject {
             return
         }
 
-        var mirrorSet = renderer.setMirror(toMirror)
-        var task = { [self] in
+        let mirrorSet = renderer.setMirror(toMirror)
+        let task = { [self] in
             if mirrorSet {
                 mirroredPub = toMirror
                 print(logTag + "OK. Updated mirroredPub to \(toMirror).")
@@ -1028,7 +1028,7 @@ class MillicastManager: ObservableObject {
             }
             codecList = videoCodecList
         }
-        log += " Codecs are: \(codecList)"
+        log += " Codecs are: \(String(describing: codecList))"
         print(log)
 
         return codecList
@@ -1099,13 +1099,13 @@ class MillicastManager: ObservableObject {
             logTag = "[Video]" + logTag
         }
 
-        var newValue = codecIndexNext(ascending: ascending, forAudio: forAudio)
+        let newValue = codecIndexNext(ascending: ascending, forAudio: forAudio)
         if newValue == nil {
             print(logTag + "FAILED! Unable to get next codec!")
             return
         }
 
-        print(logTag + "Setting codec index to:\(newValue).")
+        print(logTag + "Setting codec index to:\(String(describing: newValue)).")
         setCodecIndex(newValue: newValue!, forAudio: forAudio)
 
         print(logTag + "OK.")
@@ -1733,7 +1733,7 @@ class MillicastManager: ObservableObject {
      * Return the current audioSource.
      */
     private func getAudioSource()->MCAudioSource? {
-        var logTag = "[Audio][Source][Get] "
+        let logTag = "[Audio][Source][Get] "
         // Return audioSource.
         if audioSource == nil {
             print(logTag + "None.")
@@ -1748,7 +1748,7 @@ class MillicastManager: ObservableObject {
      * as the current audioSource, unless currently capturing.
      */
     private func setAudioSource() {
-        var logTag = "[Audio][Source][Set] "
+        let logTag = "[Audio][Source][Set] "
 
         // Create new audioSource based on index.
         var audioSourceNew: MCAudioSource?
@@ -1758,7 +1758,7 @@ class MillicastManager: ObservableObject {
             print(logTag + "Failed as no valid audioSource was available!")
             return
         }
-        var size = audioSourceList!.count
+        let size = audioSourceList!.count
         if size < 1 {
             print(logTag + "Failed as list size was \(size)!")
             return
@@ -1818,7 +1818,7 @@ class MillicastManager: ObservableObject {
      * Return the current videoSource.
      */
     private func getVideoSource()->MCVideoSource? {
-        var logTag = "[Video][Source][Get] "
+        let logTag = "[Video][Source][Get] "
         // Return videoSource.
         if videoSource == nil {
             print(logTag + "None.")
@@ -1937,7 +1937,7 @@ class MillicastManager: ObservableObject {
             print(logTag + "Failed as no list was available!")
             return
         }
-        var size = capabilityList?.count ?? 0
+        let size = capabilityList?.count ?? 0
         if size < 1 {
             capability = nil
             print(logTag + "Failed as list size was \(size)!")
@@ -2043,13 +2043,13 @@ class MillicastManager: ObservableObject {
      *                  otherwise cycle in opposite direction.
      */
     private func audioSourceIndexNext(ascending: Bool)->Int? {
-        var logTag = "[Source][Index][Next][Audio] "
+        let logTag = "[Source][Index][Next][Audio] "
         let size = getAudioSourceList(refresh: false)?.count ?? 0
         if size < 1 {
             print(logTag + "Failed as the device does not have a audioSource!")
             return nil
         }
-        var now = audioSourceIndex
+        let now = audioSourceIndex
         return Utils.indexNext(size: size, now: now, ascending: ascending, logTag: logTag)
     }
 
@@ -2114,7 +2114,7 @@ class MillicastManager: ObservableObject {
         }
 
         var size: Int
-        var codecList = getCodecList(forAudio: forAudio)
+        let codecList = getCodecList(forAudio: forAudio)
         size = codecList?.count ?? 0
         if codecList == nil || size < 1 {
             print(logTag + "Failed as there is no codec!")
@@ -2348,9 +2348,9 @@ class MillicastManager: ObservableObject {
             print(logTag + "Failed as no valid audioPlayback was available!")
             return
         }
-        var size = audioPlaybackList?.count
+        let size = audioPlaybackList?.count
         if size ?? 0 < 1 {
-            print(logTag + "Failed as list size was \(size)!")
+            print(logTag + "Failed as list size was \(String(describing: size))!")
             return
         }
 
@@ -2485,7 +2485,7 @@ class MillicastManager: ObservableObject {
         if audioCodecList == nil || audioCodecList!.count < 1 {
             print(logTag + "Failed to set audio codec as none was available!")
         } else {
-            var size = audioCodecList!.count
+            let size = audioCodecList!.count
 
             // If the selected index is larger than size, set it to maximum size.
             if audioCodecIndex >= size {
@@ -2504,7 +2504,7 @@ class MillicastManager: ObservableObject {
         if videoCodecList == nil || videoCodecList!.count < 1 {
             print(logTag + "Failed to set video codec as none was available!")
         } else {
-            var size = videoCodecList!.count
+            let size = videoCodecList!.count
 
             // If the selected index is larger than size, set it to maximum size.
             if videoCodecIndex >= size {
@@ -2531,14 +2531,14 @@ class MillicastManager: ObservableObject {
                 if none != ac {
                     audioCodec = ac
                     optionsPub.audioCodec = ac
-                    log += "Set preferred Audio:\(audioCodec) on Publisher. "
+                    log += "Set preferred Audio:\(String(describing: audioCodec)) on Publisher. "
                 } else {
                     log += "Audio NOT set on Publisher."
                 }
                 if none != vc {
                     videoCodec = vc
                     optionsPub.videoCodec = vc
-                    log += "Set preferred Video:\(videoCodec) on Publisher."
+                    log += "Set preferred Video:\(String(describing: videoCodec)) on Publisher."
                 } else {
                     log += "Video NOT set on Publisher."
                 }
@@ -3005,7 +3005,7 @@ class MillicastManager: ObservableObject {
         let labelCur = DispatchQueue.getSpecific(key: queueLabelKey)
 
         let tag = "[Q][\(labelReq)]" + logTag
-        print(tag + "Current queue is \(labelCur).")
+        print(tag + "Current queue is \(String(describing: labelCur)).")
         if labelReq == labelCur ?? "" {
             print(tag + "Running on the current \(labelReq) queue: " + log + "...")
             task()
