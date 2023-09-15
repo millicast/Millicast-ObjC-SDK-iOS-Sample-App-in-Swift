@@ -3,7 +3,7 @@ This file documents the release notes for each version of the Millicast Objectiv
 SA APIs refer to public methods provided by the SA class, MillicastManager.
 
 ## 1.5.2 (2023-??-??)
-Upgraded to use SDK 1.5.2, this will be the last version as tha application is going to be deprecated.
+Upgraded to use SDK 1.5.2.
 ### Major changes
 - Upgraded to new SDK 1.5.2.
 ### Fixed
