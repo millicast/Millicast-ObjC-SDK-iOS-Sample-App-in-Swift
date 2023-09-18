@@ -117,6 +117,4 @@ class SubListener: MCSubscriberListener {
         let logTag = "\(tag)[Viewer] "
         print(logTag + "Count: \(count).")
     }
-    
-    func onFrameMetadata(_ data: UnsafePointer<UInt8>, withLength length: Int32, withSsrc ssrc: Int32, withTimestamp timestamp: Int32) {}
 }

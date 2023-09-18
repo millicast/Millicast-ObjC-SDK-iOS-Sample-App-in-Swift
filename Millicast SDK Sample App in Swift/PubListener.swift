@@ -75,6 +75,4 @@ class PubListener: MCPublisherListener {
         let logTag = "\(tag)[Viewer][Active][In] "
         print(logTag + "No viewers are currently subscribed to our stream.")
     }
-    
-    func onTransformableFrame(_ data: NSMutableArray!, withSsrc ssrc: Int32, withTimestamp timestamp: Int32) {}
 }
