@@ -1,16 +1,16 @@
 PODS:
-  - MillicastSDK (1.5.1)
+  - MillicastSDK (1.5.2)
 
 DEPENDENCIES:
-  - MillicastSDK (~> 1.5.1)
+  - MillicastSDK (~> 1.5.2)
 
 SPEC REPOS:
   trunk:
     - MillicastSDK
 
 SPEC CHECKSUMS:
-  MillicastSDK: 3764fe536e5a4f896681f568d23ad26746ed3e14
+  MillicastSDK: 14e8e3638202aab7bc32439e95b74afd9db28a6b
 
-PODFILE CHECKSUM: fd2bddc548dae0abbfe4d1ace775aeb93a4bb45c
+PODFILE CHECKSUM: fd66a3c8ddd3838400c004a623e672e450e3c315
 
 COCOAPODS: 1.12.1
