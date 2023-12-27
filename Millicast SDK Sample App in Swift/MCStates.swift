@@ -37,3 +37,8 @@ enum SubscriberState {
     case connected
     case subscribing
 }
+
+enum RecordingState {
+    case recording
+    case notRecording
+}

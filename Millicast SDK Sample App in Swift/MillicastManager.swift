@@ -31,6 +31,7 @@ class MillicastManager: ObservableObject {
     @Published var capState: CaptureState = .notCaptured
     @Published var pubState: PublisherState = .disconnected
     @Published var subState: SubscriberState = .disconnected
+    @Published var recState: RecordingState = .notRecording
     // Set the AudioOnly state to true if not capturing video.
     @Published var audioOnly = false
 
@@ -123,6 +124,7 @@ class MillicastManager: ObservableObject {
     // View objects
     var listenerPub: PubListener?
     var listenerSub: SubListener?
+    var listenerRec: RecListener?
 
     private init() {
         queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
@@ -1111,6 +1113,22 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK.")
     }
 
+    public func setRecordingEnabled(enabled: Bool){
+        let logTag = "[Recording][Set]"
+        if getPublisher() == nil {
+            print(logTag + " Failed! Publisher not available.")
+            return
+        }
+        optionsPub.recordStream = true;
+
+        if enabled{
+            recState = .recording;
+        }
+        else{
+            recState = .notRecording;
+        }
+    }
+    
     // *********************************************************************************************
     // Connect
     // *********************************************************************************************
@@ -1294,6 +1312,38 @@ class MillicastManager: ObservableObject {
             print(logTag + "OK.")
         }
         runOnQueue(logTag: logTag, log: "Stop Publish", task, queuePub)
+    }
+    
+    
+    /**
+        Enable/Disable the recording feature.
+        If the stream is currently being published, toggle recording of that stream
+        If we are not publishing at the moment, set a flag in publisher options to start recording after publishing
+     */
+    public func toggleRecording(){
+        let logTag = "[Pub][Rec] "
+        if pubState == .publishing{
+            switch recState {
+            case .recording:
+                print(logTag + "Trying to stop recording...")
+                publisher?.unrecord();
+            case .notRecording:
+                print(logTag + "Trying to start recording...")
+                publisher?.record();
+            }
+        }
+        else{
+            switch recState {
+            case .recording:
+                print(logTag + "Published stream will not be recorded")
+                setRecordingEnabled(enabled: false)
+            case .notRecording:
+                print(logTag + "Published stream will not be recorded")
+                setRecordingEnabled(enabled: true)
+            }
+        }
+        
+        
     }
 
     // *********************************************************************************************
@@ -2696,6 +2746,20 @@ class MillicastManager: ObservableObject {
         print(logTag + "Returning existing one.")
         return ltn
     }
+    
+    private func getRecListener() -> RecListener? {
+        let logTag = "[Pub][RecLtn] "
+
+        guard let ltn = listenerRec else {
+            print(logTag + "Trying to create one...")
+            listenerRec = RecListener()
+            print(logTag + "Created and returning a new one.")
+            return listenerRec
+        }
+
+        print(logTag + "Returning existing one.")
+        return ltn
+    }
 
     /**
      * Get the Publisher.
@@ -2713,7 +2777,12 @@ class MillicastManager: ObservableObject {
                 print(logTag + "Failed! Listener is not available!")
                 return nil
             }
-
+            
+            guard let recLtn = getRecListener() else {
+                print(logTag + "Failed! Recording listener is not available!")
+                return nil
+            }
+            
             publisher = MCPublisher.create()
             guard let pub = publisher else {
                 print(logTag + "Failed! Could not create Publisher.")
@@ -2721,6 +2790,7 @@ class MillicastManager: ObservableObject {
             }
 
             pub.setListener(ltn)
+            pub.setRecordingListener(recLtn)
             print(logTag + "Created and returning a new one.")
             return pub
         }
