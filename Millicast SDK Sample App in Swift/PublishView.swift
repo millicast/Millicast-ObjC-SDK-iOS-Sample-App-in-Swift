@@ -25,6 +25,8 @@ struct PublishView: View {
     static let labelVideoNo = "No Video"
     static let labelVideoMute = "Mute Video"
     static let labelVideoUnmute = "Unmute Video"
+    static let labelRecordingOn = "Recording"
+    static let labelRecordingOff = "Not Recording "
     
     var mcSA: MillicastSA = .getInstance()
     
@@ -82,6 +84,12 @@ struct PublishView: View {
                     mcSA.toggleMedia(forPublisher: true, forAudio: false)
                 }.padding().disabled(!getEnableVideo())
                 
+                Button(getLabelRecording()){
+                    print("[PubView] Toggled Recording.")
+                    mcMan.toggleRecording()
+                    
+                }
+                
                 Button(getLabelPublish()) {
                     print("[PubView] Publish.")
                     getActionPublish()()
@@ -110,7 +118,8 @@ struct PublishView: View {
                          actionPublish: () -> (),
                          enablePublish: Bool,
                          enableAudio: Bool,
-                         enableVideo: Bool)
+                         enableVideo: Bool,
+                         labelRecording: String)
     {
         var labelCapture = ""
         var actionCapture: (() -> ()) = {}
@@ -120,6 +129,7 @@ struct PublishView: View {
         var labelPublish = ""
         var actionPublish: (() -> ()) = {}
         var enablePublish = false
+        var labelRecording = ""
         // Whether to enable buttons for Audio/Video on the UI.
         var enableAudio = false
         var enableVideo = false
@@ -161,10 +171,17 @@ struct PublishView: View {
             enableVideo = false
         }
         
+        switch mcMan.recState {
+        case .recording:
+            labelRecording = PublishView.labelRecordingOn
+        case .notRecording:
+            labelRecording = PublishView.labelRecordingOff
+        }
+        
         if !readyToPublish {
             if mcMan.pubState == .disconnected {
                 labelPublish = PublishView.labelPublishNot
-                return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
+                return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo,labelRecording)
             }
         }
         
@@ -189,7 +206,7 @@ struct PublishView: View {
             enableVideo = false
         }
         
-        return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo)
+        return (labelCapture, actionCapture, enableCapture, enableSwitchCam, enableSwitchAudioOnly, labelPublish, actionPublish, enablePublish, enableAudio, enableVideo,labelRecording)
     }
     
     /**
@@ -216,6 +233,10 @@ struct PublishView: View {
     
     func getLabelCapture() -> String {
         return getStates().labelCapture
+    }
+    
+    func getLabelRecording() -> String{
+        return getStates().labelRecording
     }
     
     func getActionCapture() -> (() -> ()) {
