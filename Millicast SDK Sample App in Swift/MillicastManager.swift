@@ -19,14 +19,14 @@ import MillicastSDK
 class MillicastManager: ObservableObject {
     @Published var alert = false
     var alertMsg = ""
-
+    
     let queuePub = DispatchQueue(label: "mc-QPub", qos: .userInitiated)
     let queueSub = DispatchQueue(label: "mc-QSub", qos: .userInitiated)
     let queueLabelKey = DispatchSpecificKey<String>()
-
+    
     static var instance: MillicastManager!
     var logger: MCLoggerDelegate!
-
+    
     // States: Millicast
     @Published var capState: CaptureState = .notCaptured
     @Published var pubState: PublisherState = .disconnected
@@ -34,7 +34,7 @@ class MillicastManager: ObservableObject {
     @Published var recState: RecordingState = .notRecording
     // Set the AudioOnly state to true if not capturing video.
     @Published var audioOnly = false
-
+    
     // States: Audio/Video mute.
     @Published var audioEnabledPub = false
     @Published var videoEnabledPub = false
@@ -42,7 +42,7 @@ class MillicastManager: ObservableObject {
     @Published var videoEnabledSub = false
     var ndiOutputVideo = false
     var ndiOutputAudio = false
-
+    
     // Millicast platform & credential values.
     // Default values are assign from Constants file,
     // and updated with values in device memory, if these exist.
@@ -60,7 +60,7 @@ class MillicastManager: ObservableObject {
      These values publishes to UI the currently applied creds.
      */
     var currentCreds: CurrentCreds!
-
+    
     var audioSourceList: [MCAudioSource]?
     let audioSourceIndexKey = "AUDIO_SOURCE_INDEX"
     var audioSourceIndexDefault = 0
@@ -72,25 +72,25 @@ class MillicastManager: ObservableObject {
     var videoSourceIndexDefault = 0
     @Published var videoSourceIndex: Int
     var videoSource: MCVideoSource?
-
+    
     var capabilityList: [MCVideoCapabilities]?
     let capabilityIndexKey = "CAPABILITY_INDEX"
     var capabilityIndexDefault = 0
     @Published var capabilityIndex: Int
     var capability: MCVideoCapabilities?
-
+    
     var audioCodecList: [String]?
     let audioCodecIndexKey = "AUDIO_CODEC_INDEX"
     var audioCodecIndexDefault = 0
     @Published var audioCodecIndex: Int
     var audioCodec: String?
-
+    
     var videoCodecList: [String]?
     let videoCodecIndexKey = "VIDEO_CODEC_INDEX"
     var videoCodecIndexDefault = 0
     @Published var videoCodecIndex: Int
     var videoCodec: String?
-
+    
     /**
      * The list of AudioPlayback devices available for us to play subscribed audio.
      * The desired device must be selected and initiated (initPlayback)
@@ -101,35 +101,35 @@ class MillicastManager: ObservableObject {
     var audioPlaybackIndexDefault = 0
     @Published var audioPlaybackIndex: Int
     var audioPlayback: MCAudioPlayback?
-
+    
     // SDK Media objects
     var audioTrackPub: MCAudioTrack?
     var audioTrackSub: MCAudioTrack?
     var videoTrackPub: MCVideoTrack?
     var videoTrackSub: MCVideoTrack?
-
+    
     // Display
     var rendererPub: MCSwiftVideoRenderer?
     var rendererSub: MCSwiftVideoRenderer?
     // Whether Publisher's local video view is mirrored.
     @Published var mirroredPub = false
-
+    
     // Publish/Subscribe
     var publisher: MCPublisher?
     var subscriber: MCSubscriber?
     // Options objects for Publish/Subscribe
     var optionsPub: MCClientOptions
     var optionsSub: MCClientOptions
-
+    
     // View objects
     var listenerPub: PubListener?
     var listenerSub: SubListener?
     var listenerRec: RecListener?
-
+    
     private init() {
         queuePub.setSpecific(key: queueLabelKey, value: queuePub.label)
         queueSub.setSpecific(key: queueLabelKey, value: queueSub.label)
-
+        
         // Add a Logger that will print out SDK logs at the desired level.
         class LoggerDelegate: NSObject, MCLoggerDelegate {
             func onLog(withMessage message: String!, level: MCLogLevel) {
@@ -142,18 +142,18 @@ class MillicastManager: ObservableObject {
                 // Get String representation of level:
                 var lvl = "Unknown"
                 switch level {
-                    case MC_FATAL:
-                        lvl = "FATAL"
-                    case MC_ERROR:
-                        lvl = "ERROR"
-                    case MC_WARNING:
-                        lvl = "WARNING"
-                    case MC_LOG:
-                        lvl = "LOG"
-                    case MC_DEBUG:
-                        lvl = "DEBUG"
-                    default:
-                        print("Received unknown MCLogLevel: \(level)!")
+                case MC_FATAL:
+                    lvl = "FATAL"
+                case MC_ERROR:
+                    lvl = "ERROR"
+                case MC_WARNING:
+                    lvl = "WARNING"
+                case MC_LOG:
+                    lvl = "LOG"
+                case MC_DEBUG:
+                    lvl = "DEBUG"
+                default:
+                    print("Received unknown MCLogLevel: \(level)!")
                 }
                 // Print out the SDK log:
                 let logTag = "\(Utils.timeStr()) [SDK][\(lvl)]"
@@ -162,7 +162,7 @@ class MillicastManager: ObservableObject {
         }
         logger = LoggerDelegate()
         MCLogger.setDelegate(logger)
-
+        
         // Get media indices from stored values if present, else from default values.
         audioSourceIndex = Utils.getValue(tag: "[McMan][init][Audio][Source][Index]", key: audioSourceIndexKey, defaultValue: audioSourceIndexDefault)
         audioPlaybackIndex = audioPlaybackIndexDefault
@@ -170,14 +170,14 @@ class MillicastManager: ObservableObject {
         capabilityIndex = Utils.getValue(tag: "[McMan][init][Capability][Index]", key: capabilityIndexKey, defaultValue: capabilityIndexDefault)
         audioCodecIndex = Utils.getValue(tag: "[McMan][init][Audio][Codec][Index]", key: audioCodecIndexKey, defaultValue: audioCodecIndexDefault)
         videoCodecIndex = Utils.getValue(tag: "[McMan][init][Video][Codec][Index]", key: videoCodecIndexKey, defaultValue: videoCodecIndexDefault)
-
+        
         // Create Publisher and Subscriber Options
         optionsPub = MCClientOptions()
         optionsPub.stereo = true
         optionsPub.statsDelayMs = 1000
         optionsSub = MCClientOptions()
         optionsSub.statsDelayMs = 1000
-
+        
         // Initialize Credential Sources
         fileCreds = FileCreds()
         savedCreds = SavedCreds()
@@ -185,23 +185,23 @@ class MillicastManager: ObservableObject {
         // Set initial creds from stored values (UserDefaults), if present.
         // Otherwise set from Constants file.
         setCreds(using: savedCreds, save: false)
-
+        
         // Set media values using indices.
         setAudioPlaybackIndex(newValue: audioPlaybackIndex)
         setAudioSourceIndex(audioSourceIndex)
         setVideoSourceIndex(videoSourceIndex, setCapIndex: true)
-
+        
         print("[McMan][Init] OK.")
     }
-
+    
     // *********************************************************************************************
     // APIs
     // *********************************************************************************************
-
+    
     // *********************************************************************************************
     // Millicast platform
     // *********************************************************************************************
-
+    
     /**
      * Method to get the MillicastManager Singleton instance.
      */
@@ -211,7 +211,7 @@ class MillicastManager: ObservableObject {
         }
         return instance
     }
-
+    
     /**
      * Read Millicast credentials from the given CredentialSource and set these as currently applied creds given following conditions hold:
      * - Publishing creds can only be set when our Publisher is not connected.
@@ -221,7 +221,7 @@ class MillicastManager: ObservableObject {
     public func setCreds(using creds: CredentialSource, save: Bool) {
         let logTag = "[McMan][Creds][Set] "
         print(logTag + Utils.getCredStr(creds: creds))
-
+        
         // Publish creds - Only set if Publisher not currently connected
         if pubState == .disconnected {
             currentCreds.setStreamNamePub(creds.getStreamNamePub())
@@ -239,7 +239,7 @@ class MillicastManager: ObservableObject {
         } else {
             showAlert(logTag + "Publish creds NOT updated as currently publishing!")
         }
-
+        
         // Subscribe creds - Only set if Subscriber not currently connected
         if subState == .disconnected {
             currentCreds.setAccountId(creds.getAccountId())
@@ -260,11 +260,11 @@ class MillicastManager: ObservableObject {
             showAlert(logTag + "Subscribe creds NOT updated as currently subscribing!")
         }
     }
-
+    
     // *********************************************************************************************
     // Query/Select videoSource, capability.
     // *********************************************************************************************
-
+    
     /**
      * Get or generate (if nil) the current list of AudioSources available.
      *
@@ -282,7 +282,7 @@ class MillicastManager: ObservableObject {
         } else {
             print(logTag + "Using existing audioSources.")
         }
-
+        
         // Print out list of audioSources.
         print(logTag + "Checking for audioSources...")
         let size = audioSourceList!.count
@@ -296,16 +296,23 @@ class MillicastManager: ObservableObject {
             }
             print(log + ".")
         }
-
+        
         return audioSourceList
     }
-
+    
+    public func getWrappedAudioSourceList() -> [AudioSourceWrapper]{
+        return getAudioSourceList(refresh: true)?
+            .enumerated()
+            .map{(index,source) in
+                AudioSourceWrapper(source: source, id: index)} ?? []
+    }
+    
     public func getAudioSourceIndex()->Int {
         let log = "[Audio][Source][Index] \(audioSourceIndex)."
         print(log)
         return audioSourceIndex
     }
-
+    
     /**
      * Set the selected audioSource index to the specified value and save to device memory,
      * unless currently capturing, in which case no change will be made.
@@ -316,7 +323,7 @@ class MillicastManager: ObservableObject {
      */
     public func setAudioSourceIndex(_ newValue: Int)->Bool {
         let logTag = "[Audio][Source][Index][Set] "
-
+        
         // If currently capturing, do not set new audioSourceIndex.
         if isAudioCaptured() {
             let log = "NOT setting to \(newValue) as currently capturing.\n" +
@@ -324,19 +331,19 @@ class MillicastManager: ObservableObject {
             print(logTag + log)
             return false
         }
-
+        
         let task = { [self] in
             audioSourceIndex = newValue
             UserDefaults.standard.setValue(audioSourceIndex, forKey: audioSourceIndexKey)
         }
         runOnMain(logTag: logTag, log: "Set AudioSource Index", task)
-
+        
         // Set new audioSource.
         setAudioSource()
         print("\(logTag) OK.")
         return true
     }
-
+    
     /**
      * Get or generate (if nil) the current list of VideoSources available.
      *
@@ -355,7 +362,7 @@ class MillicastManager: ObservableObject {
         } else {
             print(logTag + "Using existing videoSources.")
         }
-
+        
         // Print out list of videoSources.
         print(logTag + "Checking for videoSources...")
         let size = videoSourceList!.count
@@ -369,16 +376,22 @@ class MillicastManager: ObservableObject {
             }
             print(log + ".")
         }
-
+        
         return videoSourceList
     }
-
+        
+    public func getWrappedVideoSourceList() -> [VideoSourceWrapper]{
+        return getVideoSourceList(refresh: true)?
+            .enumerated()
+            .map {(index,source) in VideoSourceWrapper(source: source, id: index)} ?? []
+    }
+    
     public func getVideoSourceIndex()->Int {
         let log = "[Video][Source][Index] \(videoSourceIndex)."
         print(log)
         return videoSourceIndex
     }
-
+    
     /**
      * Set the selected videoSource index to the specified value and save to device memory,
      * unless currently capturing, in which case no change will be made.
@@ -392,7 +405,7 @@ class MillicastManager: ObservableObject {
      */
     public func setVideoSourceIndex(_ newValue: Int, setCapIndex: Bool)->String? {
         let logTag = "[Video][Source][Index][Set] "
-
+        
         // If currently capturing, do not set new videoSourceIndex.
         if isVideoCaptured() {
             let log = "NOT setting to \(newValue) as currently capturing.\n" +
@@ -400,22 +413,22 @@ class MillicastManager: ObservableObject {
             print(logTag + log)
             return log
         }
-
+        
         let task = { [self] in
             videoSourceIndex = newValue
             UserDefaults.standard.setValue(videoSourceIndex, forKey: videoSourceIndexKey)
         }
         runOnMain(logTag: logTag, log: "Set VideoSource Index", task)
-
+        
         // Set new videoSource or videoSourceSwitched.
         setVideoSource()
-
+        
         // Set new capabilityList as it might have changed.
         print(logTag + "Setting new capabilityList again.")
         setCapabilityList()
         if setCapIndex {
             print(logTag + "Checking if capabilityIndex" +
-                " needs to be reset by setting capability again with current value...")
+                  " needs to be reset by setting capability again with current value...")
             // Set capability again as videoSource has changed.
             setCapabilityIndex(capabilityIndex)
         } else {
@@ -424,15 +437,15 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK.")
         return nil
     }
-
+    
     public func getCapabilityList()->[MCVideoCapabilities]? {
         let logTag = "[Capability][List] "
-
+        
         guard let list = capabilityList else {
             print(logTag + "No capability is available!")
             return nil
         }
-
+        
         let size = (list.count)
         if size < 1 {
             print(logTag + "List is empty! Size: \(size)!")
@@ -445,13 +458,19 @@ class MillicastManager: ObservableObject {
         }
         return list
     }
-
+    
+    public func getWrappedCapabilityList() -> [CapabilityWrapper] {
+        return getCapabilityList()?
+            .enumerated()
+            .map {(index,cap) in CapabilityWrapper(capability: cap, id: index)} ?? []
+    }
+    
     public func getCapabilityIndex()->Int {
         let log = "[Capability][Index] \(capabilityIndex)."
         print(log)
         return capabilityIndex
     }
-
+    
     /**
      * Set the selected capability index to the specified value and save to device memory.
      * A new capability will be set using this value.
@@ -462,22 +481,22 @@ class MillicastManager: ObservableObject {
     public func setCapabilityIndex(_ newValue: Int) {
         // Set new value into SharePreferences.
         let logTag = "[Capability][Index][Set] "
-
+        
         let task = { [self] in
             capabilityIndex = newValue
             UserDefaults.standard.setValue(capabilityIndex, forKey: capabilityIndexKey)
         }
         runOnMain(logTag: logTag, log: "Set Capability Index", task)
-
+        
         // Set new capability
         setCapability()
         print(logTag + "OK.")
     }
-
+    
     // *********************************************************************************************
     // Switch Media
     // *********************************************************************************************
-
+    
     /**
      * Select the next available audioSource on device.
      * This will set the audioSource to be used when capturing starts.
@@ -492,30 +511,30 @@ class MillicastManager: ObservableObject {
         let logTag = "[Audio][Source][Switch] "
         var error: String
         var newValue: Int?
-
+        
         // If videoSource is already capturing, switch to only non-NDI videoSource.
         if isAudioCaptured() {
             error = "Failed! Unable to switch audioSource when capturing."
             print(logTag + error)
             return error
         }
-
+        
         newValue = audioSourceIndexNext(ascending: ascending)
-
+        
         if newValue == nil {
             error = "FAILED! Unable to get next audioSource!"
             print(logTag + error)
             return error
         }
-
+        
         // Set new audioSource
         print(logTag + "Setting audioSource index to:\(String(describing: newValue)).")
         setAudioSourceIndex(newValue!)
-
+        
         print(logTag + "OK.")
         return nil
     }
-
+    
     /**
      * Stop capturing on current videoSource and switch to the next available videoSource on device and starts capturing.
      * If currently publishing, this would first stop publishing and disconnect from Millicast. After the next available videoSource is capturing, reconnect to Millicast and start publishing. Audio capture will not be affected and will be published as it was before the switch.
@@ -528,24 +547,24 @@ class MillicastManager: ObservableObject {
             let logTag = "[Video][Source][Switch] "
             // Do not allow switching if capturing or publishing are not in stable states.
             switch capState {
-                case .notCaptured: break
-                case .tryCapture:
-                    print(logTag + "FAILED as camera is trying to capture.")
-                    return
-                case .isCaptured: break
+            case .notCaptured: break
+            case .tryCapture:
+                print(logTag + "FAILED as camera is trying to capture.")
+                return
+            case .isCaptured: break
             }
-
+            
             switch pubState {
-                case .disconnected: break
-                case .connecting:
-                    print(logTag + "FAILED as publisher is trying to connect.")
-                    return
-                case .connected:
-                    print(logTag + "FAILED as publisher is trying to publish or unpublish.")
-                    return
-                case .publishing: break
+            case .disconnected: break
+            case .connecting:
+                print(logTag + "FAILED as publisher is trying to connect.")
+                return
+            case .connected:
+                print(logTag + "FAILED as publisher is trying to publish or unpublish.")
+                return
+            case .publishing: break
             }
-
+            
             // If already publishing stop and publish again after capturing.
             var wasPublishing = false
             if publisher != nil {
@@ -555,28 +574,28 @@ class MillicastManager: ObservableObject {
                     stopPub()
                 }
             }
-
+            
             // Stop current capture, if any.
             stopCaptureVideo()
-
+            
             // Set new camera index.
             guard let next = videoSourceIndexNext(ascending: ascending)
             else {
                 print(logTag + "Failed as unable to get next camera!")
                 return
             }
-
+            
             let task = { [self] in
                 print(logTag + "Setting videoSourceIndex to:\(next) and updating Capability for new VideoSource.")
                 setVideoSourceIndex(next, setCapIndex: true)
             }
-
+            
             runOnMain(logTag: logTag, log: "Setting index", task)
-
+            
             // Start capture with new camera.
             print(logTag + "Starting capture again with new index: \(next)...")
             startCaptureVideo()
-
+            
             // Publish again if was previously publishing.
             if wasPublishing {
                 print(logTag + "Was publishing so will try to connect and publish again...")
@@ -584,7 +603,7 @@ class MillicastManager: ObservableObject {
             }
         }
     }
-
+    
     /**
      Select the next available camera.
      If at end of camera range, cycle back to start of range.
@@ -605,7 +624,7 @@ class MillicastManager: ObservableObject {
             }
         }
     }
-
+    
     /**
      Select the next available resolution.
      If at end of resolution range, cycle back to start of range.
@@ -626,18 +645,18 @@ class MillicastManager: ObservableObject {
             }
         }
     }
-
+    
     // *********************************************************************************************
     // Capture
     // *********************************************************************************************
-
+    
     /**
      * Checks if we are in AudioOnly mode, i.e. video is not captured.
      */
     public func isAudioOnly()->Bool {
         return audioOnly
     }
-
+    
     /**
      * Check if either audio or video is captured.
      */
@@ -650,7 +669,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "Yes.")
         return true
     }
-
+    
     /**
      Check if audio is captured.
      */
@@ -663,7 +682,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "Yes.")
         return true
     }
-
+    
     /**
      Check if video is captured.
      */
@@ -676,7 +695,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "Yes.")
         return true
     }
-
+    
     /**
      * Sets AudioOnly mode as desired. In AudioOnly mode, video is not captured.
      *
@@ -685,7 +704,7 @@ class MillicastManager: ObservableObject {
     public func setAudioOnly(audioOnly: Bool) {
         self.audioOnly = audioOnly
     }
-
+    
     /**
      Start capturing both audio and video (based on selected videoSource).
      */
@@ -696,7 +715,7 @@ class MillicastManager: ObservableObject {
             startCaptureAudio()
         }
     }
-
+    
     /**
      Stop capturing both audio and video.
      */
@@ -707,18 +726,18 @@ class MillicastManager: ObservableObject {
             stopCaptureAudio()
         }
     }
-
+    
     /**
      * Set the received videoTrack into MillicastManager.
      */
     public func setVideoTrackSub(track: MCVideoTrack) {
         videoTrackSub = track
     }
-
+    
     // *********************************************************************************************
     // Mute / unmute audio / video.
     // *********************************************************************************************
-
+    
     /**
      Sets the published/subscribed audio/video to the specified state, either enabled or disabled (i.e. muted).
      To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
@@ -747,7 +766,7 @@ class MillicastManager: ObservableObject {
         }
         runOnMain(logTag: logTag, log: "Set Media state", task)
     }
-
+    
     /**
      Toggle published/subscribed audio/video between enabled and disabled (i.e. muted) state.
      To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
@@ -758,7 +777,7 @@ class MillicastManager: ObservableObject {
         if !isPub {
             queue = queueSub
         }
-
+        
         var set: Bool?
         queue.async { [self] in
             if isPub {
@@ -779,11 +798,11 @@ class MillicastManager: ObservableObject {
             }
         }
     }
-
+    
     // *********************************************************************************************
     // Render - Audio
     // *********************************************************************************************
-
+    
     public func getAudioPlaybackList()->[MCAudioPlayback]? {
         if audioPlaybackList == nil {
             audioPlaybackList = MCMedia.getPlaybackDevices()
@@ -792,13 +811,21 @@ class MillicastManager: ObservableObject {
         print(log)
         return audioPlaybackList
     }
+    
+    public func getWrappedAudioPlaybackList() -> [AudioPlaybackWrapper] {
+        return getAudioPlaybackList()?
+            .enumerated()
+            .map {(index,playback) in
+                AudioPlaybackWrapper(audioPlayback: playback, id: index)} ?? []
 
+    }
+    
     public func getAudioPlaybackIndex()->Int {
         let log = "[Audio][Playback][Index]  \(audioPlaybackIndex)."
         print(log)
         return audioPlaybackIndex
     }
-
+    
     /**
      * If not currently subscribed, this will set the selected audioPlaybackIndex
      * to the specified value and save to device memory.
@@ -808,21 +835,21 @@ class MillicastManager: ObservableObject {
      */
     public func setAudioPlaybackIndex(newValue: Int)->Bool {
         let logTag = "[Audio][Playback][Index][Set] "
-
+        
         // If currently subscribing, do not set new audioSourceIndex.
         if isSubscribing() {
             print(logTag + "NOT setting to \(newValue) as currently subscribing.")
             print(logTag + "AudioPlayback:" +
-                getAudioSourceStr(audioPlayback, longForm: true))
+                  getAudioSourceStr(audioPlayback, longForm: true))
             return false
         }
-
+        
         audioPlaybackIndex = newValue
         UserDefaults.standard.setValue(audioPlaybackIndex, forKey: audioPlaybackIndexKey)
         setAudioPlayback()
         return true
     }
-
+    
     /**
      * Processes the subscribed audio.
      * Configures the AVAudioSession with SA settings.
@@ -842,7 +869,7 @@ class MillicastManager: ObservableObject {
         }
         runOnQueue(logTag: logTag, log: "Render subscribe audio", task, queueSub)
     }
-
+    
     public func setRemoteAudioTrackVolume(volume: Double) {
         if isSubscribing(), audioTrackSub != nil {
             print("Setting audio track volume : \(volume)")
@@ -851,11 +878,11 @@ class MillicastManager: ObservableObject {
             print("Can't set audio volume")
         }
     }
-
+    
     // *********************************************************************************************
     // Render - Video
     // *********************************************************************************************
-
+    
     /**
      * Gets the VideoRenderer for the Publisher.
      * Creates one if none currently exists.
@@ -871,7 +898,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK")
         return rendererPub!
     }
-
+    
     /**
      * Gets the VideoRenderer for the Subscriber.
      * Create one if none currently exists.
@@ -887,7 +914,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "OK")
         return rendererSub!
     }
-
+    
     /**
      Renders the subscribed video.
      */
@@ -905,7 +932,7 @@ class MillicastManager: ObservableObject {
         }
         runOnQueue(logTag: logTag, log: "Render subscribe video", task, queueSub)
     }
-
+    
     /**
      * Checks if the Publisher's local video view is mirrored.
      *
@@ -916,7 +943,7 @@ class MillicastManager: ObservableObject {
         print(logTag + "\(mirroredPub).")
         return mirroredPub
     }
-
+    
     /**
      * Sets the mirroring of the Publisher's local video view to the specified value.
      * The mirroring effect is local only and is not transmitted to the Subscriber(s).
@@ -925,17 +952,17 @@ class MillicastManager: ObservableObject {
      */
     public func setMirror(_ toMirror: Bool) {
         let logTag = "[Mirror][Set][Pub] "
-
+        
         guard let renderer = rendererPub else {
             print(logTag + "Failed! The videoRenderer is not available.")
             return
         }
-
+        
         if toMirror == mirroredPub {
             print(logTag + "Not setting mirroring to \(toMirror) as current mirror state is already \(mirroredPub).")
             return
         }
-
+        
         let mirrorSet = renderer.setMirror(toMirror)
         let task = { [self] in
             if mirrorSet {
@@ -947,7 +974,7 @@ class MillicastManager: ObservableObject {
         }
         runOnMain(logTag: logTag, log: "Update mirroredPub", task)
     }
-
+    
     /**
      * Switches the mirroring of the Publisher's local video view from mirrored to not mirrored,
      * and vice-versa.
@@ -958,11 +985,11 @@ class MillicastManager: ObservableObject {
         print(logTag + "Trying to set mirroring for videoRenderer to: \(!mirroredPub).")
         setMirror(!mirroredPub)
     }
-
+    
     // **********************************************************************************************
     // Publish - Options
     // **********************************************************************************************
-
+    
     /**
      * Set the specified BitrateSettings to use for publishing.
      * Setting this will only affect the next publish,
@@ -981,26 +1008,26 @@ class MillicastManager: ObservableObject {
             print(logTag + " Failed! Publisher not available.")
             return
         }
-
+        
         guard let settings = optionsPub.bitrateSettings else {
             print(logTag + " Failed! BitrateSettings option not available.")
             return
         }
-
+        
         switch type {
-            case Bitrate.START:
-                logTag += "[Start] "
-                settings.startBitrateKbps = bitrate
-            case Bitrate.MIN:
-                logTag += "[Min] "
-                settings.minBitrateKbps = bitrate
-            case Bitrate.MAX:
-                logTag += "[Max] "
-                settings.maxBitrateKbps = bitrate
+        case Bitrate.START:
+            logTag += "[Start] "
+            settings.startBitrateKbps = bitrate
+        case Bitrate.MIN:
+            logTag += "[Min] "
+            settings.minBitrateKbps = bitrate
+        case Bitrate.MAX:
+            logTag += "[Max] "
+            settings.maxBitrateKbps = bitrate
         }
         print(logTag + "\(bitrate) kbps.")
     }
-
+    
     /**
      * Get or generate (if nil) the current list of Audio or Video Codec supported.
      *
@@ -1032,10 +1059,18 @@ class MillicastManager: ObservableObject {
         }
         log += " Codecs are: \(String(describing: codecList))"
         print(log)
-
+        
         return codecList
     }
+    
+    public func getWrappedCodecList(forAudio: Bool) -> [CodecWrapper]{
+        return getCodecList(forAudio: forAudio)?
+            .enumerated()
+            .map {(index,codec) in
+                CodecWrapper(codec: codec, id: index)} ?? []
 
+    }
+    
     public func getAudioCodecIndex()->Int? {
         return audioCodecIndex
     }
@@ -1956,7 +1991,7 @@ class MillicastManager: ObservableObject {
         }
 
         capabilityList = vs.getCapabilities()
-
+        
         var size = 0
         if capabilityList != nil {
             size = capabilityList?.count ?? 0

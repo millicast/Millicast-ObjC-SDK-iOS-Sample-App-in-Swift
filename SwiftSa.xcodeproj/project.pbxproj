@@ -58,6 +58,8 @@
 		8695907B28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
 		8697685D29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
 		8697685E29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
+		B3DDE5822B4C265B002C102B /* MediaSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDE5812B4C265B002C102B /* MediaSettingsView.swift */; };
+		B3DDE5842B4C26C8002C102B /* RecListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDE5832B4C26C8002C102B /* RecListener.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +113,8 @@
 		8695907428911F6B003CE073 /* FileCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCreds.swift; sourceTree = "<group>"; };
 		8695907528911F6B003CE073 /* UiCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiCreds.swift; sourceTree = "<group>"; };
 		8697685C29431BAF00055C0D /* MCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCTypes.swift; sourceTree = "<group>"; };
+		B3DDE5812B4C265B002C102B /* MediaSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaSettingsView.swift; sourceTree = "<group>"; };
+		B3DDE5832B4C26C8002C102B /* RecListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecListener.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,8 @@
 		3FE90C1A26B2AF4200B206A3 /* Millicast SDK Sample App in Swift */ = {
 			isa = PBXGroup;
 			children = (
+				B3DDE5812B4C265B002C102B /* MediaSettingsView.swift */,
+				B3DDE5832B4C26C8002C102B /* RecListener.swift */,
 				3FA8DBA82704AECD009713E8 /* README.md */,
 				3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
@@ -400,6 +406,7 @@
 				86625CF92913B03600305683 /* MCSwiftVideoRenderer.swift in Sources */,
 				8695907628911F6B003CE073 /* CurrentCreds.swift in Sources */,
 				3FAC2F9926B93635007588CA /* MillicastSA.swift in Sources */,
+				B3DDE5842B4C26C8002C102B /* RecListener.swift in Sources */,
 				3FB2293126C3DE9000982391 /* Constants.swift in Sources */,
 				3F8DC0A226BA98E7009D51B1 /* PubListener.swift in Sources */,
 				3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */,
@@ -414,6 +421,7 @@
 				3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */,
 				3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */,
 				8697685D29431BAF00055C0D /* MCTypes.swift in Sources */,
+				B3DDE5822B4C265B002C102B /* MediaSettingsView.swift in Sources */,
 				3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

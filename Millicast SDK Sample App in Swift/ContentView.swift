@@ -29,6 +29,10 @@ struct ContentView: View {
                     Text("Settings")
                 }
                 Spacer()
+                NavigationLink(destination: mcSA.getMediaSettingsView){
+                    Text("Media Settings")
+                }
+                Spacer()
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
