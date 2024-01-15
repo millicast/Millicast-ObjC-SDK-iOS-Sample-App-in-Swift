@@ -179,6 +179,11 @@ class MillicastSA: ObservableObject {
         return SettingsMcView(manager: mcMan)
     }
     
+    func getMediaSettingsView() -> MediaSettingsView {
+        print("[McSA][getMediaSettingsView]")
+        return MediaSettingsView(manager: mcMan)
+    }
+    
     /*
      Utils
      */
