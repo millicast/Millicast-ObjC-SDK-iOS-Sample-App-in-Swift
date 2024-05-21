@@ -1,3 +1,7 @@
+# :exclamation: Important :exclamation:
+This repository has been archived. Please refer to the new getting started sample applications [here](https://github.com/dolbyio-samples/stream-sdk-ios-getting-started)
+
+# Overview
 The Swift Sample App (SA) demonstrates how the Millicast Objective C SDK can be used in a Swift project to publish/subscribe to/from the Millicast Platform.
 
 # Millicast SDK:
